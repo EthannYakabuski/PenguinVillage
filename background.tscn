@@ -1,3 +1,10 @@
-[gd_scene format=3 uid="uid://00tprprtl806"]
+[gd_scene load_steps=2 format=3 uid="uid://00tprprtl806"]
+
+[ext_resource type="Texture2D" uid="uid://b66oc2ftw7uso" path="res://images/bg-icebergs-1.png" id="1_25ahi"]
 
 [node name="Background" type="Node2D"]
+
+[node name="Iceburg" type="Sprite2D" parent="."]
+position = Vector2(594, 641)
+scale = Vector2(3.935, 3.935)
+texture = ExtResource("1_25ahi")
