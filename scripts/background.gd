@@ -15,7 +15,6 @@ func determinePenguins() -> void:
 	print("loading penguins")
 	var penguin: Penguin = penguin_scene.instantiate()
 	penguin.setLocation(300,1300)
-	penguin.setGoal(350, 1400)
 	add_child(penguin)
 	penguins.push_back(penguin)
 	

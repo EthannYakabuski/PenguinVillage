@@ -22,7 +22,7 @@ var sick = false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	sprite = $PenguinSprite
-	setState("Walk")
+	setState("Idle")
 	sprite.play()
 	$PenguinCollision.set_deferred("input_pickable", true)
 	
