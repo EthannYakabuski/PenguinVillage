@@ -1,13 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://dwfar8q4eytr"]
+[gd_scene load_steps=3 format=3 uid="uid://dwfar8q4eytr"]
 
+[ext_resource type="Script" path="res://scenes/fish.gd" id="1_51uch"]
 [ext_resource type="SpriteFrames" uid="uid://cteifi2h5pxjm" path="res://animations/fish_frames.tres" id="1_qctyd"]
 
 [node name="Fish" type="Area2D"]
+script = ExtResource("1_51uch")
 
 [node name="FishSprite" type="AnimatedSprite2D" parent="."]
-position = Vector2(81, 1097)
+position = Vector2(87.1, 79.3)
 scale = Vector2(0.0878906, 0.0878906)
 sprite_frames = ExtResource("1_qctyd")
 animation = &"Idle"
 
 [node name="FishCollision" type="CollisionPolygon2D" parent="."]
+position = Vector2(6.1, -1017.7)
+polygon = PackedVector2Array(70, 1132, 71, 1136, 74, 1137, 81, 1137, 86, 1135, 91, 1131, 97, 1130, 107, 1126, 113, 1121, 122, 1109, 124, 1102, 124, 1099, 122, 1092, 117, 1084, 112, 1078, 103, 1072, 96, 1070, 94, 1069, 89, 1063, 84, 1060, 75, 1057, 69, 1056, 66, 1057, 66, 1059, 67, 1065, 69, 1069, 69, 1072, 66, 1074, 63, 1077, 60, 1080, 57, 1084, 54, 1079, 46, 1076, 41, 1075, 38, 1076, 37, 1079, 38, 1083, 41, 1091, 43, 1096, 46, 1100, 44, 1103, 42, 1109, 40, 1115, 39, 1120, 39, 1124, 42, 1126, 45, 1126, 51, 1124, 54, 1122, 57, 1118, 58, 1116, 60, 1119, 63, 1122, 66, 1124, 72, 1128, 71, 1130)
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

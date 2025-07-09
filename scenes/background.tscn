@@ -1,12 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://00tprprtl806"]
+[gd_scene load_steps=5 format=3 uid="uid://00tprprtl806"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
+[ext_resource type="PackedScene" uid="uid://dwfar8q4eytr" path="res://scenes/fish.tscn" id="3_2xu8c"]
 [ext_resource type="Texture2D" uid="uid://b66oc2ftw7uso" path="res://images/bg-icebergs-1.png" id="3_qg2f1"]
 
 [node name="Background" type="Area2D"]
 script = ExtResource("1_31116")
 penguin_scene = ExtResource("2_cvr2x")
+fish_scene = ExtResource("3_2xu8c")
 
 [node name="Iceburg" type="Sprite2D" parent="."]
 position = Vector2(605, 422)
