@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" load_steps=2 format=3 uid="uid://cteifi2h5pxjm"]
+
+[ext_resource type="Texture2D" uid="uid://j1qf7f0e7eg4" path="res://images/Fish.png" id="1_5gcmv"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_5gcmv")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]

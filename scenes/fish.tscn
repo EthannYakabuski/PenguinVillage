@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dwfar8q4eytr"]
+
+[ext_resource type="SpriteFrames" uid="uid://cteifi2h5pxjm" path="res://animations/fish_frames.tres" id="1_qctyd"]
+
+[node name="Fish" type="Area2D"]
+
+[node name="FishSprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(81, 1097)
+scale = Vector2(0.0878906, 0.0878906)
+sprite_frames = ExtResource("1_qctyd")
+animation = &"Idle"
+
+[node name="FishCollision" type="CollisionPolygon2D" parent="."]
