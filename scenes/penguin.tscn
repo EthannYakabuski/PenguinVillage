@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://duea6pilwy37k"]
+
+[ext_resource type="Script" path="res://scripts/penguin.gd" id="1_3yk4v"]
+[ext_resource type="SpriteFrames" uid="uid://cot0itv4g4eta" path="res://animations/penguin_frames.tres" id="2_28ggd"]
+
+[node name="Penguin" type="Area2D"]
+script = ExtResource("1_3yk4v")
+
+[node name="PenguinSprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(47.8, 44.5)
+sprite_frames = ExtResource("2_28ggd")
+animation = &"Walk"
+
+[node name="PenguinCollision" type="CollisionPolygon2D" parent="."]
+position = Vector2(-71.2, -95.5)
+polygon = PackedVector2Array(93, 122, 88, 137, 87, 152, 86, 157, 89, 163, 99, 168, 106, 172, 123, 171, 131, 169, 135, 159, 135, 150, 136, 139, 140, 136, 142, 133, 137, 127, 132, 120, 129, 112, 120, 107, 106, 108, 99, 113)
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
