@@ -1,9 +1,12 @@
 extends Node2D
 @export var penguin_scene: PackedScene
 @export var fish_scene: PackedScene
+@onready var fishTimer: Timer = $FishSpawnTimer
 
 var penguins = []
 var fishes = []
+
+var penguinIsSelected = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -34,6 +37,7 @@ func determineFish() -> void:
 	print("loading fish")
 	var fish: Fish = fish_scene.instantiate()
 	fish.setLocation(500, 1600)
+	fish.fish_collected.connect(onFishCollected)
 	add_child(fish)
 	fishes.push_back(fish)
 	
@@ -41,6 +45,17 @@ func determineFishIntelligence() -> void:
 	for f in fishes: 
 		if f.hasGoal(): 
 			f.moveToGoal()
+			
+##SIGNAL LISTENERS##
+func onFishCollected(fish) -> void: 
+	print("fish collected")
+	if fish in fishes: 
+		fishes.erase(fish)
+	fish.queue_free()
+
+func onPenguinSelected(state) -> void: 
+	penguinIsSelected = state
+	print("penguin selected")
 	
 ##GUI###
 func _on_input_event(_viewport, event, _shape_idx):
@@ -50,3 +65,4 @@ func _on_input_event(_viewport, event, _shape_idx):
 			if p.selected: 
 				print("controlling penguin")
 				p.setGoal(event.position.x, event.position.y)
+				p.setSelected(false)

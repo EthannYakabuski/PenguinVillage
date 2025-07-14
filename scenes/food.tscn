@@ -4,3 +4,7 @@
 
 [node name="Food" type="Area2D"]
 script = ExtResource("1_1lr0t")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]

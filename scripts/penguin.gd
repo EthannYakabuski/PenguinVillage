@@ -3,9 +3,9 @@ extends Area2D
 class_name Penguin
 
 @export var penguin_frames: SpriteFrames = preload("res://animations/penguin_frames.tres")
+signal penguin_selected(state)
 
 #internals
-var sprite: AnimatedSprite2D
 
 #mechanics
 var current_state: String
@@ -21,9 +21,8 @@ var sick = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	sprite = $PenguinSprite
 	setState("Idle")
-	sprite.play()
+	$PenguinSprite.play()
 	$PenguinCollision.set_deferred("input_pickable", true)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -37,7 +36,12 @@ func setGoal(x, y) -> void:
 	
 func setState(state: String) -> void: 
 	current_state = state
-	sprite.animation = state
+	$PenguinSprite.animation = state
+	
+func setSelected(state: bool) -> void: 
+	selected = state
+	if !state: 
+		$PenguinSprite.modulate = Color(1,1,1,1) #Resets to original
 	
 func setSpeed(s) -> void: 
 	speed = s
@@ -54,6 +58,8 @@ func _on_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
 		print("Penguin Clicked")
 		selected = true
+		$PenguinSprite.modulate = Color(1, 1, 0, 1) # Yellow
+		get_parent().onPenguinSelected(true)
 		
 ##UTILITY##
 func moveToGoal() -> void: 

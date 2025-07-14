@@ -3,9 +3,11 @@ extends Area2D
 class_name Fish
 
 @export var penguin_frames: SpriteFrames = preload("res://animations/fish_frames.tres")
+signal fish_collected(fish)
 
 #internals
 var sprite: AnimatedSprite2D
+var id
 
 #mechanics
 var current_state: String
@@ -47,6 +49,7 @@ func hasGoal() -> bool:
 func _on_input_event(_viewport, event, _shape_idx): 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
 		print("Fish Clicked")
+		emit_signal("fish_collected", self)
 		
 ##UTILITY##
 func moveToGoal() -> void: 
