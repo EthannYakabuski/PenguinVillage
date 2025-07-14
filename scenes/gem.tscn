@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://c1mgm6di4qxak"]
+
+[node name="Gem" type="Area2D"]
+
+[node name="GemSprite" type="AnimatedSprite2D" parent="."]
+
+[node name="GemCollision" type="CollisionPolygon2D" parent="."]
