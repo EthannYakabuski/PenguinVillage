@@ -1,25 +1,43 @@
-[gd_scene load_steps=5 format=3 uid="uid://00tprprtl806"]
+[gd_scene load_steps=6 format=3 uid="uid://00tprprtl806"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
 [ext_resource type="PackedScene" uid="uid://dwfar8q4eytr" path="res://scenes/fish.tscn" id="3_2xu8c"]
-[ext_resource type="Texture2D" uid="uid://b66oc2ftw7uso" path="res://images/bg-icebergs-1.png" id="3_qg2f1"]
+[ext_resource type="Texture2D" uid="uid://83ebw4yricwn" path="res://images/iceberg_water.png" id="4_6qrop"]
+[ext_resource type="Texture2D" uid="uid://ihp5r4c7a4b2" path="res://images/iceberg_icebergs.png" id="5_manda"]
 
 [node name="Background" type="Area2D"]
 script = ExtResource("1_31116")
 penguin_scene = ExtResource("2_cvr2x")
 fish_scene = ExtResource("3_2xu8c")
 
-[node name="Iceburg" type="Sprite2D" parent="."]
-position = Vector2(605, 422)
-scale = Vector2(3.935, 3.935)
-texture = ExtResource("3_qg2f1")
+[node name="FishSpawnTimer" type="Timer" parent="."]
 
 [node name="LocationClickCollision" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(0, -128, -1, 1966, 1102, 1947, 1109, -123)
 
-[node name="WaterCollision" type="CollisionPolygon2D" parent="."]
+[node name="WaterArea" type="Area2D" parent="."]
+position = Vector2(0, -105)
 
-[node name="FishSpawnTimer" type="Timer" parent="."]
+[node name="WaterSprite" type="Sprite2D" parent="WaterArea"]
+position = Vector2(536, 874)
+scale = Vector2(3, 3)
+texture = ExtResource("4_6qrop")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WaterArea"]
+polygon = PackedVector2Array(-1263, 1663, -1122, 1734, -887, 1642, -718, 1711, -663, 1763, -542, 1701, -433, 1701, -296, 1764, -111, 1644, 141, 1698, 306, 1762, 431, 1673, 684, 1728, 983, 1700, 1068, 1768, 1159, 1703, 1430, 1741, 1568, 1701, 1731, 1762, 1902, 1702, 2053, 1784, 2254, 1750, 2334, 1665, 2335, 2076, -1262, 2079)
+
+[node name="IceBergArea" type="Area2D" parent="."]
+position = Vector2(0, -100)
+
+[node name="IceBergSprite" type="Sprite2D" parent="IceBergArea"]
+position = Vector2(537, 878)
+scale = Vector2(3, 3)
+texture = ExtResource("5_manda")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="IceBergArea"]
+polygon = PackedVector2Array(-1267, 1655, -1120, 1729, -888, 1636, -717, 1708, -661, 1756, -541, 1695, -434, 1695, -295, 1759, -108, 1639, 143, 1692, 300, 1751, 311, 1757, 430, 1667, 683, 1724, 983, 1695, 1072, 1761, 1162, 1699, 1434, 1735, 1567, 1694, 1734, 1758, 1903, 1695, 2057, 1779, 2252, 1746, 2335, 1660, 2336, -325, -1265, -322)
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="area_entered" from="WaterArea" to="." method="_on_water_area_area_entered"]
+[connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]

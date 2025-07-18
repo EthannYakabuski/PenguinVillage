@@ -1,10 +1,44 @@
-[gd_scene load_steps=2 format=3 uid="uid://cfat6v41erd3c"]
+[gd_scene load_steps=6 format=3 uid="uid://cfat6v41erd3c"]
 
 [ext_resource type="Script" path="res://scripts/food.gd" id="1_1lr0t"]
+[ext_resource type="Texture2D" uid="uid://t5efekd3dbmr" path="res://images/FoodBowl_empty.png" id="2_jlmmg"]
+[ext_resource type="Texture2D" uid="uid://msm04xrkimrq" path="res://images/FoodBowl_full.png" id="3_aop77"]
+[ext_resource type="Texture2D" uid="uid://d4anhmuskyvce" path="res://images/FoodBowl_medium.png" id="4_tjrub"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_d3ont"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_jlmmg")
+}],
+"loop": true,
+"name": &"Empty",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_aop77")
+}],
+"loop": true,
+"name": &"Full",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_tjrub")
+}],
+"loop": true,
+"name": &"Medium",
+"speed": 5.0
+}]
 
 [node name="Food" type="Area2D"]
 script = ExtResource("1_1lr0t")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="FoodSprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(88, 80)
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_d3ont")
+animation = &"Medium"
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+[node name="FoodCollision" type="CollisionPolygon2D" parent="."]

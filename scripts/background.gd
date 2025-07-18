@@ -22,7 +22,7 @@ func _process(_delta: float) -> void:
 func determinePenguins() -> void: 
 	print("loading penguins")
 	var penguin: Penguin = penguin_scene.instantiate()
-	penguin.setLocation(300,1300)
+	penguin.setLocation(300,1400)
 	add_child(penguin)
 	penguins.push_back(penguin)
 	
@@ -36,7 +36,7 @@ func determinePenguinIntelligence() -> void:
 func determineFish() -> void: 
 	print("loading fish")
 	var fish: Fish = fish_scene.instantiate()
-	fish.setLocation(500, 1600)
+	fish.setLocation(500, 1700)
 	fish.fish_collected.connect(onFishCollected)
 	add_child(fish)
 	fishes.push_back(fish)
@@ -46,7 +46,7 @@ func determineFishIntelligence() -> void:
 		if f.hasGoal(): 
 			f.moveToGoal()
 			
-##SIGNAL LISTENERS##
+##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish) -> void: 
 	print("fish collected")
 	if fish in fishes: 
@@ -56,6 +56,16 @@ func onFishCollected(fish) -> void:
 func onPenguinSelected(state) -> void: 
 	penguinIsSelected = state
 	print("penguin selected")
+
+##EVENT LISTENERS##
+func _on_ice_berg_area_area_entered(area: Area2D) -> void:
+	print("something entered ice berg area")
+	
+func _on_water_area_area_entered(area: Area2D) -> void:
+	print("something entered water area")
+	if area is Penguin:
+		print("a penguin entered the water area")
+		area.setState("Jump")
 	
 ##GUI###
 func _on_input_event(_viewport, event, _shape_idx):

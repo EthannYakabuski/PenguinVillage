@@ -37,6 +37,7 @@ func setGoal(x, y) -> void:
 func setState(state: String) -> void: 
 	current_state = state
 	$PenguinSprite.animation = state
+	$PenguinSprite.play()
 	
 func setSelected(state: bool) -> void: 
 	selected = state
@@ -63,7 +64,6 @@ func _on_input_event(_viewport, event, _shape_idx):
 		
 ##UTILITY##
 func moveToGoal() -> void: 
-	#print("penguin moving towards goal")
 	var direction = (goal - position).normalized()
 	if position.distance_to(goal) > 5:
 		$PenguinSprite.flip_h = direction.x < 0
