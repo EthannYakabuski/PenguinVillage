@@ -65,7 +65,7 @@ func _on_water_area_area_entered(area: Area2D) -> void:
 	print("something entered water area")
 	if area is Penguin:
 		print("a penguin entered the water area")
-		area.setState("Jump")
+		area.setState("Dive")
 	
 ##GUI###
 func _on_input_event(_viewport, event, _shape_idx):
@@ -76,3 +76,4 @@ func _on_input_event(_viewport, event, _shape_idx):
 				print("controlling penguin")
 				p.setGoal(event.position.x, event.position.y)
 				p.setSelected(false)
+				p.setState("Walk")

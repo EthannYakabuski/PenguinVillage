@@ -36,6 +36,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("7_s4v1k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_6hpx1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_11bfu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_nf461")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_sn5r4")
+}],
+"loop": true,
+"name": &"Dive",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("5_yfswa")
 }],
 "loop": true,

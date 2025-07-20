@@ -9,7 +9,8 @@ script = ExtResource("1_3yk4v")
 [node name="PenguinSprite" type="AnimatedSprite2D" parent="."]
 position = Vector2(47.8, 44.5)
 sprite_frames = ExtResource("2_28ggd")
-animation = &"Walk"
+animation = &"Dive"
+frame_progress = 0.629337
 
 [node name="PenguinCollision" type="CollisionPolygon2D" parent="."]
 position = Vector2(-71.2, -95.5)
@@ -17,3 +18,4 @@ polygon = PackedVector2Array(93, 122, 88, 137, 87, 152, 86, 157, 89, 163, 99, 16
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="animation_finished" from="PenguinSprite" to="." method="_on_penguin_sprite_animation_finished"]

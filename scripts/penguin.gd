@@ -37,7 +37,7 @@ func setGoal(x, y) -> void:
 func setState(state: String) -> void: 
 	current_state = state
 	$PenguinSprite.animation = state
-	$PenguinSprite.play()
+	#$PenguinSprite.play()
 	
 func setSelected(state: bool) -> void: 
 	selected = state
@@ -67,7 +67,13 @@ func moveToGoal() -> void:
 	var direction = (goal - position).normalized()
 	if position.distance_to(goal) > 5:
 		$PenguinSprite.flip_h = direction.x < 0
-		setState("Walk")
+		#setState("Walk")
 		position += direction * speed
 	else: 
 		setState("Idle")
+
+
+func _on_penguin_sprite_animation_finished() -> void:
+	if current_state == "Dive": 
+		setState("Swim")
+		
