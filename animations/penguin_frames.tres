@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=15 format=3 uid="uid://cot0itv4g4eta"]
+[gd_resource type="SpriteFrames" load_steps=16 format=3 uid="uid://cot0itv4g4eta"]
 
 [ext_resource type="Texture2D" uid="uid://b17660sloi8na" path="res://images/penguin_die01@2x.png" id="1_mnwqy"]
 [ext_resource type="Texture2D" uid="uid://ne6b2ihm6qy1" path="res://images/penguin_die02@2x.png" id="2_txv58"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bbvwe1h5t703g" path="res://images/penguin_hurt@2x.png" id="10_1tqyl"]
 [ext_resource type="Texture2D" uid="uid://1yeca3tyhlgs" path="res://images/penguin_walk01@2x.png" id="11_ckx81"]
 [ext_resource type="Texture2D" uid="uid://b0lb0xbbxmev8" path="res://images/penguin_walk02@2x.png" id="12_24g8o"]
+[ext_resource type="Texture2D" uid="uid://gg57v7o078rb" path="res://images/penguin_swim01@2x.png" id="12_de7jv"]
 [ext_resource type="Texture2D" uid="uid://d0uc3vwb6kcq3" path="res://images/penguin_walk03@2x.png" id="13_30lfx"]
 [ext_resource type="Texture2D" uid="uid://bs7ae6u4cbbde" path="res://images/penguin_walk04@2x.png" id="14_vbbup"]
 
@@ -93,6 +94,17 @@ animations = [{
 }],
 "loop": true,
 "name": &"Slide",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_de7jv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_lrpo6")
+}],
+"loop": true,
+"name": &"Swim",
 "speed": 5.0
 }, {
 "frames": [{

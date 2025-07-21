@@ -35,6 +35,7 @@ func setGoal(x, y) -> void:
 	hasAGoal = true
 	
 func setState(state: String) -> void: 
+	print("setting penguin state to " + state)
 	current_state = state
 	$PenguinSprite.animation = state
 	#$PenguinSprite.play()
@@ -71,9 +72,8 @@ func moveToGoal() -> void:
 		position += direction * speed
 	else: 
 		setState("Idle")
+		
 
-
-func _on_penguin_sprite_animation_finished() -> void:
+func _on_penguin_sprite_animation_looped() -> void:
 	if current_state == "Dive": 
 		setState("Swim")
-		
