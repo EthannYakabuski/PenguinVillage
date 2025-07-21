@@ -49,7 +49,7 @@ func hasGoal() -> bool:
 func _on_input_event(_viewport, event, _shape_idx): 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
 		print("Fish Clicked")
-		emit_signal("fish_collected", self)
+		#emit_signal("fish_collected", self)
 		
 ##UTILITY##
 func moveToGoal() -> void: 
@@ -60,3 +60,8 @@ func moveToGoal() -> void:
 		position += direction * speed
 	else: 
 		setState("Idle")
+
+
+func _on_area_entered(area: Area2D) -> void:
+	if area is Penguin: 
+		print("a penguin captured a fish")

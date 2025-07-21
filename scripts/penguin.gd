@@ -11,7 +11,7 @@ signal penguin_selected(state)
 var current_state: String
 var goal: Vector2
 var hasAGoal: bool = false
-var speed = 0.5
+var speed = 0.75
 var selected: bool = false
 
 #vitals
