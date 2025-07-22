@@ -1,6 +1,7 @@
 extends Node2D
 @export var penguin_scene: PackedScene
 @export var fish_scene: PackedScene
+@export var food_scene: PackedScene
 @onready var fishTimer: Timer = $FishSpawnTimer
 
 var penguins = []
@@ -8,10 +9,14 @@ var fishes = []
 
 var penguinIsSelected = false
 
+func _enter_tree() -> void: 
+	GodotPlayGameServices.initialize()
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	determinePenguins()
 	determineFish()
+	determineFood()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -45,6 +50,13 @@ func determineFishIntelligence() -> void:
 	for f in fishes: 
 		if f.hasGoal(): 
 			f.moveToGoal()
+			
+##FOOD##
+func determineFood() -> void: 
+	print("loading food bowls")
+	var food: Food = food_scene.instantiate()
+	food.setLocation(550, 1350)
+	add_child(food)
 			
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish) -> void: 

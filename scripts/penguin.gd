@@ -71,7 +71,8 @@ func moveToGoal() -> void:
 		#setState("Walk")
 		position += direction * speed
 	else: 
-		setState("Idle")
+		if current_state != "Idle": 
+			setState("Idle")
 		
 
 func _on_penguin_sprite_animation_looped() -> void:
