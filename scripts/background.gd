@@ -6,6 +6,8 @@ extends Node2D
 
 var penguins = []
 var fishes = []
+#var foodBowls = []
+var foodBowl: Food
 
 var penguinIsSelected = false
 
@@ -57,12 +59,16 @@ func determineFood() -> void:
 	var food: Food = food_scene.instantiate()
 	food.setLocation(550, 1350)
 	add_child(food)
+	foodBowl = food
+	foodBowl.addFood(50)
+	#foodBowls.push_back(food)
 			
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish) -> void: 
 	print("fish collected")
 	if fish in fishes: 
 		fishes.erase(fish)
+		foodBowl.addFood(20)
 	fish.queue_free()
 
 func onPenguinSelected(state) -> void: 

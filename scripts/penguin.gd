@@ -78,3 +78,10 @@ func moveToGoal() -> void:
 func _on_penguin_sprite_animation_looped() -> void:
 	if current_state == "Dive": 
 		setState("Swim")
+
+
+func _on_penguin_sprite_animation_changed() -> void:
+	if (current_state == "Swim"): 
+		speed = 1.25
+	else: 
+		speed = 0.75
