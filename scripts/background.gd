@@ -32,7 +32,11 @@ func _process(_delta: float) -> void:
 
 ##SOCIAL CONNECTIONS##
 func androidAuthentication() -> void: 
-	googleSignInClient.is_authenticated()
+	if not GodotPlayGameServices.android_plugin: 
+		printerr("Plugin not found")
+	else: 
+		print("Plugin found")
+		googleSignInClient.is_authenticated()
 
 func _on_user_authenticated(is_authenticated: bool) -> void:
 	print("Hi from Godot! User is authenticated? %s" % is_authenticated)
@@ -90,7 +94,7 @@ func onPenguinSelected(state) -> void:
 	print("penguin selected")
 
 ##EVENT LISTENERS##
-func _on_ice_berg_area_area_entered(area: Area2D) -> void:
+func _on_ice_berg_area_area_entered(_area: Area2D) -> void:
 	print("something entered ice berg area")
 	
 func _on_water_area_area_entered(area: Area2D) -> void:

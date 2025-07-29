@@ -3,7 +3,7 @@ extends Area2D
 class_name Penguin
 
 @export var penguin_frames: SpriteFrames = preload("res://animations/penguin_frames.tres")
-signal penguin_selected(state)
+#signal penguin_selected(state)
 
 #internals
 
