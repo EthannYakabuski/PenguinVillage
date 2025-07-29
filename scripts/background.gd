@@ -15,12 +15,19 @@ var penguinIsSelected = false
 @onready var googleSignInClient: PlayGamesSignInClient = $Android_SignIn
 @onready var googleSnapshotClient: PlayGamesSnapshotsClient = $Android_SavedGames
 
+#admob integration
+var _ad_view : AdView
+var _rewarded_ad : RewardedAd
+var _full_screen_content_callback : FullScreenContentCallback
+var on_user_earned_reward_listener := OnUserEarnedRewardListener.new()
+
 func _enter_tree() -> void: 
 	GodotPlayGameServices.initialize()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	androidAuthentication()
+	admobConfiguration()
 	determinePenguins()
 	determineFish()
 	determineFood()
@@ -36,7 +43,72 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 	else: 
 		print("Plugin found")
-		googleSignInClient.is_authenticated()
+	googleSignInClient.is_authenticated()
+	
+func admobConfiguration() -> void: 
+	var onInitializationCompleteListener = OnInitializationCompleteListener.new()
+	onInitializationCompleteListener.on_initialization_complete = onAdInitializationComplete
+	var request_configuration = RequestConfiguration.new()
+	MobileAds.initialize(onInitializationCompleteListener)
+	if MobileAds: 
+		MobileAds.set_request_configuration(request_configuration)
+		
+#called after admob init is complete, loads a banner ad
+func onAdInitializationComplete(status : InitializationStatus): 
+	print("banner ad initialization complete")
+	_create_ad_view()
+	
+#code to load banner ad
+func _create_ad_view() -> void:
+	#free memory
+	if _ad_view:
+		destroy_ad_view()
+
+	var adListener = AdListener.new()
+	adListener.on_ad_failed_to_load = func(load_ad_error : LoadAdError):
+		pass 
+	
+	var unit_id = "ca-app-pub-3940256099942544/6300978111"
+
+	_ad_view = AdView.new(unit_id, AdSize.BANNER, AdPosition.Values.TOP)
+	var ad_request = AdRequest.new()
+	_ad_view.load_ad(ad_request)
+	_ad_view.show()
+	
+func destroy_ad_view():
+	if _ad_view:  
+		_ad_view.destroy()
+		_ad_view = null
+
+#code to launch a rewarded ad, triggered manually by player
+func _on_ad_button_pressed() -> void:
+	if _rewarded_ad: 
+		_rewarded_ad.destroy()
+		_rewarded_ad = null
+		
+	var unit_id = "ca-app-pub-3940256099942544/5224354917"
+	
+	var rewarded_ad_load_callback := RewardedAdLoadCallback.new()
+	
+	rewarded_ad_load_callback.on_ad_failed_to_load = func(adError: LoadAdError) -> void: 
+		print(adError.message)
+	
+	rewarded_ad_load_callback.on_ad_loaded = func(rewarded_ad: RewardedAd) -> void: 
+		print("rewarded ad loaded")
+		_rewarded_ad = rewarded_ad
+		_rewarded_ad.full_screen_content_callback = _full_screen_content_callback
+		_rewarded_ad.show(on_user_earned_reward_listener)
+		
+	RewardedAdLoader.new().load(unit_id, AdRequest.new(), rewarded_ad_load_callback)
+		
+
+#called after user watches the manually launched rewarded ad
+func on_user_earned_reward(rewarded_item : RewardedItem):
+	print("on_user_earned_reward, rewarded_item: rewarded", rewarded_item.amount, rewarded_item.type)
+	#once we are using an actual unit-id from admob, the rewarded_item.amount and rewarded_item.type values are set in the admob console
+	
+	#TODO - reward player with reward
+
 
 func _on_user_authenticated(is_authenticated: bool) -> void:
 	print("Hi from Godot! User is authenticated? %s" % is_authenticated)
