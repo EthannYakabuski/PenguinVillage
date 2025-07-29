@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://00tprprtl806"]
+[gd_scene load_steps=9 format=3 uid="uid://00tprprtl806"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://83ebw4yricwn" path="res://images/iceberg_water.png" id="4_6qrop"]
 [ext_resource type="PackedScene" uid="uid://cfat6v41erd3c" path="res://scenes/food.tscn" id="4_m3tx2"]
 [ext_resource type="Texture2D" uid="uid://ihp5r4c7a4b2" path="res://images/iceberg_icebergs.png" id="5_manda"]
+[ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/sign_in/sign_in_client.gd" id="7_cnlxl"]
+[ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
 
 [node name="Background" type="Area2D"]
 script = ExtResource("1_31116")
@@ -40,6 +42,13 @@ texture = ExtResource("5_manda")
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="IceBergArea"]
 polygon = PackedVector2Array(-1267, 1655, -1120, 1729, -888, 1636, -717, 1708, -661, 1756, -541, 1695, -434, 1695, -295, 1759, -108, 1639, 143, 1692, 300, 1751, 311, 1757, 430, 1667, 683, 1724, 983, 1695, 1072, 1761, 1162, 1699, 1434, 1735, 1567, 1694, 1734, 1758, 1903, 1695, 2057, 1779, 2252, 1746, 2335, 1660, 2336, -325, -1265, -322)
 
+[node name="Android_SignIn" type="Node" parent="."]
+script = ExtResource("7_cnlxl")
+
+[node name="Android_SavedGames" type="Node" parent="."]
+script = ExtResource("8_nxtdk")
+
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="area_entered" from="WaterArea" to="." method="_on_water_area_area_entered"]
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
+[connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]

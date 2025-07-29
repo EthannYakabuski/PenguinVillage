@@ -11,11 +11,16 @@ var foodBowl: Food
 
 var penguinIsSelected = false
 
+#google play integration
+@onready var googleSignInClient: PlayGamesSignInClient = $Android_SignIn
+@onready var googleSnapshotClient: PlayGamesSnapshotsClient = $Android_SavedGames
+
 func _enter_tree() -> void: 
 	GodotPlayGameServices.initialize()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	androidAuthentication()
 	determinePenguins()
 	determineFish()
 	determineFood()
@@ -24,6 +29,15 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	determinePenguinIntelligence()
 	determineFishIntelligence()
+
+##SOCIAL CONNECTIONS##
+func androidAuthentication() -> void: 
+	googleSignInClient.is_authenticated()
+
+func _on_user_authenticated(is_authenticated: bool) -> void:
+	print("Hi from Godot! User is authenticated? %s" % is_authenticated)
+	#hideOrShowAuthenticatedButtons(is_authenticated)
+	#play_games_sign_in_client.is_authenticated()
 
 ##PENGUINS##
 func determinePenguins() -> void: 
