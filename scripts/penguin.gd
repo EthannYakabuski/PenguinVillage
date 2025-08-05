@@ -6,9 +6,11 @@ class_name Penguin
 #signal penguin_selected(state)
 
 #internals
+var screen_size
 
 #mechanics
 var current_state: String
+var current_area: String
 var goal: Vector2
 var hasAGoal: bool = false
 var speed = 0.75
@@ -24,6 +26,7 @@ func _ready() -> void:
 	setState("Idle")
 	$PenguinSprite.play()
 	$PenguinCollision.set_deferred("input_pickable", true)
+	screen_size = get_viewport_rect().size
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -36,6 +39,7 @@ func setGoal(x, y) -> void:
 	
 func setState(state: String) -> void: 
 	print("setting penguin state to " + state)
+	print("current area : " + current_area)
 	current_state = state
 	$PenguinSprite.animation = state
 	#$PenguinSprite.play()
@@ -50,6 +54,9 @@ func setSpeed(s) -> void:
 	
 func setLocation(x, y) -> void: 
 	position = Vector2(x, y)
+	
+func setCurrentArea(a) -> void: 
+	current_area = a
 
 ##GETTERS##
 func hasGoal() -> bool: 
@@ -66,24 +73,27 @@ func _on_input_event(_viewport, event, _shape_idx):
 ##UTILITY##
 func moveToGoal() -> void: 
 	var direction = (goal - position).normalized()
-	if position.distance_to(goal) > 5:
+	if position.distance_to(goal) > 1:
 		$PenguinSprite.flip_h = direction.x < 0
-		#setState("Walk")
 		position += direction * speed
+		position = position.clamp(Vector2.ZERO, screen_size)
 	else: 
-		if current_state != "Idle": 
+		if current_area == "Water": 
+			setState("Swim")
+		else:
 			setState("Idle")
 		
 
 func _on_penguin_sprite_animation_looped() -> void:
-	if current_state == "Dive": 
+	if current_state == "Dive" && current_area == "Water": 
 		setState("Swim")
-
+	elif current_state == "Jump" && current_area == "Ice": 
+		setState("Walk")
 
 func _on_penguin_sprite_animation_changed() -> void:
 	if (current_state == "Swim"): 
-		speed = 1.25
-	elif (current_state == "Jump"): 
-		speed = 1.75
+		speed = 2
+	elif (current_state == "Jump" or current_state == "Dive"): 
+		speed = 3
 	else: 
-		speed = 0.75
+		speed = 1.25

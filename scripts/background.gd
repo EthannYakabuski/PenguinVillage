@@ -166,14 +166,26 @@ func onPenguinSelected(state) -> void:
 	print("penguin selected")
 
 ##EVENT LISTENERS##
-func _on_ice_berg_area_area_entered(_area: Area2D) -> void:
+func _on_ice_berg_area_area_entered(area: Area2D) -> void:
 	print("something entered ice berg area")
+	if area is Penguin: 
+		area.setCurrentArea("Ice")
+		if area.hasGoal(): 
+			area.setState("Walk")
 	
 func _on_water_area_area_entered(area: Area2D) -> void:
 	print("something entered water area")
 	if area is Penguin:
 		print("a penguin entered the water area")
 		area.setState("Dive")
+		area.setCurrentArea("Water")
+		
+func _on_water_area_area_exited(area: Area2D) -> void:
+	print("something exited the water area")
+	if area is Penguin: 
+		print("a penguin exited the water area")
+		area.setState("Jump")
+		area.setCurrentArea("Ice")
 	
 ##GUI###
 func _on_input_event(_viewport, event, _shape_idx):
@@ -184,4 +196,7 @@ func _on_input_event(_viewport, event, _shape_idx):
 				print("controlling penguin")
 				p.setGoal(event.position.x, event.position.y)
 				p.setSelected(false)
-				p.setState("Walk")
+				if p.current_area == "Water": 
+					p.setState("Swim")
+				else: 
+					p.setState("Walk")

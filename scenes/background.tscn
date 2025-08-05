@@ -29,7 +29,7 @@ scale = Vector2(3, 3)
 texture = ExtResource("5_7pg7q")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WaterArea"]
-polygon = PackedVector2Array(-1264, 1440, -1114, 1615, -883, 1375, -729, 1548, -654, 1679, -523, 1531, -429, 1528, -291, 1691, -88, 1378, 164, 1532, 311, 1686, 440, 1459, 685, 1599, 991, 1526, 1079, 1689, 1173, 1532, 1436, 1626, 1574, 1526, 1740, 1684, 1910, 1527, 2064, 1741, 2254, 1654, 2339, 1445, 2354, 2480, -1269, 2484)
+polygon = PackedVector2Array(-1266, 1502, -1111, 1686, -880, 1448, -766, 1589, -654, 1765, -523, 1598, -425, 1594, -288, 1769, -83, 1443, 137, 1587, 316, 1762, 453, 1524, 681, 1663, 987, 1596, 1078, 1759, 1177, 1596, 1428, 1689, 1579, 1598, 1737, 1754, 1910, 1598, 2061, 1815, 2261, 1721, 2342, 1504, 2354, 2480, -1269, 2484)
 
 [node name="IceBergArea" type="Area2D" parent="."]
 position = Vector2(0, -100)
@@ -51,5 +51,6 @@ script = ExtResource("8_nxtdk")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="area_entered" from="WaterArea" to="." method="_on_water_area_area_entered"]
+[connection signal="area_exited" from="WaterArea" to="." method="_on_water_area_area_exited"]
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
 [connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]

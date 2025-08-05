@@ -8,13 +8,12 @@ scale = Vector2(1.5, 1.5)
 script = ExtResource("1_3yk4v")
 
 [node name="PenguinSprite" type="AnimatedSprite2D" parent="."]
-position = Vector2(47.8, 44.5)
 scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_28ggd")
 animation = &"Jump"
 
 [node name="PenguinCollision" type="CollisionPolygon2D" parent="."]
-position = Vector2(-71.2, -95.5)
+position = Vector2(-118, -139.333)
 polygon = PackedVector2Array(93, 122, 88, 137, 87, 152, 86, 157, 89, 163, 99, 168, 106, 172, 123, 171, 131, 169, 135, 159, 135, 150, 136, 139, 140, 136, 142, 133, 137, 127, 132, 120, 129, 112, 120, 107, 106, 108, 99, 113)
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
