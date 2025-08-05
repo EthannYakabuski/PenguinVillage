@@ -3,9 +3,9 @@
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
 [ext_resource type="PackedScene" uid="uid://dwfar8q4eytr" path="res://scenes/fish.tscn" id="3_2xu8c"]
-[ext_resource type="Texture2D" uid="uid://83ebw4yricwn" path="res://images/iceberg_water.png" id="4_6qrop"]
 [ext_resource type="PackedScene" uid="uid://cfat6v41erd3c" path="res://scenes/food.tscn" id="4_m3tx2"]
-[ext_resource type="Texture2D" uid="uid://ihp5r4c7a4b2" path="res://images/iceberg_icebergs.png" id="5_manda"]
+[ext_resource type="Texture2D" uid="uid://bvng737d4r640" path="res://images/iceberg_water_modified.png" id="5_7pg7q"]
+[ext_resource type="Texture2D" uid="uid://dt74qwqs1km8q" path="res://images/iceberg_icebergs_modified.png" id="6_yjrk6"]
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/sign_in/sign_in_client.gd" id="7_cnlxl"]
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
 
@@ -24,12 +24,12 @@ polygon = PackedVector2Array(0, -128, -1, 1966, 1102, 1947, 1109, -123)
 position = Vector2(0, -105)
 
 [node name="WaterSprite" type="Sprite2D" parent="WaterArea"]
-position = Vector2(536, 874)
+position = Vector2(540, 1273)
 scale = Vector2(3, 3)
-texture = ExtResource("4_6qrop")
+texture = ExtResource("5_7pg7q")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WaterArea"]
-polygon = PackedVector2Array(-1263, 1663, -1122, 1734, -887, 1642, -718, 1711, -663, 1763, -542, 1701, -433, 1701, -296, 1764, -111, 1644, 141, 1698, 306, 1762, 431, 1673, 684, 1728, 983, 1700, 1068, 1768, 1159, 1703, 1430, 1741, 1568, 1701, 1731, 1762, 1902, 1702, 2053, 1784, 2254, 1750, 2334, 1665, 2335, 2076, -1262, 2079)
+polygon = PackedVector2Array(-1264, 1440, -1114, 1615, -883, 1375, -729, 1548, -654, 1679, -523, 1531, -429, 1528, -291, 1691, -88, 1378, 164, 1532, 311, 1686, 440, 1459, 685, 1599, 991, 1526, 1079, 1689, 1173, 1532, 1436, 1626, 1574, 1526, 1740, 1684, 1910, 1527, 2064, 1741, 2254, 1654, 2339, 1445, 2354, 2480, -1269, 2484)
 
 [node name="IceBergArea" type="Area2D" parent="."]
 position = Vector2(0, -100)
@@ -37,10 +37,11 @@ position = Vector2(0, -100)
 [node name="IceBergSprite" type="Sprite2D" parent="IceBergArea"]
 position = Vector2(537, 878)
 scale = Vector2(3, 3)
-texture = ExtResource("5_manda")
+texture = ExtResource("6_yjrk6")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="IceBergArea"]
-polygon = PackedVector2Array(-1267, 1655, -1120, 1729, -888, 1636, -717, 1708, -661, 1756, -541, 1695, -434, 1695, -295, 1759, -108, 1639, 143, 1692, 300, 1751, 311, 1757, 430, 1667, 683, 1724, 983, 1695, 1072, 1761, 1162, 1699, 1434, 1735, 1567, 1694, 1734, 1758, 1903, 1695, 2057, 1779, 2252, 1746, 2335, 1660, 2336, -325, -1265, -322)
+visible = false
+polygon = PackedVector2Array(-1262, 1451, -1112, 1620, -883, 1377, -724, 1565, -652, 1681, -527, 1524, -427, 1524, -293, 1679, -90, 1381, 176, 1535, 312, 1678, 351, 1618, 439, 1456, 686, 1589, 990, 1517, 1079, 1681, 1166, 1539, 1431, 1623, 1573, 1524, 1735, 1682, 1909, 1522, 2065, 1740, 2250, 1659, 2338, 1440, 2336, -325, -1265, -322)
 
 [node name="Android_SignIn" type="Node" parent="."]
 script = ExtResource("7_cnlxl")

@@ -83,5 +83,7 @@ func _on_penguin_sprite_animation_looped() -> void:
 func _on_penguin_sprite_animation_changed() -> void:
 	if (current_state == "Swim"): 
 		speed = 1.25
+	elif (current_state == "Jump"): 
+		speed = 1.75
 	else: 
 		speed = 0.75

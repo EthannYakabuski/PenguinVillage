@@ -119,7 +119,7 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 func determinePenguins() -> void: 
 	print("loading penguins")
 	var penguin: Penguin = penguin_scene.instantiate()
-	penguin.setLocation(300,1400)
+	penguin.setLocation(300,1000)
 	add_child(penguin)
 	penguins.push_back(penguin)
 	
@@ -147,7 +147,7 @@ func determineFishIntelligence() -> void:
 func determineFood() -> void: 
 	print("loading food bowls")
 	var food: Food = food_scene.instantiate()
-	food.setLocation(550, 1350)
+	food.setLocation(550, 1050)
 	add_child(food)
 	foodBowl = food
 	foodBowl.addFood(50)
