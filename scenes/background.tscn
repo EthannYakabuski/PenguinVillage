@@ -18,7 +18,7 @@ food_scene = ExtResource("4_m3tx2")
 [node name="FishSpawnTimer" type="Timer" parent="."]
 
 [node name="LocationClickCollision" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(0, -128, -1, 1966, 1102, 1947, 1109, -123)
+polygon = PackedVector2Array(-1294, -129, -1305, 1954, 2369, 1991, 2353, -123)
 
 [node name="WaterArea" type="Area2D" parent="."]
 position = Vector2(0, -105)
@@ -48,6 +48,10 @@ script = ExtResource("7_cnlxl")
 
 [node name="Android_SavedGames" type="Node" parent="."]
 script = ExtResource("8_nxtdk")
+
+[node name="Camera" type="Camera2D" parent="."]
+offset = Vector2(540, 960)
+drag_horizontal_enabled = true
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="area_entered" from="WaterArea" to="." method="_on_water_area_area_entered"]
