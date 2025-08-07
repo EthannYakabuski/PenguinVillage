@@ -16,6 +16,7 @@ var penguinIsSelected = false
 #google play integration
 @onready var googleSignInClient: PlayGamesSignInClient = $Android_SignIn
 @onready var googleSnapshotClient: PlayGamesSnapshotsClient = $Android_SavedGames
+var currentData = ""
 
 #admob integration
 var _ad_view : AdView
@@ -111,11 +112,20 @@ func on_user_earned_reward(rewarded_item : RewardedItem):
 	
 	#TODO - reward player with reward
 
-
+##GOOGLE PLAY GAME SERVICES##
 func _on_user_authenticated(is_authenticated: bool) -> void:
 	print("Hi from Godot! User is authenticated? %s" % is_authenticated)
-	#hideOrShowAuthenticatedButtons(is_authenticated)
-	#play_games_sign_in_client.is_authenticated()
+	if is_authenticated: 
+		$Android_SavedGames.load_game("PlayerData", true)
+	$Android_SavedGames.game_loaded.connect(
+		func(snapshot: PlayGamesSnapshot): 
+			if !snapshot: 
+				print("saved game not found, creating new player data")
+			else: 
+				print("saved game data found, loading into memory")
+				var dataToParse = snapshot.content.get_string_from_utf8()
+				currentData = JSON.parse_string(dataToParse)
+	)
 
 ##PENGUINS##
 func determinePenguins() -> void: 
@@ -211,3 +221,23 @@ func _on_input_event(_viewport, event, _shape_idx):
 		print("event position " + str(event.position.x))
 		print("event relative " + str(event.relative.x))
 		handleDrag(event.position, event.relative)
+
+
+func _on_fish_spawn_timer_timeout() -> void:
+	#choose a new timeout
+	print("fish spawn timeout")
+	$FishSpawnTimer.wait_time = randf_range(8,15)
+	var fish: Fish = fish_scene.instantiate()
+	var randomSpawnLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
+	fish.setLocation(randomSpawnLocation.x, randomSpawnLocation.y)
+	fish.fish_collected.connect(onFishCollected)
+	add_child(fish)
+	fishes.push_back(fish)
+
+func get_random_point_in_collision_polygon(collision_polygon: CollisionPolygon2D) -> Vector2:
+	var points := collision_polygon.polygon
+	var triangles := Geometry2D.triangulate_polygon(points)
+	if triangles.is_empty():
+		return collision_polygon.global_position
+	var triangle_index := randi_range(0, triangles.size() / 3 - 1) * 3
+	return points[triangles[triangle_index]]

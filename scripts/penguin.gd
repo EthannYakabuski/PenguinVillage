@@ -38,11 +38,12 @@ func setGoal(x, y) -> void:
 	hasAGoal = true
 	
 func setState(state: String) -> void: 
-	print("setting penguin state to " + state)
-	print("current area : " + current_area)
-	current_state = state
-	$PenguinSprite.animation = state
-	#$PenguinSprite.play()
+	if state != current_state: 
+		print("setting penguin state to " + state)
+		print("current area : " + current_area)
+		current_state = state
+		$PenguinSprite.animation = state
+		#$PenguinSprite.play()
 	
 func setSelected(state: bool) -> void: 
 	selected = state

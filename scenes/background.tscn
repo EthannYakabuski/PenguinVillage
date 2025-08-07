@@ -16,6 +16,8 @@ fish_scene = ExtResource("3_2xu8c")
 food_scene = ExtResource("4_m3tx2")
 
 [node name="FishSpawnTimer" type="Timer" parent="."]
+wait_time = 12.0
+autostart = true
 
 [node name="LocationClickCollision" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-1294, -129, -1305, 1954, 2369, 1991, 2353, -123)
@@ -28,7 +30,7 @@ position = Vector2(540, 1273)
 scale = Vector2(3, 3)
 texture = ExtResource("5_7pg7q")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WaterArea"]
+[node name="WaterCollision" type="CollisionPolygon2D" parent="WaterArea"]
 polygon = PackedVector2Array(-1266, 1502, -1111, 1686, -880, 1448, -766, 1589, -654, 1765, -523, 1598, -425, 1594, -288, 1769, -83, 1443, 137, 1587, 316, 1762, 453, 1524, 681, 1663, 987, 1596, 1078, 1759, 1177, 1596, 1428, 1689, 1579, 1598, 1737, 1754, 1910, 1598, 2061, 1815, 2261, 1721, 2342, 1504, 2354, 2480, -1269, 2484)
 
 [node name="IceBergArea" type="Area2D" parent="."]
@@ -39,7 +41,7 @@ position = Vector2(537, 878)
 scale = Vector2(3, 3)
 texture = ExtResource("6_yjrk6")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="IceBergArea"]
+[node name="IceCollision" type="CollisionPolygon2D" parent="IceBergArea"]
 visible = false
 polygon = PackedVector2Array(-1262, 1451, -1112, 1620, -883, 1377, -724, 1565, -652, 1681, -527, 1524, -427, 1524, -293, 1679, -90, 1381, 176, 1535, 312, 1678, 351, 1618, 439, 1456, 686, 1589, 990, 1517, 1079, 1681, 1166, 1539, 1431, 1623, 1573, 1524, 1735, 1682, 1909, 1522, 2065, 1740, 2250, 1659, 2338, 1440, 2336, -325, -1265, -322)
 
@@ -54,6 +56,7 @@ offset = Vector2(540, 960)
 drag_horizontal_enabled = true
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="timeout" from="FishSpawnTimer" to="." method="_on_fish_spawn_timer_timeout"]
 [connection signal="area_entered" from="WaterArea" to="." method="_on_water_area_area_entered"]
 [connection signal="area_exited" from="WaterArea" to="." method="_on_water_area_area_exited"]
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
