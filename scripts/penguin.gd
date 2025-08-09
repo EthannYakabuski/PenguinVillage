@@ -33,7 +33,8 @@ func _process(_delta: float) -> void:
 	pass
 
 ##SETTERS##
-func setGoal(x, y) -> void: 
+func setGoal(x, y) -> void:
+	print("setting goal -> x: " + str(x) + " y: " + str(y)) 
 	goal = Vector2(x, y)
 	hasAGoal = true
 	
@@ -70,14 +71,16 @@ func _on_input_event(_viewport, event, _shape_idx):
 		selected = true
 		$PenguinSprite.modulate = Color(1, 1, 0, 1) # Yellow
 		get_parent().onPenguinSelected(true)
+		#stops background from also receiving the event
+		get_viewport().set_input_as_handled()
 		
 ##UTILITY##
 func moveToGoal() -> void: 
-	var direction = (goal - position).normalized()
-	if position.distance_to(goal) > 1:
+	var direction = (goal - global_position).normalized()
+	if global_position.distance_to(goal) > 1:
 		$PenguinSprite.flip_h = direction.x < 0
-		position += direction * speed
-		position = position.clamp(Vector2.ZERO, screen_size)
+		global_position += direction * speed
+		#position = position.clamp(Vector2.ZERO, screen_size)
 	else: 
 		if current_area == "Water": 
 			setState("Swim")

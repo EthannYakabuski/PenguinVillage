@@ -210,16 +210,19 @@ func _on_input_event(_viewport, event, _shape_idx):
 		for p in penguins: 
 			if p.selected: 
 				print("controlling penguin")
-				p.setGoal(event.position.x, event.position.y)
+				#var globalPosition = to_global(event.position)
+				var globalPosition = $Camera.get_global_mouse_position()
+				print("InputEvent -> x: " + str(globalPosition.x) + " y: " + str(globalPosition.y))
+				p.setGoal(globalPosition.x, globalPosition.y)
 				p.setSelected(false)
 				if p.current_area == "Water": 
 					p.setState("Swim")
 				else: 
 					p.setState("Walk")
 	elif event is InputEventScreenDrag or event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		print("InputEventScreenDrag or InputEventMouseMotion")
-		print("event position " + str(event.position.x))
-		print("event relative " + str(event.relative.x))
+		#print("InputEventScreenDrag or InputEventMouseMotion")
+		#print("event position " + str(event.position.x))
+		#print("event relative " + str(event.relative.x))
 		handleDrag(event.position, event.relative)
 
 
