@@ -181,10 +181,10 @@ func onPenguinSelected(state) -> void:
 func _on_ice_berg_area_area_entered(area: Area2D) -> void:
 	print("something entered ice berg area")
 	if area is Penguin:
-		area.setState("Jump") 
 		area.setCurrentArea("Ice")
-		if area.hasGoal() && not area.hasGoal(): 
-			area.setState("Walk")
+		area.setState("Jump") 
+		if not area.hasGoal(): 
+			area.setState("Idle")
 	
 func _on_water_area_area_entered(area: Area2D) -> void:
 	print("something entered water area")
