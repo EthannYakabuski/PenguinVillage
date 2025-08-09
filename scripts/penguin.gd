@@ -91,8 +91,10 @@ func moveToGoal() -> void:
 func _on_penguin_sprite_animation_looped() -> void:
 	if current_state == "Dive" && current_area == "Water": 
 		setState("Swim")
-	elif current_state == "Jump" && current_area == "Ice": 
+	elif current_state == "Jump" && current_area == "Ice" && hasAGoal: 
 		setState("Walk")
+	elif current_state == "Jump" && current_area == "Ice":
+		setState("Idle")
 
 func _on_penguin_sprite_animation_changed() -> void:
 	if (current_state == "Swim"): 
