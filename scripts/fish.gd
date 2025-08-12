@@ -15,12 +15,17 @@ var goal: Vector2
 var hasAGoal: bool = false
 var speed = 0.5
 
+#predator/prey mechanics
+var currentState = "safe"
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	sprite = $FishSprite
 	setState("Idle")
 	sprite.play()
 	$FishCollision.set_deferred("input_pickable", true)
+	$IdleChange.start()
+	$DangerCheck.start()
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -63,3 +68,13 @@ func _on_area_entered(area: Area2D) -> void:
 		print("a penguin captured a fish")
 		queue_free()
 		emit_signal("fish_collected", self)
+
+
+func _on_idle_change_timeout() -> void:
+	if currentState == "safe":
+		setSpeed(0.5)
+		
+func _on_danger_check_timeout() -> void:
+	if currentState == "danger": 
+		print("fish in danger")
+		setSpeed(2)
