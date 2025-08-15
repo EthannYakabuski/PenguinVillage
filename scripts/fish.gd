@@ -14,7 +14,7 @@ var id
 var current_state: String
 var goal: Vector2
 var hasAGoal: bool = false
-var speed = 0.5
+var speed = 1
 
 #predator/prey mechanics
 var currentState = "safe"
@@ -71,7 +71,7 @@ func _on_area_entered(area: Area2D) -> void:
 
 func _on_idle_change_timeout() -> void:
 	if currentState == "safe":
-		setSpeed(0.5)
+		setSpeed(1.0)
 		emit_signal("fish_needs_target", self)
 		
 func _on_danger_check_timeout() -> void:

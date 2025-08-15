@@ -149,6 +149,7 @@ func determineFish() -> void:
 	fish.fish_collected.connect(onFishCollected)
 	fish.fish_needs_target.connect(onGiveFishGoal)
 	add_child(fish)
+	onGiveFishGoal(fish)
 	fishes.push_back(fish)
 	
 func determineFishIntelligence() -> void: 
@@ -244,6 +245,7 @@ func _on_fish_spawn_timer_timeout() -> void:
 	fish.fish_collected.connect(onFishCollected)
 	fish.fish_needs_target.connect(onGiveFishGoal)
 	add_child(fish)
+	onGiveFishGoal(fish)
 	fishes.push_back(fish)
 
 func get_random_point_in_collision_polygon(collision_polygon: CollisionPolygon2D) -> Vector2:
