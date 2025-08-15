@@ -147,6 +147,7 @@ func determineFish() -> void:
 	var fish: Fish = fish_scene.instantiate()
 	fish.setLocation(500, 1700)
 	fish.fish_collected.connect(onFishCollected)
+	fish.fish_needs_target.connect(onGiveFishGoal)
 	add_child(fish)
 	fishes.push_back(fish)
 	
@@ -172,6 +173,11 @@ func onFishCollected(fish) -> void:
 		fishes.erase(fish)
 		foodBowl.addFood(20)
 	fish.queue_free()
+
+func onGiveFishGoal(fish) -> void: 
+	print("giving an idle fish a goal")
+	var randomGoalLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
+	fish.setGoal(randomGoalLocation.x, randomGoalLocation.y)
 
 func onPenguinSelected(state) -> void: 
 	penguinIsSelected = state
@@ -235,6 +241,7 @@ func _on_fish_spawn_timer_timeout() -> void:
 	var randomSpawnLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
 	fish.setLocation(randomSpawnLocation.x, randomSpawnLocation.y)
 	fish.fish_collected.connect(onFishCollected)
+	fish.fish_needs_target.connect(onGiveFishGoal)
 	add_child(fish)
 	fishes.push_back(fish)
 

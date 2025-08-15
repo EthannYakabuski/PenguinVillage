@@ -4,6 +4,7 @@ class_name Fish
 
 @export var penguin_frames: SpriteFrames = preload("res://animations/fish_frames.tres")
 signal fish_collected(fish)
+signal fish_needs_target(fish)
 
 #internals
 var sprite: AnimatedSprite2D
@@ -54,14 +55,13 @@ func hasGoal() -> bool:
 
 ##UTILITY##
 func moveToGoal() -> void: 
-	var direction = (goal - position).normalized()
-	if position.distance_to(goal) > 5:
+	var direction = (goal - global_position).normalized()
+	if global_position.distance_to(goal) > 1:
 		$FishSprite.flip_h = direction.x < 0
 		#setState("Walk")
-		position += direction * speed
+		global_position += direction * speed
 	else: 
 		setState("Idle")
-
 
 func _on_area_entered(area: Area2D) -> void:
 	if area is Penguin: 
@@ -69,12 +69,13 @@ func _on_area_entered(area: Area2D) -> void:
 		queue_free()
 		emit_signal("fish_collected", self)
 
-
 func _on_idle_change_timeout() -> void:
 	if currentState == "safe":
 		setSpeed(0.5)
+		emit_signal("fish_needs_target", self)
 		
 func _on_danger_check_timeout() -> void:
 	if currentState == "danger": 
 		print("fish in danger")
 		setSpeed(2)
+	
