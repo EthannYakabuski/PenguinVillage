@@ -178,6 +178,7 @@ func onGiveFishGoal(fish) -> void:
 	print("giving an idle fish a goal")
 	var randomGoalLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
 	fish.setGoal(randomGoalLocation.x, randomGoalLocation.y)
+	fish.setState("Swim")
 
 func onPenguinSelected(state) -> void: 
 	penguinIsSelected = state
