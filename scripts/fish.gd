@@ -44,6 +44,9 @@ func setState(state: String) -> void:
 	
 func setThreat(threat: String) -> void: 
 	currentThreat = threat
+	if threat == "danger": 
+		hasAGoal = false
+		
 	
 func setSpeed(s) -> void: 
 	speed = s
@@ -60,10 +63,11 @@ func hasGoal() -> bool:
 ##UTILITY##
 func moveToGoal() -> void: 
 	var direction = (goal - global_position).normalized()
-	if global_position.distance_to(goal) > 1:
+	if global_position.distance_to(goal) > 1 && hasAGoal:
 		$FishSprite.flip_h = direction.x < 0
 		global_position += direction * speed
 	else: 
+		hasAGoal = false
 		setState("Idle")
 
 func _on_area_entered(area: Area2D) -> void:

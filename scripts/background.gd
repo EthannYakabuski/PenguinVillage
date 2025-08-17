@@ -202,7 +202,7 @@ func onFishDanger(fish) -> void:
 		print("fish in danger")
 		fish.setThreat("danger")
 		fish.setSpeed(3.0)
-		var fleeDistance = 200.0
+		var fleeDistance = 150.0
 		var fleeTarget = fish.global_position + (escapeDirection * fleeDistance)
 		var dangerDirection
 		if directionToDanger.x > 0: 
@@ -211,7 +211,8 @@ func onFishDanger(fish) -> void:
 			dangerDirection = "left"
 		if is_point_inside_polygon($WaterArea/WaterCollision, fleeTarget):
 			print("found a default candidate")
-			fish.setGoal(fleeTarget.x, fleeTarget.y)
+			if not fish.hasGoal():
+				fish.setGoal(fleeTarget.x, fleeTarget.y)
 		else: 
 			#find a random point in the pond, that is also away from the penguin
 			for i in range(10): 
@@ -225,7 +226,8 @@ func onFishDanger(fish) -> void:
 					candidateDirectionString = "left"
 				if dangerDirection == candidateDirectionString: 
 					print("found a working candidate")
-					fish.setGoal(candidate.x, candidate.y)
+					if not fish.hasGoal(): 
+						fish.setGoal(candidate.x, candidate.y)
 					return
 			print("unable to find a flee target")
 	else: 
