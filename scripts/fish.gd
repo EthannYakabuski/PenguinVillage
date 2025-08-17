@@ -5,6 +5,7 @@ class_name Fish
 @export var penguin_frames: SpriteFrames = preload("res://animations/fish_frames.tres")
 signal fish_collected(fish)
 signal fish_needs_target(fish)
+signal fish_danger_check(fish)
 
 #internals
 var sprite: AnimatedSprite2D
@@ -17,7 +18,7 @@ var hasAGoal: bool = false
 var speed = 1
 
 #predator/prey mechanics
-var currentState = "safe"
+var currentThreat = "safe"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -41,6 +42,9 @@ func setState(state: String) -> void:
 	current_state = state
 	sprite.animation = state
 	
+func setThreat(threat: String) -> void: 
+	currentThreat = threat
+	
 func setSpeed(s) -> void: 
 	speed = s
 	
@@ -58,7 +62,6 @@ func moveToGoal() -> void:
 	var direction = (goal - global_position).normalized()
 	if global_position.distance_to(goal) > 1:
 		$FishSprite.flip_h = direction.x < 0
-		#setState("Walk")
 		global_position += direction * speed
 	else: 
 		setState("Idle")
@@ -70,12 +73,10 @@ func _on_area_entered(area: Area2D) -> void:
 		emit_signal("fish_collected", self)
 
 func _on_idle_change_timeout() -> void:
-	if currentState == "safe":
+	if currentThreat == "safe":
 		setSpeed(1.0)
 		emit_signal("fish_needs_target", self)
 		
 func _on_danger_check_timeout() -> void:
-	if currentState == "danger": 
-		print("fish in danger")
-		setSpeed(2)
+	emit_signal("fish_danger_check", self)
 	

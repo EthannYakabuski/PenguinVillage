@@ -148,6 +148,7 @@ func determineFish() -> void:
 	fish.setLocation(500, 1700)
 	fish.fish_collected.connect(onFishCollected)
 	fish.fish_needs_target.connect(onGiveFishGoal)
+	fish.fish_danger_check.connect(onFishDanger)
 	add_child(fish)
 	onGiveFishGoal(fish)
 	fishes.push_back(fish)
@@ -156,6 +157,19 @@ func determineFishIntelligence() -> void:
 	for f in fishes: 
 		if f.hasGoal(): 
 			f.moveToGoal()
+			
+func getThreatPosition(fish: Fish) -> Penguin: 
+	var currentClosestPenguin
+	var currentClosestDistance = 500
+	for penguin in penguins: 
+		if penguin.current_state == "Swim":
+			var distance = penguin.global_position.distance_to(fish.global_position)
+			if distance < 200: 
+				if currentClosestDistance > distance:
+					currentClosestPenguin = penguin
+					currentClosestDistance = distance		
+	return currentClosestPenguin
+	
 			
 ##FOOD##
 func determineFood() -> void: 
@@ -180,6 +194,20 @@ func onGiveFishGoal(fish) -> void:
 	var randomGoalLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
 	fish.setGoal(randomGoalLocation.x, randomGoalLocation.y)
 	fish.setState("Swim")
+	
+func onFishDanger(fish) -> void: 
+	var closestPenguin = getThreatPosition(fish)
+	if closestPenguin: 
+		var directionToDanger = fish.global_position.direction_to(Vector2(closestPenguin.global_position.x, closestPenguin.global_position.y))
+		print("fish in danger")
+		fish.setThreat("danger")
+		fish.setSpeed(3.0)
+		if directionToDanger.x > 0: 
+			print("danger is to the right")
+		else:
+			print("danger is to the left")
+	else: 
+		fish.setThreat("safe")
 
 func onPenguinSelected(state) -> void: 
 	penguinIsSelected = state
@@ -244,6 +272,7 @@ func _on_fish_spawn_timer_timeout() -> void:
 	fish.setLocation(randomSpawnLocation.x, randomSpawnLocation.y)
 	fish.fish_collected.connect(onFishCollected)
 	fish.fish_needs_target.connect(onGiveFishGoal)
+	fish.fish_danger_check.connect(onFishDanger)
 	add_child(fish)
 	onGiveFishGoal(fish)
 	fishes.push_back(fish)
@@ -255,3 +284,7 @@ func get_random_point_in_collision_polygon(collision_polygon: CollisionPolygon2D
 		return collision_polygon.global_position
 	var triangle_index := randi_range(0, triangles.size() / 3 - 1) * 3
 	return points[triangles[triangle_index]]
+	
+func is_point_inside_polygon(collision_polygon: CollisionPolygon2D, point: Vector2) -> bool:
+	var local_point = collision_polygon.get_global_transform().affine_inverse() * point
+	return Geometry2D.is_point_in_polygon(local_point, collision_polygon.polygon)
