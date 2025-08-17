@@ -169,7 +169,6 @@ func getThreatPosition(fish: Fish) -> Penguin:
 					currentClosestPenguin = penguin
 					currentClosestDistance = distance		
 	return currentClosestPenguin
-	
 			
 ##FOOD##
 func determineFood() -> void: 
@@ -199,13 +198,36 @@ func onFishDanger(fish) -> void:
 	var closestPenguin = getThreatPosition(fish)
 	if closestPenguin: 
 		var directionToDanger = fish.global_position.direction_to(Vector2(closestPenguin.global_position.x, closestPenguin.global_position.y))
+		var escapeDirection = -directionToDanger.normalized()
 		print("fish in danger")
 		fish.setThreat("danger")
 		fish.setSpeed(3.0)
+		var fleeDistance = 200.0
+		var fleeTarget = fish.global_position + (escapeDirection * fleeDistance)
+		var dangerDirection
 		if directionToDanger.x > 0: 
-			print("danger is to the right")
+			dangerDirection = "right"
 		else:
-			print("danger is to the left")
+			dangerDirection = "left"
+		if is_point_inside_polygon($WaterArea/WaterCollision, fleeTarget):
+			print("found a default candidate")
+			fish.setGoal(fleeTarget.x, fleeTarget.y)
+		else: 
+			#find a random point in the pond, that is also away from the penguin
+			for i in range(10): 
+				print("trying to find a candidate")
+				var candidate = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
+				var candidateDirection = fish.global_position.direction_to(candidate)
+				var candidateDirectionString
+				if candidateDirection.x > 0: 
+					candidateDirectionString = "right"
+				else: 
+					candidateDirectionString = "left"
+				if dangerDirection == candidateDirectionString: 
+					print("found a working candidate")
+					fish.setGoal(candidate.x, candidate.y)
+					return
+			print("unable to find a flee target")
 	else: 
 		fish.setThreat("safe")
 
