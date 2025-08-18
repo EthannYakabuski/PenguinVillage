@@ -21,8 +21,12 @@ var food = 100
 var health = 100
 var sick = false
 
+#collision polygons
+var walkOrIdlePolygons
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	walkOrIdlePolygons = $PenguinCollision.polygon
 	setState("Idle")
 	$PenguinSprite.play()
 	$PenguinCollision.set_deferred("input_pickable", true)
@@ -44,13 +48,18 @@ func setState(state: String) -> void:
 		print("current area : " + current_area)
 		current_state = state
 		$PenguinSprite.animation = state
-		#$PenguinSprite.play()
 	
 func setSelected(state: bool) -> void: 
 	selected = state
 	if !state: 
 		$PenguinSprite.modulate = Color(1,1,1,1) #Resets to original
-	
+
+func setCollisionGons(type) -> void: 
+	if type == "Walk": 
+		$PenguinCollision.set_deferred("polygon", walkOrIdlePolygons)
+	elif type == "Swim": 
+		$PenguinCollision.set_deferred("polygon", $PenguinCollisionSwimming.polygon)
+		
 func setSpeed(s) -> void: 
 	speed = s
 	

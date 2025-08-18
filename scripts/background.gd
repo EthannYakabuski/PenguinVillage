@@ -189,7 +189,7 @@ func onFishCollected(fish) -> void:
 	fish.queue_free()
 
 func onGiveFishGoal(fish) -> void: 
-	print("giving an idle fish a goal")
+	#print("giving an idle fish a goal")
 	var randomGoalLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
 	fish.setGoal(randomGoalLocation.x, randomGoalLocation.y)
 	fish.setState("Swim")
@@ -199,7 +199,7 @@ func onFishDanger(fish) -> void:
 	if closestPenguin: 
 		var directionToDanger = fish.global_position.direction_to(Vector2(closestPenguin.global_position.x, closestPenguin.global_position.y))
 		var escapeDirection = -directionToDanger.normalized()
-		print("fish in danger")
+		#print("fish in danger")
 		fish.setThreat("danger")
 		fish.setSpeed(3.0)
 		var fleeDistance = 150.0
@@ -210,13 +210,13 @@ func onFishDanger(fish) -> void:
 		else:
 			dangerDirection = "left"
 		if is_point_inside_polygon($WaterArea/WaterCollision, fleeTarget):
-			print("found a default candidate")
+			#print("found a default candidate")
 			if not fish.hasGoal():
 				fish.setGoal(fleeTarget.x, fleeTarget.y)
 		else: 
 			#find a random point in the pond, that is also away from the penguin
 			for i in range(10): 
-				print("trying to find a candidate")
+				#print("trying to find a candidate")
 				var candidate = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
 				var candidateDirection = fish.global_position.direction_to(candidate)
 				var candidateDirectionString
@@ -225,7 +225,7 @@ func onFishDanger(fish) -> void:
 				else: 
 					candidateDirectionString = "left"
 				if dangerDirection == candidateDirectionString: 
-					print("found a working candidate")
+					#print("found a working candidate")
 					if not fish.hasGoal(): 
 						fish.setGoal(candidate.x, candidate.y)
 					return
@@ -251,13 +251,14 @@ func _on_water_area_area_entered(area: Area2D) -> void:
 	if area is Penguin:
 		print("a penguin entered the water area")
 		area.setState("Dive")
+		area.setCollisionGons("Swim")
 		area.setCurrentArea("Water")
 		
 func _on_water_area_area_exited(area: Area2D) -> void:
 	print("something exited the water area")
 	if area is Penguin: 
 		print("a penguin exited the water area")
-		#area.setState("Jump")
+		area.setCollisionGons("Walk")
 		area.setCurrentArea("Ice")
 	
 ##GUI###
