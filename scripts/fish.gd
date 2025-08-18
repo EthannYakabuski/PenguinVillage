@@ -6,6 +6,7 @@ class_name Fish
 signal fish_collected(fish)
 signal fish_needs_target(fish)
 signal fish_danger_check(fish)
+signal fish_idle_needs_new_goal(fish)
 
 #internals
 var sprite: AnimatedSprite2D
@@ -41,12 +42,13 @@ func setGoal(x, y) -> void:
 func setState(state: String) -> void: 
 	current_state = state
 	sprite.animation = state
+	if state == "Idle": 
+		emit_signal("fish_idle_needs_new_goal", self)
 	
 func setThreat(threat: String) -> void: 
 	currentThreat = threat
 	if threat == "danger": 
 		hasAGoal = false
-		
 	
 func setSpeed(s) -> void: 
 	speed = s
@@ -63,7 +65,7 @@ func hasGoal() -> bool:
 ##UTILITY##
 func moveToGoal() -> void: 
 	var direction = (goal - global_position).normalized()
-	if global_position.distance_to(goal) > 1 && hasAGoal:
+	if global_position.distance_to(goal) > 20 && hasAGoal:
 		$FishSprite.flip_h = direction.x < 0
 		global_position += direction * speed
 	else: 
