@@ -1,7 +1,24 @@
-[gd_scene format=3 uid="uid://c1mgm6di4qxak"]
+[gd_scene load_steps=3 format=3 uid="uid://c1mgm6di4qxak"]
+
+[ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="1_7am2a"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kbhy6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_7am2a")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
 
 [node name="Gem" type="Area2D"]
 
 [node name="GemSprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+sprite_frames = SubResource("SpriteFrames_kbhy6")
+animation = &"Idle"
 
 [node name="GemCollision" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-72, -45, -81, -30, -91, -3, -93, 11, -93, 34, -88, 48, -76, 64, -62, 77, -35, 97, -10, 110, 5, 113, 19, 107, 51, 88, 73, 70, 89, 50, 95, 38, 96, 19, 93, -3, 84, -28, 66, -55, 47, -77, 27, -96, 12, -108, 3, -111, -4, -111, -15, -103, -25, -94, -42, -78, -54, -65, -63, -55)

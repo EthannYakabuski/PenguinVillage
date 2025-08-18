@@ -4,6 +4,7 @@
 [ext_resource type="SpriteFrames" uid="uid://cot0itv4g4eta" path="res://animations/penguin_frames.tres" id="2_28ggd"]
 
 [node name="Penguin" type="Area2D"]
+z_index = 1
 scale = Vector2(1.5, 1.5)
 script = ExtResource("1_3yk4v")
 
