@@ -64,14 +64,29 @@ func setSpeed(s) -> void:
 	speed = s
 	
 func setLocation(x, y) -> void: 
-	position = Vector2(x, y)
+	global_position = Vector2(x, y)
 	
 func setCurrentArea(a) -> void: 
 	current_area = a
+	
+func setHealth(h) -> void: 
+	print("setting penguin health to " + str(h))
+	health = h
+	
+func setSick(s) -> void:
+	print("setting penguin sick to " + str(s)) 
+	sick = s
+	
+func setFood(f) -> void: 
+	print("setting penguin food to " + str(f))
+	food = f
 
 ##GETTERS##
 func hasGoal() -> bool: 
 	return hasAGoal
+
+func getState() -> String:
+	return current_state
 	
 ##INTERACTIONS##
 func _on_input_event(_viewport, event, _shape_idx): 

@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GodotPlayGameServices="*res://addons/GodotPlayGameServices/scripts/autoloads/godot_play_game_services.gd"
+PlayerData="*res://scenes/player_data.tscn"
 
 [display]
 

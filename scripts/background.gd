@@ -8,8 +8,11 @@ extends Node2D
 
 var penguins = []
 var fishes = []
-#var foodBowls = []
-var foodBowl: Food
+var foodBowls = []
+#var foodBowl: Food
+
+#random location optimizer
+var lastPoints: Vector2
 
 var penguinIsSelected = false
 
@@ -17,6 +20,9 @@ var penguinIsSelected = false
 @onready var googleSignInClient: PlayGamesSignInClient = $Android_SignIn
 @onready var googleSnapshotClient: PlayGamesSnapshotsClient = $Android_SavedGames
 var currentData = ""
+
+#signals
+signal dataHasLoaded
 
 #admob integration
 var _ad_view : AdView
@@ -26,14 +32,12 @@ var on_user_earned_reward_listener := OnUserEarnedRewardListener.new()
 
 func _enter_tree() -> void: 
 	GodotPlayGameServices.initialize()
+	dataHasLoaded.connect(dataLoaded)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	androidAuthentication()
 	admobConfiguration()
-	determinePenguins()
-	determineFish()
-	determineFood()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -44,6 +48,21 @@ func _process(_delta: float) -> void:
 func androidAuthentication() -> void: 
 	if not GodotPlayGameServices.android_plugin: 
 		printerr("Plugin not found")
+		#create dummy data for testing
+		var dummyData = {
+			"Penguins": [{"health": 100, "food": 75, "sick": false}, {"health": 100, "food": 75, "sick": false}, {"health": 100, "food": 75, "sick": false}],
+			"Food": [{"amount": 30, "locationX": 300, "locationY": 1150}],
+			"AreasUnlocked": [],
+			"LastLogin": "",
+			"NextDailyReward": 1,
+			"Gems": 250,
+			"Coins": 100,
+			"Experience": 1233
+		}
+		var jsonStringDummyData = JSON.stringify(dummyData)
+		var jsonParsedDummyData = JSON.parse_string(jsonStringDummyData)
+		PlayerData.setData(jsonParsedDummyData)
+		emit_signal("dataHasLoaded")
 	else: 
 		print("Plugin found")
 	googleSignInClient.is_authenticated()
@@ -60,6 +79,16 @@ func admobConfiguration() -> void:
 func onAdInitializationComplete(status : InitializationStatus): 
 	print("banner ad initialization complete")
 	_create_ad_view()
+	
+#code to call after data has been loaded from google store
+func dataLoaded(): 
+	print("loading screen")
+	self.visible = true
+	#$WaterArea.visible = true
+	#$IceBergArea.visible = true
+	determinePenguins()
+	determineFish()
+	determineFood()
 	
 #code to load banner ad
 func _create_ad_view() -> void:
@@ -121,25 +150,42 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 		func(snapshot: PlayGamesSnapshot): 
 			if !snapshot: 
 				print("saved game not found, creating new player data")
+				#create new player data
 			else: 
 				print("saved game data found, loading into memory")
 				var dataToParse = snapshot.content.get_string_from_utf8()
 				currentData = JSON.parse_string(dataToParse)
+				PlayerData.setData(currentData)
+				emit_signal("dataHasLoaded")
 	)
 
 ##PENGUINS##
 func determinePenguins() -> void: 
 	print("loading penguins")
-	var penguin: Penguin = penguin_scene.instantiate()
-	penguin.setLocation(300,1000)
-	add_child(penguin)
-	penguins.push_back(penguin)
+	#var penguin: Penguin = penguin_scene.instantiate()
+	#penguin.setLocation(300,1000)
+	#add_child(penguin)
+	#penguins.push_back(penguin)
+	var penguinsData = PlayerData.getData()["Penguins"]
+	for penguinData in penguinsData: 
+		var penguin: Penguin = penguin_scene.instantiate()
+		var randomLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
+		penguin.setLocation(randomLocation.x, randomLocation.y-300)
+		penguin.setSick(penguinData["sick"])
+		penguin.setHealth(penguinData["health"])
+		penguin.setFood(penguinData["food"])
+		add_child(penguin)
+		penguins.push_back(penguin)
+		
 	
 func determinePenguinIntelligence() -> void: 
 	#print("determining penguin intelligence")
 	for p in penguins:
 		if p.hasGoal():  
 			p.moveToGoal()
+		if p.getState() == "Idle": 
+			pass
+			#onGivePenguinGoal(p)
 			
 ##FISH##
 func determineFish() -> void: 
@@ -174,20 +220,33 @@ func getThreatPosition(fish: Fish) -> Penguin:
 ##FOOD##
 func determineFood() -> void: 
 	print("loading food bowls")
-	var food: Food = food_scene.instantiate()
-	food.setLocation(550, 1050)
-	add_child(food)
-	foodBowl = food
-	foodBowl.addFood(50)
+	#var food: Food = food_scene.instantiate()
+	#food.setLocation(550, 1050)
+	#add_child(food)
+	#foodBowl = food
+	#foodBowl.addFood(50)
 	#foodBowls.push_back(food)
+	var foodDatas = PlayerData.getData()["Food"]
+	for foodData in foodDatas: 
+		var food: Food = food_scene.instantiate()
+		food.setLocation(foodData["locationX"], foodData["locationY"])
+		food.addFood(foodData["amount"])
+		foodBowls.push_back(food)
+		add_child(food)
 			
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish) -> void: 
 	print("fish collected")
 	if fish in fishes: 
 		fishes.erase(fish)
-		foodBowl.addFood(20)
+		#TODO dynamically add food to the closest food bowl after a fish is caught
+		#foodBowl.addFood(20)
 	fish.queue_free()
+
+func onGivePenguinGoal(penguin) -> void: 
+	var randomGoalLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
+	penguin.setGoal(randomGoalLocation.x, randomGoalLocation.y)
+	penguin.setState("Walk")
 
 func onGiveFishGoal(fish) -> void: 
 	#print("giving an idle fish a goal")
@@ -309,7 +368,7 @@ func get_random_point_in_collision_polygon(collision_polygon: CollisionPolygon2D
 	var triangles := Geometry2D.triangulate_polygon(points)
 	if triangles.is_empty():
 		return collision_polygon.global_position
-	var triangle_index := randi_range(0, triangles.size() / 3 - 1) * 3
+	var triangle_index := randi_range(0, triangles.size() / 3-1) * 3
 	return points[triangles[triangle_index]]
 	
 func is_point_inside_polygon(collision_polygon: CollisionPolygon2D, point: Vector2) -> bool:
