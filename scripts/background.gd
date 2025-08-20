@@ -48,13 +48,16 @@ func _process(_delta: float) -> void:
 func androidAuthentication() -> void: 
 	if not GodotPlayGameServices.android_plugin: 
 		printerr("Plugin not found")
+		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
 		var dummyData = {
 			"Penguins": [{"health": 100, "food": 75, "sick": false}, {"health": 100, "food": 75, "sick": false}, {"health": 100, "food": 75, "sick": false}],
 			"Food": [{"amount": 30, "locationX": 300, "locationY": 1150}],
-			"AreasUnlocked": [],
-			"LastLogin": "",
-			"NextDailyReward": 1,
+			"Fish": [],
+			"Decorations": [], 
+			"AreasUnlocked": [false, false, false, false, false],
+			"LastLogin": { "year": 2025, "month": 8, "day": 19, "weekday": 2, "hour": 23, "minute": 28, "second": 0, "dst": true },
+			"DailyRewards": [true, false, false, false, false, false, false],
 			"Gems": 250,
 			"Coins": 100,
 			"Experience": 1233
@@ -151,6 +154,22 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 			if !snapshot: 
 				print("saved game not found, creating new player data")
 				#create new player data
+				var newLoginTime = Time.get_datetime_dict_from_system()
+				var newPlayerData = {
+					"Penguins": [{"health": 100, "food": 75, "sick": false}],
+					"Food": [{"amount": 25, "locationX": 300, "locationY": 1150}],
+					"Fish": [],
+					"Decorations": [], 
+					"AreasUnlocked": [false, false, false, false, false],
+					"LastLogin": newLoginTime,
+					"DailyRewards": [false, false, false, false, false, false, false],
+					"Gems": 100,
+					"Coins": 50,
+					"Experience": 0
+				}
+				PlayerData.setData(newPlayerData)
+				emit_signal("dataHasLoaded")
+				PlayerData.saveData()
 			else: 
 				print("saved game data found, loading into memory")
 				var dataToParse = snapshot.content.get_string_from_utf8()
@@ -158,7 +177,6 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 				PlayerData.setData(currentData)
 				emit_signal("dataHasLoaded")
 	)
-
 ##PENGUINS##
 func determinePenguins() -> void: 
 	print("loading penguins")
