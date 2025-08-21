@@ -148,20 +148,21 @@ func on_user_earned_reward(rewarded_item : RewardedItem):
 func _on_user_authenticated(is_authenticated: bool) -> void:
 	print("Hi from Godot! User is authenticated? %s" % is_authenticated)
 	if is_authenticated: 
-		$Android_SavedGames.load_game("PlayerData", true)
-	$Android_SavedGames.game_loaded.connect(
+		$Android_SavedGames.load_game("VillageData", false)
+		$Android_SavedGames.game_loaded.connect(
 		func(snapshot: PlayGamesSnapshot): 
 			if !snapshot: 
 				print("saved game not found, creating new player data")
 				#create new player data
 				var newLoginTime = Time.get_datetime_dict_from_system()
+				print("newLoginTime: " + str(newLoginTime))
 				var newPlayerData = {
 					"Penguins": [{"health": 100, "food": 75, "sick": false}],
 					"Food": [{"amount": 25, "locationX": 300, "locationY": 1150}],
 					"Fish": [],
 					"Decorations": [], 
 					"AreasUnlocked": [false, false, false, false, false],
-					"LastLogin": newLoginTime,
+					"LastLogin": str(newLoginTime),
 					"DailyRewards": [false, false, false, false, false, false, false],
 					"Gems": 100,
 					"Coins": 50,
@@ -169,10 +170,13 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 				}
 				PlayerData.setData(newPlayerData)
 				emit_signal("dataHasLoaded")
+				var jsonNewPlayerData = JSON.stringify(newPlayerData)
+				print(jsonNewPlayerData)
 				PlayerData.saveData()
 			else: 
 				print("saved game data found, loading into memory")
 				var dataToParse = snapshot.content.get_string_from_utf8()
+				print(dataToParse)
 				currentData = JSON.parse_string(dataToParse)
 				PlayerData.setData(currentData)
 				emit_signal("dataHasLoaded")

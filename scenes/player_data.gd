@@ -22,4 +22,4 @@ func getData():
 	
 func saveData(): 
 	var dataToSave = JSON.stringify(currentData)
-	snapshotsClient.save_game("PlayerData", "player data for Penguin Village", dataToSave.to_utf8_buffer())
+	snapshotsClient.save_game("VillageData", "player data for Penguin Village", dataToSave.to_utf8_buffer())
