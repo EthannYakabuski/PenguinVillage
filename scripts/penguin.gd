@@ -31,6 +31,8 @@ func _ready() -> void:
 	$PenguinSprite.play()
 	$PenguinCollision.set_deferred("input_pickable", true)
 	screen_size = get_viewport_rect().size
+	$HealthIndicator.value = health
+	$HealthIndicator.visible = false
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -53,6 +55,7 @@ func setSelected(state: bool) -> void:
 	selected = state
 	if !state: 
 		$PenguinSprite.modulate = Color(1,1,1,1) #Resets to original
+		$HealthIndicator.visible = false
 
 func setCollisionGons(type) -> void: 
 	if type == "Walk": 
@@ -93,6 +96,7 @@ func _on_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
 		print("Penguin Clicked")
 		selected = true
+		$HealthIndicator.visible = true
 		$PenguinSprite.modulate = Color(1, 1, 0, 1) # Yellow
 		get_parent().onPenguinSelected(true)
 		#stops background from also receiving the event

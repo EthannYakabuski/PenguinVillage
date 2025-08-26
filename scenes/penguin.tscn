@@ -1,12 +1,25 @@
-[gd_scene load_steps=3 format=3 uid="uid://duea6pilwy37k"]
+[gd_scene load_steps=5 format=3 uid="uid://duea6pilwy37k"]
 
 [ext_resource type="Script" path="res://scripts/penguin.gd" id="1_3yk4v"]
 [ext_resource type="SpriteFrames" uid="uid://cot0itv4g4eta" path="res://animations/penguin_frames.tres" id="2_28ggd"]
+[ext_resource type="Texture2D" uid="uid://4r8eqqvlhwge" path="res://images/Heart_Outline.png" id="2_lxwiq"]
+[ext_resource type="Texture2D" uid="uid://24neilo8phk3" path="res://images/Heart_Progress_Texture.png" id="3_162y3"]
 
 [node name="Penguin" type="Area2D"]
 z_index = 1
 scale = Vector2(1.5, 1.5)
 script = ExtResource("1_3yk4v")
+
+[node name="HealthIndicator" type="TextureProgressBar" parent="."]
+offset_left = -28.0
+offset_top = -78.0
+offset_right = 996.0
+offset_bottom = 946.0
+scale = Vector2(0.05, 0.05)
+fill_mode = 3
+texture_under = ExtResource("2_lxwiq")
+texture_progress = ExtResource("3_162y3")
+tint_progress = Color(0.803922, 0.156863, 0.317647, 1)
 
 [node name="PenguinSprite" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.5, 0.5)

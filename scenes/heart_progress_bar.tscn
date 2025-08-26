@@ -1,12 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://dkge68obdric3"]
+[gd_scene load_steps=4 format=3 uid="uid://dkge68obdric3"]
 
 [ext_resource type="Texture2D" uid="uid://4r8eqqvlhwge" path="res://images/Heart_Outline.png" id="1_02wkv"]
 [ext_resource type="Texture2D" uid="uid://24neilo8phk3" path="res://images/Heart_Progress_Texture.png" id="2_wf5nr"]
+[ext_resource type="Script" path="res://scenes/heart_progress_bar.gd" id="3_gtr2q"]
 
 [node name="TextureProgressBar" type="TextureProgressBar"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = -77.0
+offset_top = -130.0
+offset_right = 947.0
+offset_bottom = 894.0
+scale = Vector2(0.15, 0.15)
 fill_mode = 3
 texture_under = ExtResource("1_02wkv")
 texture_progress = ExtResource("2_wf5nr")
 tint_progress = Color(0.802608, 0.155555, 0.316393, 1)
+script = ExtResource("3_gtr2q")
