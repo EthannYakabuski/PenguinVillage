@@ -75,6 +75,7 @@ func setCurrentArea(a) -> void:
 func setHealth(h) -> void: 
 	print("setting penguin health to " + str(h))
 	health = h
+	$HealthIndicator.value = h
 	
 func setSick(s) -> void:
 	print("setting penguin sick to " + str(s)) 
