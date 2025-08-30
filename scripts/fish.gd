@@ -3,7 +3,7 @@ extends Area2D
 class_name Fish
 
 @export var penguin_frames: SpriteFrames = preload("res://animations/fish_frames.tres")
-signal fish_collected(fish)
+signal fish_collected(fish, penguin)
 signal fish_needs_target(fish)
 signal fish_danger_check(fish)
 signal fish_idle_needs_new_goal(fish)
@@ -76,7 +76,7 @@ func _on_area_entered(area: Area2D) -> void:
 	if area is Penguin: 
 		print("a penguin captured a fish")
 		queue_free()
-		emit_signal("fish_collected", self)
+		emit_signal("fish_collected", self, area)
 
 func _on_idle_change_timeout() -> void:
 	if currentThreat == "safe":

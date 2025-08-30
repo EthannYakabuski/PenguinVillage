@@ -18,7 +18,7 @@ var selected: bool = false
 
 #vitals
 var food = 100
-var health = 100
+var health
 var sick = false
 
 #collision polygons
@@ -56,7 +56,10 @@ func setSelected(state: bool) -> void:
 	if !state: 
 		$PenguinSprite.modulate = Color(1,1,1,1) #Resets to original
 		$HealthIndicator.visible = false
-
+		
+func setHealthIndicatorVisibility(state: bool) -> void: 
+	$HealthIndicator.visible = state
+	
 func setCollisionGons(type) -> void: 
 	if type == "Walk": 
 		$PenguinCollision.set_deferred("polygon", walkOrIdlePolygons)
@@ -70,12 +73,19 @@ func setLocation(x, y) -> void:
 	global_position = Vector2(x, y)
 	
 func setCurrentArea(a) -> void: 
-	current_area = a
+	if current_area != a: 
+		current_area = a
 	
 func setHealth(h) -> void: 
 	print("setting penguin health to " + str(h))
 	health = h
 	$HealthIndicator.value = h
+	
+func addHealth(h) -> void: 
+	health = health + h
+	if health > 100: 
+		health = 100
+	$HealthIndicator.value = health
 	
 func setSick(s) -> void:
 	print("setting penguin sick to " + str(s)) 
@@ -84,6 +94,9 @@ func setSick(s) -> void:
 func setFood(f) -> void: 
 	print("setting penguin food to " + str(f))
 	food = f
+	
+func clearGoal() -> void: 
+	hasAGoal = false
 
 ##GETTERS##
 func hasGoal() -> bool: 
@@ -104,6 +117,13 @@ func _on_input_event(_viewport, event, _shape_idx):
 		get_viewport().set_input_as_handled()
 		
 ##UTILITY##
+func useEnergy(amount) -> void: 
+	food = food - amount
+	if food < 0: 
+		sick = true
+		food = 0
+	$HealthIndicator.value = food
+
 func moveToGoal() -> void: 
 	var direction = (goal - global_position).normalized()
 	if global_position.distance_to(goal) > 1:

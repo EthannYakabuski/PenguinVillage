@@ -51,8 +51,8 @@ func androidAuthentication() -> void:
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
 		var dummyData = {
-			"Penguins": [{"health": 100, "food": 75, "sick": false}, {"health": 100, "food": 75, "sick": false}, {"health": 100, "food": 75, "sick": false}],
-			"Food": [{"amount": 30, "locationX": 300, "locationY": 1150}],
+			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": false}, {"health": 90, "food": 75, "sick": false}],
+			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"AreasUnlocked": [false, false, false, false, false],
@@ -207,6 +207,13 @@ func determinePenguinIntelligence() -> void:
 			p.moveToGoal()
 		if p.getState() == "Idle": 
 			pass
+		if p.getState() == "Eat":
+			if p.health == 100 or foodBowls[0].foodLevel == 0:
+				p.setState("Idle") 
+				pass
+			else:
+				p.addHealth(1)
+				foodBowls[0].useFood(1)
 			#onGivePenguinGoal(p)
 			
 ##FISH##
@@ -257,13 +264,14 @@ func determineFood() -> void:
 		add_child(food)
 			
 ##CUSTOM SIGNAL LISTENERS##
-func onFishCollected(fish) -> void: 
+func onFishCollected(fish, penguin) -> void: 
 	print("fish collected")
 	if fish in fishes: 
 		fishes.erase(fish)
 		#TODO dynamically add food to the closest food bowl after a fish is caught
-		#foodBowl.addFood(20)
+		foodBowls[0].addFood(10)
 	fish.queue_free()
+	penguin.addHealth(10)
 
 func onGivePenguinGoal(penguin) -> void: 
 	var randomGoalLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
