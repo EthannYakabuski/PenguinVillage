@@ -99,16 +99,16 @@ func _create_ad_view() -> void:
 	if _ad_view:
 		destroy_ad_view()
 
-	var adListener = AdListener.new()
-	adListener.on_ad_failed_to_load = func(load_ad_error : LoadAdError):
+	#var adListener = AdListener.new()
+	#adListener.on_ad_failed_to_load = func(load_ad_error : LoadAdError):
 		pass 
 	
-	var unit_id = "ca-app-pub-3940256099942544/6300978111"
+	#var unit_id = "ca-app-pub-3940256099942544/6300978111"
 
-	_ad_view = AdView.new(unit_id, AdSize.BANNER, AdPosition.Values.TOP)
-	var ad_request = AdRequest.new()
-	_ad_view.load_ad(ad_request)
-	_ad_view.show()
+	#_ad_view = AdView.new(unit_id, AdSize.BANNER, AdPosition.Values.TOP)
+	#var ad_request = AdRequest.new()
+	#_ad_view.load_ad(ad_request)
+	#_ad_view.show()
 	
 func destroy_ad_view():
 	if _ad_view:  
@@ -209,11 +209,12 @@ func determinePenguinIntelligence() -> void:
 			pass
 		if p.getState() == "Eat":
 			if p.health == 100 or foodBowls[0].foodLevel == 0:
-				p.setState("Idle") 
+				p.setState("Idle")
+				updatePenguinSavedArray() 
 				pass
 			else:
 				p.addHealth(1)
-				foodBowls[0].useFood(1)
+				foodBowls[0].useFood(0.25)
 			#onGivePenguinGoal(p)
 			
 ##FISH##
@@ -262,7 +263,19 @@ func determineFood() -> void:
 		food.addFood(foodData["amount"])
 		foodBowls.push_back(food)
 		add_child(food)
-			
+
+func updatePenguinSavedArray(): 
+	print("a penguin has finished eating, update saved data")
+	var currData = PlayerData.getData()
+	var newPenguins = []
+	for p in penguins:
+		newPenguins.push_back({"health": p.health, "food": p.food, "sick": p.sick}) 
+	currData["Penguins"] = newPenguins
+	PlayerData.setData(currData)
+	PlayerData.saveData()
+	print("penguin data has been updated and saved to the cloud")
+	print(PlayerData.getData())
+
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish, penguin) -> void: 
 	print("fish collected")
@@ -272,6 +285,7 @@ func onFishCollected(fish, penguin) -> void:
 		foodBowls[0].addFood(10)
 	fish.queue_free()
 	penguin.addHealth(10)
+	updatePenguinSavedArray()
 
 func onGivePenguinGoal(penguin) -> void: 
 	var randomGoalLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
