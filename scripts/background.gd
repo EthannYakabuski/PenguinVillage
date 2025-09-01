@@ -206,11 +206,14 @@ func determinePenguinIntelligence() -> void:
 		if p.hasGoal():  
 			p.moveToGoal()
 		if p.getState() == "Idle": 
-			pass
+			if is_point_inside_polygon($IceMountainCollision, p.position): 
+				print("there is an idle penguin in the iceberg slide")
+				p.setState("Slide")
+				onGivePenguinGoal(p)
 		if p.getState() == "Eat":
 			if p.health == 100 or foodBowls[0].foodLevel == 0:
 				p.setState("Idle")
-				updatePenguinSavedArray() 
+				updatePenguinAndFoodSavedArray() 
 				pass
 			else:
 				p.addHealth(1)
@@ -264,13 +267,17 @@ func determineFood() -> void:
 		foodBowls.push_back(food)
 		add_child(food)
 
-func updatePenguinSavedArray(): 
+func updatePenguinAndFoodSavedArray(): 
 	print("a penguin has finished eating, update saved data")
 	var currData = PlayerData.getData()
 	var newPenguins = []
 	for p in penguins:
 		newPenguins.push_back({"health": p.health, "food": p.food, "sick": p.sick}) 
+	var newFood = []
+	for f in foodBowls: 
+		newFood.push_back({"amount": f.foodLevel, "locationX": f.global_position.x, "locationY": f.global_position.y})
 	currData["Penguins"] = newPenguins
+	currData["Food"] = newFood
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print("penguin data has been updated and saved to the cloud")
@@ -285,12 +292,12 @@ func onFishCollected(fish, penguin) -> void:
 		foodBowls[0].addFood(10)
 	fish.queue_free()
 	penguin.addHealth(10)
-	updatePenguinSavedArray()
+	updatePenguinAndFoodSavedArray()
 
 func onGivePenguinGoal(penguin) -> void: 
 	var randomGoalLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
 	penguin.setGoal(randomGoalLocation.x, randomGoalLocation.y)
-	penguin.setState("Walk")
+	#penguin.setState("Walk")
 
 func onGiveFishGoal(fish) -> void: 
 	#print("giving an idle fish a goal")

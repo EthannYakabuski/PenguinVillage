@@ -110,6 +110,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("9_lrpo6")
+}],
+"loop": true,
+"name": &"StillSliding",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("12_de7jv")
 }, {
 "duration": 1.0,
