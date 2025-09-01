@@ -43,6 +43,7 @@ func setGoal(x, y) -> void:
 	print("setting goal -> x: " + str(x) + " y: " + str(y)) 
 	goal = Vector2(x, y)
 	hasAGoal = true
+	useEnergy(1)
 	
 func setState(state: String) -> void: 
 	if state != current_state: 
@@ -118,11 +119,11 @@ func _on_input_event(_viewport, event, _shape_idx):
 		
 ##UTILITY##
 func useEnergy(amount) -> void: 
-	food = food - amount
+	health = health - amount
 	if food < 0: 
 		sick = true
 		food = 0
-	$HealthIndicator.value = food
+	$HealthIndicator.value = health
 
 func moveToGoal() -> void: 
 	var direction = (goal - global_position).normalized()
