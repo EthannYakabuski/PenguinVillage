@@ -80,6 +80,9 @@ func setCurrentArea(a) -> void:
 func startTime() -> void: 
 	$SlidingGoalTimer.start()
 	
+func stopTime() -> void: 
+	$SlidingGoalTimer.stop()
+	
 func setHealth(h) -> void: 
 	print("setting penguin health to " + str(h))
 	health = h
@@ -156,6 +159,8 @@ func _on_penguin_sprite_animation_changed() -> void:
 		speed = 2
 	elif (current_state == "Jump" or current_state == "Dive"): 
 		speed = 3
+	elif (current_state == "Slide"): 
+		speed = 2.25
 	else: 
 		speed = 1.25
 

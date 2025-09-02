@@ -359,6 +359,7 @@ func _on_ice_berg_area_area_entered(area: Area2D) -> void:
 	if area is Penguin:
 		area.setCurrentArea("Ice")
 		area.setState("Jump") 
+		area.stopTime()
 		if not area.hasGoal(): 
 			area.setState("Idle")
 	
