@@ -3,7 +3,7 @@ extends Area2D
 class_name Penguin
 
 @export var penguin_frames: SpriteFrames = preload("res://animations/penguin_frames.tres")
-#signal penguin_selected(state)
+signal penguinNeedsGoal(penguin)
 
 #internals
 var screen_size
@@ -76,6 +76,9 @@ func setLocation(x, y) -> void:
 func setCurrentArea(a) -> void: 
 	if current_area != a: 
 		current_area = a
+
+func startTime() -> void: 
+	$SlidingGoalTimer.start()
 	
 func setHealth(h) -> void: 
 	print("setting penguin health to " + str(h))
@@ -155,3 +158,8 @@ func _on_penguin_sprite_animation_changed() -> void:
 		speed = 3
 	else: 
 		speed = 1.25
+
+func _on_sliding_goal_timer_timeout() -> void:
+	$SlidingGoalTimer.wait_time = randf_range(1,2)
+	penguinNeedsGoal.emit(self)
+	#emit_signal("penguinNeedsGoal", self)

@@ -42,8 +42,9 @@ func setGoal(x, y) -> void:
 func setState(state: String) -> void: 
 	current_state = state
 	sprite.animation = state
-	if state == "Idle": 
-		emit_signal("fish_idle_needs_new_goal", self)
+	if state == "Idle":
+		fish_idle_needs_new_goal.emit(self) 
+		#emit_signal("fish_idle_needs_new_goal", self)
 	
 func setThreat(threat: String) -> void: 
 	currentThreat = threat
@@ -76,13 +77,16 @@ func _on_area_entered(area: Area2D) -> void:
 	if area is Penguin: 
 		print("a penguin captured a fish")
 		queue_free()
-		emit_signal("fish_collected", self, area)
+		fish_collected.emit(self, area)
+		#emit_signal("fish_collected", self, area)
 
 func _on_idle_change_timeout() -> void:
 	if currentThreat == "safe":
 		setSpeed(1.0)
-		emit_signal("fish_needs_target", self)
+		fish_needs_target.emit(self)
+		#emit_signal("fish_needs_target", self)
 		
 func _on_danger_check_timeout() -> void:
-	emit_signal("fish_danger_check", self)
+	fish_danger_check.emit(self)
+	#emit_signal("fish_danger_check", self)
 	

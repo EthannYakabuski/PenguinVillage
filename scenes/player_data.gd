@@ -6,12 +6,12 @@ var currentData = ""
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	snapshotsClient.game_saved.connect(
-		func(is_saved: bool, save_data_name: String, save_data_description: String): 
+		func(is_saved: bool, _save_data_name: String, _save_data_description: String): 
 			print("data saved " + str(is_saved))
 	)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 	
 func setData(data):

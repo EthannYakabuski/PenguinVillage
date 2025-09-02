@@ -23,6 +23,7 @@ var currentData = ""
 
 #signals
 signal dataHasLoaded
+signal penguinNeedsGoal
 
 #admob integration
 var _ad_view : AdView
@@ -38,6 +39,7 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	androidAuthentication()
 	admobConfiguration()
+	penguinNeedsGoal.connect(onGivePenguinGoal)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -79,7 +81,7 @@ func admobConfiguration() -> void:
 		MobileAds.set_request_configuration(request_configuration)
 		
 #called after admob init is complete, loads a banner ad
-func onAdInitializationComplete(status : InitializationStatus): 
+func onAdInitializationComplete(_status : InitializationStatus): 
 	print("banner ad initialization complete")
 	_create_ad_view()
 	
@@ -196,6 +198,7 @@ func determinePenguins() -> void:
 		penguin.setSick(penguinData["sick"])
 		penguin.setHealth(penguinData["health"])
 		penguin.setFood(penguinData["food"])
+		penguin.penguinNeedsGoal.connect(onGivePenguinGoal)
 		add_child(penguin)
 		penguins.push_back(penguin)
 		
@@ -295,8 +298,10 @@ func onFishCollected(fish, penguin) -> void:
 	updatePenguinAndFoodSavedArray()
 
 func onGivePenguinGoal(penguin) -> void: 
+	print("giving a sliding penguin a new goal")
 	var randomGoalLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
 	penguin.setGoal(randomGoalLocation.x, randomGoalLocation.y)
+	penguin.startTime()
 	#penguin.setState("Walk")
 
 func onGiveFishGoal(fish) -> void: 
@@ -373,7 +378,7 @@ func _on_water_area_area_exited(area: Area2D) -> void:
 		area.setCurrentArea("Ice")
 	
 ##GUI###
-func handleDrag(pos: Vector2, delta: Vector2): 
+func handleDrag(_pos: Vector2, delta: Vector2): 
 	$Camera.position.x -= delta.x
 
 func _on_input_event(_viewport, event, _shape_idx):
