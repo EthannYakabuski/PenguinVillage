@@ -2,9 +2,12 @@ extends Node2D
 @export var penguin_scene: PackedScene
 @export var fish_scene: PackedScene
 @export var food_scene: PackedScene
+@export var sidebar: PackedScene
 @onready var fishTimer: Timer = $FishSpawnTimer
 
 #UI interactions
+var sidebarActive = false
+var sidebarHandle
 
 var penguins = []
 var fishes = []
@@ -431,3 +434,14 @@ func get_random_point_in_collision_polygon(collision_polygon: CollisionPolygon2D
 func is_point_inside_polygon(collision_polygon: CollisionPolygon2D, point: Vector2) -> bool:
 	var local_point = collision_polygon.get_global_transform().affine_inverse() * point
 	return Geometry2D.is_point_in_polygon(local_point, collision_polygon.polygon)
+
+
+func _on_side_bar_pressed() -> void:
+	print("side bar pressed")
+	if not sidebarActive: 
+		sidebarHandle = sidebar.instantiate()
+		$CanvasMenu.add_child(sidebarHandle)
+		sidebarActive = true
+	else: 
+		$CanvasMenu.remove_child(sidebarHandle)
+		sidebarActive = false
