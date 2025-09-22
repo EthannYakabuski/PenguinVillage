@@ -1,0 +1,39 @@
+extends Control
+
+@export var controlItemType: String
+signal isDragging
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	pass
+
+func _get_drag_data(_Vector2):
+	var preview = TextureRect.new()
+	var scaleX
+	var scaleY
+	var texSize
+	if controlItemType == "Penguin":
+		preview.texture = $PenguinPurchase.texture
+		texSize = $PenguinPurchase.size
+		scaleX = $PenguinPurchase.scale.x
+		scaleY = $PenguinPurchase.scale.y
+	elif controlItemType == "Food": 
+		preview.texture = $FoodBagPurchase.texture
+		texSize = $FoodBagPurchase.size
+		scaleX = $FoodBagPurchase.scale.x - 0.10
+		scaleY = $FoodBagPurchase.scale.y - 0.10
+	else: 
+		preview.texture = $MedicinePurchase.texture 
+		texSize = $MedicinePurchase.size
+		scaleX = $MedicinePurchase.scale.x - 0.10
+		scaleY = $MedicinePurchase.scale.y - 0.10
+	preview.size = texSize
+	preview.scale.x = scaleX
+	preview.scale.y = scaleY
+	set_drag_preview(preview)
+	isDragging.emit(self)
+	return self

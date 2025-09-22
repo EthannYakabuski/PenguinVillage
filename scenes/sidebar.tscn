@@ -1,14 +1,77 @@
-[gd_scene load_steps=3 format=3 uid="uid://ueb0gkdh6ns7"]
+[gd_scene load_steps=7 format=3 uid="uid://ueb0gkdh6ns7"]
 
 [ext_resource type="Texture2D" uid="uid://b2v2xg6yxm54v" path="res://images/sidebarBackground.png" id="1_0rqpi"]
 [ext_resource type="Script" path="res://scenes/sidebar.gd" id="1_el82r"]
+[ext_resource type="Texture2D" uid="uid://1yeca3tyhlgs" path="res://images/penguin_walk01@2x.png" id="3_bm44j"]
+[ext_resource type="Script" path="res://scripts/sidebaritem.gd" id="3_knuv3"]
+[ext_resource type="Texture2D" uid="uid://cqxpncoxu8bx6" path="res://images/FoodBag.png" id="4_wn62s"]
+[ext_resource type="Texture2D" uid="uid://b763me5ubg5yl" path="res://images/Medicine.png" id="5_p4h8o"]
 
-[node name="Background" type="Node2D"]
+[node name="Background" type="Control"]
+z_index = -1
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
 script = ExtResource("1_el82r")
 
 [node name="SideBarBackground" type="TextureRect" parent="."]
+z_index = -1
 offset_top = 205.0
 offset_right = 500.0
-offset_bottom = 2646.0
+offset_bottom = 1705.0
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("1_0rqpi")
+
+[node name="PenguinPurchaseControl" type="Control" parent="SideBarBackground"]
+anchors_preset = 0
+offset_left = 130.0
+offset_top = 111.429
+offset_right = 274.0
+offset_bottom = 239.429
+scale = Vector2(2, 2)
+script = ExtResource("3_knuv3")
+controlItemType = "Penguin"
+
+[node name="PenguinPurchase" type="TextureRect" parent="SideBarBackground/PenguinPurchaseControl"]
+layout_mode = 0
+offset_left = -2.85714
+offset_top = 10.7143
+offset_right = 142.143
+offset_bottom = 139.714
+texture = ExtResource("3_bm44j")
+
+[node name="FoodBagPurchaseControl" type="Control" parent="SideBarBackground"]
+anchors_preset = 0
+offset_right = 269.0
+offset_bottom = 240.0
+script = ExtResource("3_knuv3")
+controlItemType = "Food"
+
+[node name="FoodBagPurchase" type="TextureRect" parent="SideBarBackground/FoodBagPurchaseControl"]
+layout_mode = 0
+offset_left = 88.5714
+offset_top = 562.857
+offset_right = 1112.57
+offset_bottom = 1586.86
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("4_wn62s")
+
+[node name="MedicinePurchaseControl" type="Control" parent="SideBarBackground"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_knuv3")
+controlItemType = "Medicine"
+
+[node name="MedicinePurchase" type="TextureRect" parent="SideBarBackground/MedicinePurchaseControl"]
+layout_mode = 0
+offset_left = 117.143
+offset_top = 1010.0
+offset_right = 1141.14
+offset_bottom = 2546.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("5_p4h8o")
+
+[connection signal="isDragging" from="SideBarBackground/PenguinPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
+[connection signal="isDragging" from="SideBarBackground/FoodBagPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
+[connection signal="isDragging" from="SideBarBackground/MedicinePurchaseControl" to="." method="_on_purchase_control_is_dragging"]

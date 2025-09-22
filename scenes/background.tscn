@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=12 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cfat6v41erd3c" path="res://scenes/food.tscn" id="4_m3tx2"]
 [ext_resource type="Texture2D" uid="uid://bvng737d4r640" path="res://images/iceberg_water_modified.png" id="5_7pg7q"]
 [ext_resource type="PackedScene" uid="uid://ueb0gkdh6ns7" path="res://scenes/sidebar.tscn" id="5_457nt"]
+[ext_resource type="Script" path="res://scenes/drop_control.gd" id="6_d244v"]
 [ext_resource type="Texture2D" uid="uid://dt74qwqs1km8q" path="res://images/iceberg_icebergs_modified.png" id="6_yjrk6"]
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/sign_in/sign_in_client.gd" id="7_cnlxl"]
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
@@ -17,6 +18,27 @@ penguin_scene = ExtResource("2_cvr2x")
 fish_scene = ExtResource("3_2xu8c")
 food_scene = ExtResource("4_m3tx2")
 sidebar = ExtResource("5_457nt")
+
+[node name="DropControl" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -1257.0
+offset_right = 2340.0
+offset_bottom = 1987.0
+mouse_filter = 1
+script = ExtResource("6_d244v")
+
+[node name="CanvasMenu" type="CanvasLayer" parent="."]
+layer = 0
+
+[node name="SideBar" type="TextureButton" parent="CanvasMenu"]
+offset_left = 22.0
+offset_top = 17.0
+offset_right = 1046.0
+offset_bottom = 1041.0
+scale = Vector2(0.12, 0.12)
+mouse_filter = 1
+texture_normal = ExtResource("9_jbf0t")
 
 [node name="FishSpawnTimer" type="Timer" parent="."]
 wait_time = 12.0
@@ -65,20 +87,10 @@ limit_left = -1700
 limit_right = 1760
 drag_horizontal_enabled = true
 
-[node name="CanvasMenu" type="CanvasLayer" parent="."]
-
-[node name="SideBar" type="TextureButton" parent="CanvasMenu"]
-offset_left = 22.0
-offset_top = 17.0
-offset_right = 1046.0
-offset_bottom = 1041.0
-scale = Vector2(0.12, 0.12)
-texture_normal = ExtResource("9_jbf0t")
-
 [connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="pressed" from="CanvasMenu/SideBar" to="." method="_on_side_bar_pressed"]
 [connection signal="timeout" from="FishSpawnTimer" to="." method="_on_fish_spawn_timer_timeout"]
 [connection signal="area_entered" from="WaterArea" to="." method="_on_water_area_area_entered"]
 [connection signal="area_exited" from="WaterArea" to="." method="_on_water_area_area_exited"]
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
 [connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]
-[connection signal="pressed" from="CanvasMenu/SideBar" to="." method="_on_side_bar_pressed"]

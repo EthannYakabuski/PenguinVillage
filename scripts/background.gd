@@ -8,6 +8,7 @@ extends Node2D
 #UI interactions
 var sidebarActive = false
 var sidebarHandle
+var isDragging = false
 
 var penguins = []
 var fishes = []
@@ -43,6 +44,9 @@ func _ready() -> void:
 	androidAuthentication()
 	admobConfiguration()
 	penguinNeedsGoal.connect(onGivePenguinGoal)
+	$DropControl.penguinDropped.connect(penguinIsDropped)
+	$DropControl.foodDropped.connect(foodIsDropped)
+	$DropControl.medicineDropped.connect(medicineIsDropped)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -384,6 +388,22 @@ func _on_water_area_area_exited(area: Area2D) -> void:
 ##GUI###
 func handleDrag(_pos: Vector2, delta: Vector2): 
 	$Camera.position.x -= delta.x
+	
+func penguinIsDropped(): 
+	print("penguin has been dropped and received")
+	isDragging = false
+	
+func medicineIsDropped(): 
+	print("medicine has been dropped and received")
+	isDragging = false
+	
+func foodIsDropped(): 
+	print("food has been dropped and received")
+	isDragging = false
+	
+func dragToggle(): 
+	print("there is an item being dragged from the sidebar")
+	isDragging = true
 
 func _on_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
@@ -405,7 +425,9 @@ func _on_input_event(_viewport, event, _shape_idx):
 		#print("InputEventScreenDrag or InputEventMouseMotion")
 		#print("event position " + str(event.position.x))
 		#print("event relative " + str(event.relative.x))
-		handleDrag(event.position, event.relative)
+		#if we arent currently dragging an element from the sidebar, we are dragging the camera view
+		if !isDragging: 
+			handleDrag(event.position, event.relative)
 
 
 func _on_fish_spawn_timer_timeout() -> void:
@@ -440,6 +462,7 @@ func _on_side_bar_pressed() -> void:
 	print("side bar pressed")
 	if not sidebarActive: 
 		sidebarHandle = sidebar.instantiate()
+		sidebarHandle.isDraggingSignal.connect(dragToggle)
 		$CanvasMenu.add_child(sidebarHandle)
 		sidebarActive = true
 	else: 
