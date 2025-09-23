@@ -2,6 +2,7 @@ extends Node2D
 @export var penguin_scene: PackedScene
 @export var fish_scene: PackedScene
 @export var food_scene: PackedScene
+@export var gem_scene: PackedScene
 @export var sidebar: PackedScene
 @onready var fishTimer: Timer = $FishSpawnTimer
 
@@ -391,14 +392,22 @@ func handleDrag(_pos: Vector2, delta: Vector2):
 	
 func penguinIsDropped(): 
 	print("penguin has been dropped and received")
+	#spawn the penguin into the scene + animation
+	#update the players cloud data
 	isDragging = false
 	
 func medicineIsDropped(): 
 	print("medicine has been dropped and received")
+	#find the closest sick penguin
+	#heal the penguin + play animation
+	#update the players cloud data
 	isDragging = false
 	
 func foodIsDropped(): 
 	print("food has been dropped and received")
+	#feed all penguins + play animation
+	#fill all food bowls 
+	#update the players cloud data
 	isDragging = false
 	
 func dragToggle(): 
@@ -444,6 +453,14 @@ func _on_fish_spawn_timer_timeout() -> void:
 	add_child(fish)
 	onGiveFishGoal(fish)
 	fishes.push_back(fish)
+	
+func _on_gem_spawn_timer_timeout() -> void:
+	print("gem spawn timeout")
+	$GemSpawnTimer.wait_time = randf_range(10,20)
+	var gem = gem_scene.instantiate()
+	var randomSpawn = get_random_point_in_collision_polygon($IceMountainCollision)
+	gem.global_position = randomSpawn
+	add_child(gem)
 
 func get_random_point_in_collision_polygon(collision_polygon: CollisionPolygon2D) -> Vector2:
 	var points := collision_polygon.polygon

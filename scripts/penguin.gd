@@ -159,7 +159,7 @@ func _on_penguin_sprite_animation_changed() -> void:
 		speed = 2
 	elif (current_state == "Jump" or current_state == "Dive"): 
 		speed = 3
-	elif (current_state == "Slide"): 
+	elif (current_state == "Slide" || current_state == "StillSliding"): 
 		speed = 2.25
 	else: 
 		speed = 1.25

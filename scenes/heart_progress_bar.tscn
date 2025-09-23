@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://4r8eqqvlhwge" path="res://images/Heart_Outline.png" id="1_02wkv"]
 [ext_resource type="Texture2D" uid="uid://24neilo8phk3" path="res://images/Heart_Progress_Texture.png" id="2_wf5nr"]
-[ext_resource type="Script" path="res://scenes/heart_progress_bar.gd" id="3_gtr2q"]
+[ext_resource type="Script" path="res://scripts/heart_progress_bar.gd" id="3_gtr2q"]
 
 [node name="TextureProgressBar" type="TextureProgressBar"]
 offset_left = -77.0
