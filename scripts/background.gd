@@ -14,6 +14,7 @@ var isDragging = false
 var penguins = []
 var fishes = []
 var foodBowls = []
+var gems = []
 #var foodBowl: Food
 
 #random location optimizer
@@ -304,6 +305,12 @@ func onFishCollected(fish, penguin) -> void:
 	fish.queue_free()
 	penguin.addHealth(10)
 	updatePenguinAndFoodSavedArray()
+	
+func onGemCollected(gem) -> void: 
+	print("gem collected")
+	if gem in gems: 
+		gems.erase(gem)
+	gem.queue_free()
 
 func onGivePenguinGoal(penguin) -> void: 
 	print("giving a sliding penguin a new goal")
@@ -460,7 +467,9 @@ func _on_gem_spawn_timer_timeout() -> void:
 	var gem = gem_scene.instantiate()
 	var randomSpawn = get_random_point_in_collision_polygon($IceMountainCollision)
 	gem.global_position = randomSpawn
+	gem.gem_collected.connect(onGemCollected)
 	add_child(gem)
+	gems.push_back(gem)
 
 func get_random_point_in_collision_polygon(collision_polygon: CollisionPolygon2D) -> Vector2:
 	var points := collision_polygon.polygon

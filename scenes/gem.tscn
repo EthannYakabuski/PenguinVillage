@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://c1mgm6di4qxak"]
+[gd_scene load_steps=4 format=3 uid="uid://c1mgm6di4qxak"]
 
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="1_7am2a"]
+[ext_resource type="Script" path="res://scenes/gem.gd" id="1_j7t8k"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_kbhy6"]
 animations = [{
@@ -15,6 +16,7 @@ animations = [{
 
 [node name="Gem" type="Area2D"]
 scale = Vector2(0.25, 0.25)
+script = ExtResource("1_j7t8k")
 
 [node name="GemSprite" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.2, 0.2)
@@ -23,3 +25,5 @@ animation = &"Idle"
 
 [node name="GemCollision" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-72, -45, -81, -30, -91, -3, -93, 11, -93, 34, -88, 48, -76, 64, -62, 77, -35, 97, -10, 110, 5, 113, 19, 107, 51, 88, 73, 70, 89, 50, 95, 38, 96, 19, 93, -3, 84, -28, 66, -55, 47, -77, 27, -96, 12, -108, 3, -111, -4, -111, -15, -103, -25, -94, -42, -78, -54, -65, -63, -55)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
