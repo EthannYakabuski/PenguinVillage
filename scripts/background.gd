@@ -311,6 +311,12 @@ func onGemCollected(gem) -> void:
 	if gem in gems: 
 		gems.erase(gem)
 	gem.queue_free()
+	var currData = PlayerData.getData()
+	currData["Gems"] = currData["Gems"] + 1
+	PlayerData.setData(currData)
+	PlayerData.saveData()
+	print("gem has been collected, and data has been saved to the cloud")
+	print(PlayerData.getData())
 
 func onGivePenguinGoal(penguin) -> void: 
 	print("giving a sliding penguin a new goal")
