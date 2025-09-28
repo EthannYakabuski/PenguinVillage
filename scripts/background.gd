@@ -211,6 +211,16 @@ func determinePenguins() -> void:
 		add_child(penguin)
 		penguins.push_back(penguin)
 		
+func addPenguinAtLocation(atPosition: Vector2) -> void: 
+	var penguin: Penguin = penguin_scene.instantiate()
+	penguin.setLocation(atPosition.x, atPosition.y)
+	penguin.setSick(false)
+	penguin.setHealth(100)
+	penguin.setFood(100)
+	penguin.penguinNeedsGoal.connect(onGivePenguinGoal)
+	add_child(penguin)
+	penguins.push_back(penguin)
+	updatePenguinAndFoodSavedArray()
 	
 func determinePenguinIntelligence() -> void: 
 	#print("determining penguin intelligence")
@@ -403,20 +413,23 @@ func _on_water_area_area_exited(area: Area2D) -> void:
 func handleDrag(_pos: Vector2, delta: Vector2): 
 	$Camera.position.x -= delta.x
 	
-func penguinIsDropped(): 
+func penguinIsDropped(atPosition: Vector2): 
 	print("penguin has been dropped and received")
 	#spawn the penguin into the scene + animation
 	#update the players cloud data
+	var globalPosition = $Camera.get_global_mouse_position()
+	print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
+	addPenguinAtLocation(globalPosition)
 	isDragging = false
 	
-func medicineIsDropped(): 
+func medicineIsDropped(atPosition: Vector2): 
 	print("medicine has been dropped and received")
 	#find the closest sick penguin
 	#heal the penguin + play animation
 	#update the players cloud data
 	isDragging = false
 	
-func foodIsDropped(): 
+func foodIsDropped(atPosition: Vector2): 
 	print("food has been dropped and received")
 	#feed all penguins + play animation
 	#fill all food bowls 

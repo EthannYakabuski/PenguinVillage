@@ -21,10 +21,10 @@ func _drop_data(at_position: Vector2, data) -> void:
 	print(at_position)
 	if data.controlItemType == "Penguin":
 		print("a penguin has been dropped")
-		penguinDropped.emit()
+		penguinDropped.emit(at_position)
 	elif data.controlItemType == "Food": 
 		print("a food bag has been dropped")
-		foodDropped.emit()
+		foodDropped.emit(at_position)
 	elif data.controlItemType == "Medicine": 
 		print("a medicine bag has been dropped")
-		medicineDropped.emit()
+		medicineDropped.emit(at_position)
