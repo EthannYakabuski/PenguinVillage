@@ -31,7 +31,7 @@ func _ready() -> void:
 	$PenguinSprite.play()
 	$PenguinCollision.set_deferred("input_pickable", true)
 	screen_size = get_viewport_rect().size
-	$HealthIndicator.value = health
+	$HealthIndicator.value = food
 	$HealthIndicator.visible = false
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -86,13 +86,19 @@ func stopTime() -> void:
 func setHealth(h) -> void: 
 	print("setting penguin health to " + str(h))
 	health = h
-	$HealthIndicator.value = h
+	$HealthIndicator.value = food
 	
 func addHealth(h) -> void: 
 	health = health + h
 	if health > 100: 
 		health = 100
-	$HealthIndicator.value = health
+	#$HealthIndicator.value = health
+	
+func addFood(f) -> void: 
+	food = food + f
+	if food > 100: 
+		food = 100
+	$HealthIndicator.value = food
 	
 func setSick(s) -> void:
 	print("setting penguin sick to " + str(s)) 
@@ -101,6 +107,7 @@ func setSick(s) -> void:
 func setFood(f) -> void: 
 	print("setting penguin food to " + str(f))
 	food = f
+	$HealthIndicator.value = food
 	
 func clearGoal() -> void: 
 	hasAGoal = false
@@ -125,11 +132,11 @@ func _on_input_event(_viewport, event, _shape_idx):
 		
 ##UTILITY##
 func useEnergy(amount) -> void: 
-	health = health - amount
+	food = food - amount
 	if food < 0: 
 		sick = true
 		food = 0
-	$HealthIndicator.value = health
+	$HealthIndicator.value = food
 
 func moveToGoal() -> void: 
 	var direction = (goal - global_position).normalized()

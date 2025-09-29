@@ -220,7 +220,6 @@ func addPenguinAtLocation(atPosition: Vector2) -> void:
 	penguin.penguinNeedsGoal.connect(onGivePenguinGoal)
 	add_child(penguin)
 	penguins.push_back(penguin)
-	updatePenguinAndFoodSavedArray()
 	
 func determinePenguinIntelligence() -> void: 
 	#print("determining penguin intelligence")
@@ -233,12 +232,12 @@ func determinePenguinIntelligence() -> void:
 				p.setState("Slide")
 				onGivePenguinGoal(p)
 		if p.getState() == "Eat":
-			if p.health == 100 or foodBowls[0].foodLevel == 0:
+			if p.food == 100 or foodBowls[0].foodLevel == 0:
 				p.setState("Idle")
 				updatePenguinAndFoodSavedArray() 
 				pass
 			else:
-				p.addHealth(1)
+				p.addFood(1)
 				foodBowls[0].useFood(0.25)
 			#onGivePenguinGoal(p)
 			
@@ -420,6 +419,7 @@ func penguinIsDropped(atPosition: Vector2):
 	var globalPosition = $Camera.get_global_mouse_position()
 	print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
 	addPenguinAtLocation(globalPosition)
+	updatePenguinAndFoodSavedArray()
 	isDragging = false
 	
 func medicineIsDropped(atPosition: Vector2): 
@@ -432,6 +432,11 @@ func medicineIsDropped(atPosition: Vector2):
 func foodIsDropped(atPosition: Vector2): 
 	print("food has been dropped and received")
 	#feed all penguins + play animation
+	for penguin in penguins: 
+		penguin.setFood(100)
+	for bowl in foodBowls: 
+		bowl.addFood(100)
+	updatePenguinAndFoodSavedArray()
 	#fill all food bowls 
 	#update the players cloud data
 	isDragging = false
