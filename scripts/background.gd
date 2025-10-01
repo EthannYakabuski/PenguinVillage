@@ -62,7 +62,7 @@ func androidAuthentication() -> void:
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": false}, {"health": 90, "food": 75, "sick": false}],
+			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": true}, {"health": 90, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
@@ -427,6 +427,21 @@ func medicineIsDropped(atPosition: Vector2):
 	#find the closest sick penguin
 	#heal the penguin + play animation
 	#update the players cloud data
+	var medicineDropPosition = $Camera.get_global_mouse_position()
+	var closestPenguin
+	var closestDistance = 99999999
+	for penguin in penguins: 
+		if penguin.getSick():
+			var distanceFromThisPenguin = medicineDropPosition.distance_squared_to(penguin.global_position)
+			if distanceFromThisPenguin < closestDistance: 
+				closestDistance = distanceFromThisPenguin
+				closestPenguin = penguin
+	if closestPenguin: 
+		print("we found the closest sick penguin, clearing status")
+		closestPenguin.setSick(false)
+		updatePenguinAndFoodSavedArray()
+	else: 
+		print("there was no sick penguin, or there was an error")
 	isDragging = false
 	
 func foodIsDropped(atPosition: Vector2): 

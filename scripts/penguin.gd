@@ -7,9 +7,11 @@ signal penguinNeedsGoal(penguin)
 
 #internals
 var screen_size
+var addedToScene = false
 
 #mechanics
 var current_state: String
+var last_state: String
 var current_area: String
 var goal: Vector2
 var hasAGoal: bool = false
@@ -28,6 +30,7 @@ var walkOrIdlePolygons
 func _ready() -> void:
 	walkOrIdlePolygons = $PenguinCollision.polygon
 	setState("Idle")
+	addedToScene = true
 	$PenguinSprite.play()
 	$PenguinCollision.set_deferred("input_pickable", true)
 	screen_size = get_viewport_rect().size
@@ -49,14 +52,16 @@ func setState(state: String) -> void:
 	if state != current_state: 
 		print("setting penguin state to " + state)
 		print("current area : " + current_area)
+		last_state = current_state
 		current_state = state
 		$PenguinSprite.animation = state
 	
 func setSelected(state: bool) -> void: 
 	selected = state
 	if !state: 
-		$PenguinSprite.modulate = Color(1,1,1,1) #Resets to original
-		$HealthIndicator.visible = false
+		if !sick:
+			$PenguinSprite.modulate = Color(1,1,1,1) #Resets to original
+	$HealthIndicator.visible = false
 		
 func setHealthIndicatorVisibility(state: bool) -> void: 
 	$HealthIndicator.visible = state
@@ -101,7 +106,15 @@ func addFood(f) -> void:
 	$HealthIndicator.value = food
 	
 func setSick(s) -> void:
-	print("setting penguin sick to " + str(s)) 
+	print("setting penguin sick to " + str(s))
+	if s: 
+		$PenguinSprite.modulate = Color(0.5,1.0,0.5,1.0) 
+		$HealthIndicator.tint_progress = Color(0.5,1.0,0.5,1.0)
+		if addedToScene: 
+			$SickTimer.start()
+	else: 
+		$PenguinSprite.modulate = Color(1.0,1.0,1.0,1.0) 
+		$HealthIndicator.tint_progress = Color(0.8,0.15,0.31,1.0)
 	sick = s
 	
 func setFood(f) -> void: 
@@ -119,13 +132,17 @@ func hasGoal() -> bool:
 func getState() -> String:
 	return current_state
 	
+func getSick() -> bool: 
+	return sick
+	
 ##INTERACTIONS##
 func _on_input_event(_viewport, event, _shape_idx): 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
 		print("Penguin Clicked")
 		selected = true
 		$HealthIndicator.visible = true
-		$PenguinSprite.modulate = Color(1, 1, 0, 1) # Yellow
+		if !sick:
+			$PenguinSprite.modulate = Color(1, 1, 0, 1) # Yellow
 		get_parent().onPenguinSelected(true)
 		#stops background from also receiving the event
 		get_viewport().set_input_as_handled()
@@ -170,8 +187,14 @@ func _on_penguin_sprite_animation_changed() -> void:
 		speed = 2.25
 	else: 
 		speed = 1.25
+	if sick: 
+		speed = speed * 0.5
 
 func _on_sliding_goal_timer_timeout() -> void:
 	$SlidingGoalTimer.wait_time = randf_range(1,2)
 	penguinNeedsGoal.emit(self)
 	#emit_signal("penguinNeedsGoal", self)
+
+
+func _on_sick_timer_timeout() -> void:
+	setState("Hurt")

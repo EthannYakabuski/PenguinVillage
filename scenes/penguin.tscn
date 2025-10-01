@@ -24,7 +24,7 @@ tint_progress = Color(0.803922, 0.156863, 0.317647, 1)
 [node name="PenguinSprite" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_28ggd")
-animation = &"Die"
+animation = &"Hurt"
 
 [node name="PenguinCollision" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-24.6667, -17.3333, -27.3333, -9.33333, -29.3333, -1.33333, -32.6667, 4.66667, -34.6667, 10, -32.6667, 14.6667, -28.6667, 16, -29.3333, 22, -26, 25.3333, -22, 28, -18, 31.3333, -12, 30, -3.33333, 30, 6, 26.6667, 12.6667, 26, 18, 23.3333, 23.3333, 20.6667, 22.6667, 14, 18.6667, 11.3333, 18.6667, 5.33333, 18.6667, 0.666667, 21.3333, -2.66667, 24, -4.66667, 25.3333, -8.66667, 25.3333, -12, 20.6667, -14.6667, 15.3333, -18.6667, 12.6667, -25.3333, 8.66667, -30.6667, 2, -32.6667, -4, -32.6667, -10.6667, -30.6667, -16, -28, -20, -24)
@@ -35,9 +35,13 @@ disabled = true
 
 [node name="SlidingGoalTimer" type="Timer" parent="."]
 
+[node name="SickTimer" type="Timer" parent="."]
+wait_time = 2.0
+
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="animation_changed" from="PenguinSprite" to="." method="_on_penguin_sprite_animation_changed"]
 [connection signal="animation_finished" from="PenguinSprite" to="." method="_on_penguin_sprite_animation_finished"]
 [connection signal="animation_looped" from="PenguinSprite" to="." method="_on_penguin_sprite_animation_looped"]
 [connection signal="timeout" from="SlidingGoalTimer" to="." method="_on_sliding_goal_timer_timeout"]
+[connection signal="timeout" from="SickTimer" to="." method="_on_sick_timer_timeout"]
