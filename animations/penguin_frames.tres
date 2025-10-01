@@ -68,7 +68,7 @@ animations = [{
 "speed": 10.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 1.5,
 "texture": ExtResource("10_1tqyl")
 }],
 "loop": true,

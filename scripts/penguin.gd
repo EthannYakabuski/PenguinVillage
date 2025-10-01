@@ -107,6 +107,9 @@ func addFood(f) -> void:
 	
 func setSick(s) -> void:
 	print("setting penguin sick to " + str(s))
+	#if the penguin is currently sick, and is being cured, restore its speed value 
+	if sick && !s: 
+		speed = speed/0.5
 	if s: 
 		$PenguinSprite.modulate = Color(0.5,1.0,0.5,1.0) 
 		$HealthIndicator.tint_progress = Color(0.5,1.0,0.5,1.0)
@@ -151,7 +154,7 @@ func _on_input_event(_viewport, event, _shape_idx):
 func useEnergy(amount) -> void: 
 	food = food - amount
 	if food < 0: 
-		sick = true
+		setSick(true)
 		food = 0
 	$HealthIndicator.value = food
 
@@ -166,6 +169,7 @@ func moveToGoal() -> void:
 			setState("Swim")
 		else:
 			setState("Idle")
+		clearGoal()
 		
 
 func _on_penguin_sprite_animation_looped() -> void:
@@ -177,7 +181,11 @@ func _on_penguin_sprite_animation_looped() -> void:
 		setState("Idle")
 	elif current_state == "Slide": 
 		setState("StillSliding")
-
+	elif current_state == "Hurt": 
+		print("animation looped")
+		print(last_state)
+		setState(last_state)
+		
 func _on_penguin_sprite_animation_changed() -> void:
 	if (current_state == "Swim"): 
 		speed = 2
@@ -197,4 +205,7 @@ func _on_sliding_goal_timer_timeout() -> void:
 
 
 func _on_sick_timer_timeout() -> void:
-	setState("Hurt")
+	if sick: 
+		setState("Hurt")
+		useEnergy(1)
+		

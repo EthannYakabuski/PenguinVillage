@@ -214,11 +214,12 @@ func determinePenguins() -> void:
 func addPenguinAtLocation(atPosition: Vector2) -> void: 
 	var penguin: Penguin = penguin_scene.instantiate()
 	penguin.setLocation(atPosition.x, atPosition.y)
-	penguin.setSick(false)
 	penguin.setHealth(100)
 	penguin.setFood(100)
 	penguin.penguinNeedsGoal.connect(onGivePenguinGoal)
 	add_child(penguin)
+	#this is set after the penguin is added to the scene in order for the sick timer to launch correctly
+	penguin.setSick(false)
 	penguins.push_back(penguin)
 	
 func determinePenguinIntelligence() -> void: 
@@ -491,7 +492,8 @@ func _on_fish_spawn_timer_timeout() -> void:
 	$FishSpawnTimer.wait_time = randf_range(8,15)
 	var fish: Fish = fish_scene.instantiate()
 	var randomSpawnLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
-	fish.setLocation(randomSpawnLocation.x, randomSpawnLocation.y)
+	var randomYDifferential = randf_range(200,350)
+	fish.setLocation(randomSpawnLocation.x, randomSpawnLocation.y+randomYDifferential)
 	fish.fish_collected.connect(onFishCollected)
 	fish.fish_needs_target.connect(onGiveFishGoal)
 	fish.fish_idle_needs_new_goal.connect(onGiveFishGoal)

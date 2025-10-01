@@ -36,12 +36,12 @@ disabled = true
 [node name="SlidingGoalTimer" type="Timer" parent="."]
 
 [node name="SickTimer" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 3.0
+autostart = true
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="animation_changed" from="PenguinSprite" to="." method="_on_penguin_sprite_animation_changed"]
-[connection signal="animation_finished" from="PenguinSprite" to="." method="_on_penguin_sprite_animation_finished"]
 [connection signal="animation_looped" from="PenguinSprite" to="." method="_on_penguin_sprite_animation_looped"]
 [connection signal="timeout" from="SlidingGoalTimer" to="." method="_on_sliding_goal_timer_timeout"]
 [connection signal="timeout" from="SickTimer" to="." method="_on_sick_timer_timeout"]
