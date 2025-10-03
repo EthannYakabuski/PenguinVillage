@@ -103,6 +103,7 @@ func dataLoaded():
 	determinePenguins()
 	determineFish()
 	determineFood()
+	updateGemsLabel(PlayerData.getData()["Gems"])
 	
 #code to load banner ad
 func _create_ad_view() -> void:
@@ -323,6 +324,7 @@ func onGemCollected(gem) -> void:
 	gem.queue_free()
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 1
+	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print("gem has been collected, and data has been saved to the cloud")
@@ -412,6 +414,9 @@ func _on_water_area_area_exited(area: Area2D) -> void:
 ##GUI###
 func handleDrag(_pos: Vector2, delta: Vector2): 
 	$Camera.position.x -= delta.x
+	
+func updateGemsLabel(amount): 
+	$CanvasMenu/GemIndicator/GemLabel.text = str(amount)
 	
 func penguinIsDropped(atPosition: Vector2): 
 	print("penguin has been dropped and received")

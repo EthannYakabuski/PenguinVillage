@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=15 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -12,6 +12,14 @@
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/sign_in/sign_in_client.gd" id="7_cnlxl"]
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
 [ext_resource type="Texture2D" uid="uid://cq3olmajdse2h" path="res://images/hamburger.png" id="9_jbf0t"]
+[ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="13_nhuns"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2wlqk"]
+line_spacing = 10.0
+font_size = 800
+font_color = Color(0.811765, 0.27451, 0.960784, 1)
+outline_size = 75
+outline_color = Color(0, 0, 0, 1)
 
 [node name="Background" type="Area2D"]
 script = ExtResource("1_31116")
@@ -41,6 +49,19 @@ offset_bottom = 1041.0
 scale = Vector2(0.12, 0.12)
 mouse_filter = 1
 texture_normal = ExtResource("9_jbf0t")
+
+[node name="GemIndicator" type="Sprite2D" parent="CanvasMenu"]
+position = Vector2(1001, 84)
+scale = Vector2(0.11, 0.11)
+texture = ExtResource("13_nhuns")
+
+[node name="GemLabel" type="Label" parent="CanvasMenu/GemIndicator"]
+offset_left = -2345.45
+offset_top = -509.091
+offset_right = -975.454
+offset_bottom = 581.909
+text = "100"
+label_settings = SubResource("LabelSettings_2wlqk")
 
 [node name="FishSpawnTimer" type="Timer" parent="."]
 wait_time = 12.0
