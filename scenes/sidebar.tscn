@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ueb0gkdh6ns7"]
+[gd_scene load_steps=9 format=3 uid="uid://ueb0gkdh6ns7"]
 
 [ext_resource type="Texture2D" uid="uid://b2v2xg6yxm54v" path="res://images/sidebarBackground.png" id="1_0rqpi"]
 [ext_resource type="Script" path="res://scripts/sidebar.gd" id="1_el82r"]
@@ -6,6 +6,11 @@
 [ext_resource type="Script" path="res://scripts/sidebaritem.gd" id="3_knuv3"]
 [ext_resource type="Texture2D" uid="uid://cqxpncoxu8bx6" path="res://images/FoodBag.png" id="4_wn62s"]
 [ext_resource type="Texture2D" uid="uid://b763me5ubg5yl" path="res://images/Medicine.png" id="5_p4h8o"]
+[ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="7_7ff2g"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6dqut"]
+font_size = 75
+font_color = Color(0.811765, 0.27451, 0.960784, 1)
 
 [node name="Background" type="Control"]
 z_index = -1
@@ -35,25 +40,25 @@ controlItemType = "Penguin"
 
 [node name="PenguinPurchase" type="TextureRect" parent="SideBarBackground/PenguinPurchaseControl"]
 layout_mode = 0
-offset_left = -2.85714
-offset_top = 10.7143
-offset_right = 142.143
-offset_bottom = 139.714
+offset_left = -5.71429
+offset_top = -19.2859
+offset_right = 139.286
+offset_bottom = 109.714
 texture = ExtResource("3_bm44j")
 
 [node name="FoodBagPurchaseControl" type="Control" parent="SideBarBackground"]
 anchors_preset = 0
-offset_right = 269.0
-offset_bottom = 240.0
+offset_right = 3.0
+offset_bottom = 1.0
 script = ExtResource("3_knuv3")
 controlItemType = "Food"
 
 [node name="FoodBagPurchase" type="TextureRect" parent="SideBarBackground/FoodBagPurchaseControl"]
 layout_mode = 0
-offset_left = 88.5714
-offset_top = 562.857
-offset_right = 1112.57
-offset_bottom = 1586.86
+offset_left = 87.1429
+offset_top = 485.714
+offset_right = 1111.14
+offset_bottom = 1509.72
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("4_wn62s")
 
@@ -66,12 +71,51 @@ controlItemType = "Medicine"
 
 [node name="MedicinePurchase" type="TextureRect" parent="SideBarBackground/MedicinePurchaseControl"]
 layout_mode = 0
-offset_left = 117.143
-offset_top = 1010.0
-offset_right = 1141.14
-offset_bottom = 2546.0
+offset_left = 115.714
+offset_top = 924.286
+offset_right = 1139.71
+offset_bottom = 2460.29
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("5_p4h8o")
+
+[node name="PenguinGemIndicator" type="Sprite2D" parent="."]
+position = Vector2(79, 479)
+scale = Vector2(0.045, 0.045)
+texture = ExtResource("7_7ff2g")
+
+[node name="FoodGemIndicator" type="Sprite2D" parent="."]
+position = Vector2(79, 792)
+scale = Vector2(0.045, 0.045)
+texture = ExtResource("7_7ff2g")
+
+[node name="MedicineIndicator" type="Sprite2D" parent="."]
+position = Vector2(83, 1133)
+scale = Vector2(0.045, 0.045)
+texture = ExtResource("7_7ff2g")
+
+[node name="PenguinGemLabel" type="Label" parent="."]
+offset_left = 117.0
+offset_top = 424.0
+offset_right = 288.0
+offset_bottom = 629.0
+text = "50"
+label_settings = SubResource("LabelSettings_6dqut")
+
+[node name="FoodGemLabel" type="Label" parent="."]
+offset_left = 120.0
+offset_top = 738.0
+offset_right = 291.0
+offset_bottom = 943.0
+text = "100"
+label_settings = SubResource("LabelSettings_6dqut")
+
+[node name="MedicineGemLabel" type="Label" parent="."]
+offset_left = 119.0
+offset_top = 1081.0
+offset_right = 290.0
+offset_bottom = 1286.0
+text = "50"
+label_settings = SubResource("LabelSettings_6dqut")
 
 [connection signal="isDragging" from="SideBarBackground/PenguinPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
 [connection signal="isDragging" from="SideBarBackground/FoodBagPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
