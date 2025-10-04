@@ -20,6 +20,8 @@ var gems = []
 #random location optimizer
 var lastPoints: Vector2
 
+var currentPenguinPrice = 50
+
 var penguinIsSelected = false
 
 #google play integration
@@ -342,6 +344,14 @@ func onGiveFishGoal(fish) -> void:
 	var randomGoalLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
 	fish.setGoal(randomGoalLocation.x, randomGoalLocation.y)
 	fish.setState("Swim")
+
+func spendGems(gemsSpent) -> void: 
+	var currData = PlayerData.getData()
+	currData["Gems"] = currData["Gems"] - gemsSpent
+	updateGemsLabel(currData["Gems"])
+	PlayerData.setData(currData)
+	PlayerData.saveData()
+	print(currData)
 	
 func onFishDanger(fish) -> void: 
 	var closestPenguin = getThreatPosition(fish)
@@ -426,6 +436,8 @@ func penguinIsDropped(atPosition: Vector2):
 	print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
 	addPenguinAtLocation(globalPosition)
 	updatePenguinAndFoodSavedArray()
+	spendGems(currentPenguinPrice)
+	calculateCurrentPenguinPrice()
 	isDragging = false
 	
 func medicineIsDropped(atPosition: Vector2): 
@@ -445,6 +457,7 @@ func medicineIsDropped(atPosition: Vector2):
 	if closestPenguin: 
 		print("we found the closest sick penguin, clearing status")
 		closestPenguin.setSick(false)
+		spendGems(50)
 		updatePenguinAndFoodSavedArray()
 	else: 
 		print("there was no sick penguin, or there was an error")
@@ -458,6 +471,7 @@ func foodIsDropped(atPosition: Vector2):
 	for bowl in foodBowls: 
 		bowl.addFood(100)
 	updatePenguinAndFoodSavedArray()
+	spendGems(100)
 	#fill all food bowls 
 	#update the players cloud data
 	isDragging = false
@@ -529,12 +543,27 @@ func is_point_inside_polygon(collision_polygon: CollisionPolygon2D, point: Vecto
 	var local_point = collision_polygon.get_global_transform().affine_inverse() * point
 	return Geometry2D.is_point_in_polygon(local_point, collision_polygon.polygon)
 
+func calculateCurrentPenguinPrice() -> void: 
+	var currentPenguins = penguins.size()
+	print("there are currently " + str(currentPenguins) + " in the enclosure")
+	#base cost
+	var base = 50
+	#scale factor
+	var scal = 22
+	#rate of growth
+	var p = 1.35
+	var calculatedExactCost = base + scal * pow(float(currentPenguins - 1), p)
+	var roundedCost = int(round(calculatedExactCost / 5.0) * 5.0)
+	print(roundedCost)
+	sidebarHandle.setCurrentPenguinCost(roundedCost)
+	currentPenguinPrice = roundedCost
 
 func _on_side_bar_pressed() -> void:
 	print("side bar pressed")
 	if not sidebarActive: 
 		sidebarHandle = sidebar.instantiate()
 		sidebarHandle.isDraggingSignal.connect(dragToggle)
+		calculateCurrentPenguinPrice()
 		$CanvasMenu.add_child(sidebarHandle)
 		sidebarActive = true
 	else: 

@@ -83,7 +83,6 @@ scale = Vector2(3, 3)
 texture = ExtResource("5_7pg7q")
 
 [node name="WaterCollision" type="CollisionPolygon2D" parent="WaterArea"]
-visible = false
 polygon = PackedVector2Array(-1266, 1502, -1111, 1686, -880, 1448, -766, 1589, -654, 1765, -523, 1598, -425, 1594, -288, 1769, -83, 1443, 137, 1587, 316, 1762, 453, 1524, 681, 1663, 987, 1596, 1078, 1759, 1177, 1596, 1428, 1689, 1579, 1598, 1737, 1754, 1910, 1598, 2061, 1815, 2261, 1721, 2342, 1504, 2342, 2023, -1272, 2025)
 
 [node name="IceBergArea" type="Area2D" parent="."]
@@ -95,7 +94,6 @@ scale = Vector2(3, 3)
 texture = ExtResource("6_yjrk6")
 
 [node name="IceCollision" type="CollisionPolygon2D" parent="IceBergArea"]
-visible = false
 polygon = PackedVector2Array(-1144, 1429, -1109, 1667, -877, 1420, -739, 1595, -654, 1741, -528, 1580, -422, 1578, -290, 1741, -90, 1416, 146, 1571, 314, 1737, 365, 1646, 446, 1501, 684, 1652, 992, 1580, 1080, 1743, 1177, 1580, 1426, 1673, 1575, 1584, 1735, 1735, 1911, 1582, 2064, 1797, 2256, 1709, 2264, 1474, 2267, 953, -1139, 941)
 
 [node name="Android_SignIn" type="Node" parent="."]
