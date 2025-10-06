@@ -433,11 +433,12 @@ func penguinIsDropped(atPosition: Vector2):
 	#spawn the penguin into the scene + animation
 	#update the players cloud data
 	var globalPosition = $Camera.get_global_mouse_position()
-	print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
-	addPenguinAtLocation(globalPosition)
-	updatePenguinAndFoodSavedArray()
-	spendGems(currentPenguinPrice)
-	calculateCurrentPenguinPrice()
+	if PlayerData.getData()["Gems"] >= currentPenguinPrice: 
+		spendGems(currentPenguinPrice)
+		print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
+		addPenguinAtLocation(globalPosition)
+		updatePenguinAndFoodSavedArray()
+		calculateCurrentPenguinPrice()
 	isDragging = false
 	
 func medicineIsDropped(atPosition: Vector2): 
@@ -455,10 +456,12 @@ func medicineIsDropped(atPosition: Vector2):
 				closestDistance = distanceFromThisPenguin
 				closestPenguin = penguin
 	if closestPenguin: 
-		print("we found the closest sick penguin, clearing status")
-		closestPenguin.setSick(false)
-		spendGems(50)
-		updatePenguinAndFoodSavedArray()
+		print("we found the closest sick penguin, checking gem amount available")
+		if PlayerData.getData()["Gems"] >= 50: 
+			print("we found the closest sick penguin, clearing status")
+			closestPenguin.setSick(false)
+			spendGems(50)
+			updatePenguinAndFoodSavedArray()
 	else: 
 		print("there was no sick penguin, or there was an error")
 	isDragging = false
@@ -466,14 +469,13 @@ func medicineIsDropped(atPosition: Vector2):
 func foodIsDropped(atPosition: Vector2): 
 	print("food has been dropped and received")
 	#feed all penguins + play animation
-	for penguin in penguins: 
-		penguin.setFood(100)
-	for bowl in foodBowls: 
-		bowl.addFood(100)
-	updatePenguinAndFoodSavedArray()
-	spendGems(100)
-	#fill all food bowls 
-	#update the players cloud data
+	if PlayerData.getData()["Gems"] >= 100: 
+		for penguin in penguins: 
+			penguin.setFood(100)
+		for bowl in foodBowls: 
+			bowl.addFood(100)
+		updatePenguinAndFoodSavedArray()
+		spendGems(100)
 	isDragging = false
 	
 func dragToggle(): 
