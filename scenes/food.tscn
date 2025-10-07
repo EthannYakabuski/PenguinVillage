@@ -1,0 +1,75 @@
+[gd_scene load_steps=9 format=3 uid="uid://cfat6v41erd3c"]
+
+[ext_resource type="Script" path="res://scripts/food.gd" id="1_1lr0t"]
+[ext_resource type="Texture2D" uid="uid://rudg8m0ft730" path="res://images/FoodBowl_almostFull.png" id="2_8pb8h"]
+[ext_resource type="Texture2D" uid="uid://brq6a8sqx8sie" path="res://images/FoodBowl_almostEmpty.png" id="2_awags"]
+[ext_resource type="Texture2D" uid="uid://t5efekd3dbmr" path="res://images/FoodBowl_empty.png" id="2_jlmmg"]
+[ext_resource type="Texture2D" uid="uid://msm04xrkimrq" path="res://images/FoodBowl_full.png" id="3_aop77"]
+[ext_resource type="Texture2D" uid="uid://d4anhmuskyvce" path="res://images/FoodBowl_medium.png" id="4_tjrub"]
+[ext_resource type="Texture2D" uid="uid://dgbyb54ah1xxo" path="res://images/FoodBowl_prettyFull.png" id="6_nsuut"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_d3ont"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_awags")
+}],
+"loop": true,
+"name": &"AlmostEmpty",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_8pb8h")
+}],
+"loop": true,
+"name": &"AlmostFull",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_aop77")
+}],
+"loop": true,
+"name": &"CompletelyFull",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_jlmmg")
+}],
+"loop": true,
+"name": &"Empty",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_nsuut")
+}],
+"loop": true,
+"name": &"Full",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_tjrub")
+}],
+"loop": true,
+"name": &"Medium",
+"speed": 5.0
+}]
+
+[node name="Food" type="Area2D"]
+scale = Vector2(0.75, 0.75)
+script = ExtResource("1_1lr0t")
+
+[node name="FoodSprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.125, 0.125)
+sprite_frames = SubResource("SpriteFrames_d3ont")
+animation = &"Empty"
+
+[node name="FoodCollision" type="CollisionPolygon2D" parent="."]
+position = Vector2(-86.6667, -82.6667)
+polygon = PackedVector2Array(21.3333, 85.3333, 18.6667, 110.667, 34.6667, 125.333, 53.3333, 133.333, 74.6667, 134.667, 94.6667, 134.667, 112, 133.333, 130.667, 129.333, 146.667, 122.667, 157.333, 105.333, 154.667, 86.6667, 150.667, 70.6667, 138.667, 57.3333, 121.333, 49.3333, 92, 45.3333, 70.6667, 46.6667, 54.6667, 49.3333, 40, 54.6667, 25.3333, 69.3333)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

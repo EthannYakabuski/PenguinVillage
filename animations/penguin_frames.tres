@@ -1,0 +1,146 @@
+[gd_resource type="SpriteFrames" load_steps=17 format=3 uid="uid://cot0itv4g4eta"]
+
+[ext_resource type="Texture2D" uid="uid://b17660sloi8na" path="res://images/penguin_die01@2x.png" id="1_mnwqy"]
+[ext_resource type="Texture2D" uid="uid://ne6b2ihm6qy1" path="res://images/penguin_die02@2x.png" id="2_txv58"]
+[ext_resource type="Texture2D" uid="uid://dsmludeevub5p" path="res://images/penguin_die03@2x.png" id="3_vcqbq"]
+[ext_resource type="Texture2D" uid="uid://d2uc84odyww2g" path="res://images/penguin_die04@2x.png" id="4_564wu"]
+[ext_resource type="Texture2D" uid="uid://cnnid2njcm6mc" path="res://images/penguin_jump01@2x.png" id="5_mvqcs"]
+[ext_resource type="Texture2D" uid="uid://dross3pvntw1p" path="res://images/penguin_jump02@2x.png" id="6_ncujm"]
+[ext_resource type="Texture2D" uid="uid://b4yeg3uvbh0np" path="res://images/penguin_jump03@2x.png" id="7_j716c"]
+[ext_resource type="Texture2D" uid="uid://ctn4wruvg512f" path="res://images/penguin_slide01@2x.png" id="8_ijxu6"]
+[ext_resource type="Texture2D" uid="uid://ckbev4pucano" path="res://images/penguin_slide02@2x.png" id="9_lrpo6"]
+[ext_resource type="Texture2D" uid="uid://bbvwe1h5t703g" path="res://images/penguin_hurt@2x.png" id="10_1tqyl"]
+[ext_resource type="Texture2D" uid="uid://1yeca3tyhlgs" path="res://images/penguin_walk01@2x.png" id="11_ckx81"]
+[ext_resource type="Texture2D" uid="uid://bxhyu65drs7vi" path="res://images/penguin_eat01@2x.png" id="11_x56be"]
+[ext_resource type="Texture2D" uid="uid://b0lb0xbbxmev8" path="res://images/penguin_walk02@2x.png" id="12_24g8o"]
+[ext_resource type="Texture2D" uid="uid://gg57v7o078rb" path="res://images/penguin_swim01@2x.png" id="12_de7jv"]
+[ext_resource type="Texture2D" uid="uid://d0uc3vwb6kcq3" path="res://images/penguin_walk03@2x.png" id="13_30lfx"]
+[ext_resource type="Texture2D" uid="uid://bs7ae6u4cbbde" path="res://images/penguin_walk04@2x.png" id="14_vbbup"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_mnwqy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_txv58")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_vcqbq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_564wu")
+}],
+"loop": true,
+"name": &"Die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_mvqcs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_ncujm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_j716c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ijxu6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_lrpo6")
+}],
+"loop": true,
+"name": &"Dive",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_ckx81")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_x56be")
+}],
+"loop": true,
+"name": &"Eat",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.5,
+"texture": ExtResource("10_1tqyl")
+}],
+"loop": true,
+"name": &"Hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_ckx81")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_mvqcs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_ncujm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_j716c")
+}],
+"loop": true,
+"name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_ijxu6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_lrpo6")
+}],
+"loop": true,
+"name": &"Slide",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_lrpo6")
+}],
+"loop": true,
+"name": &"StillSliding",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_de7jv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_lrpo6")
+}],
+"loop": true,
+"name": &"Swim",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_ckx81")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_24g8o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_30lfx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_vbbup")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 5.0
+}]
