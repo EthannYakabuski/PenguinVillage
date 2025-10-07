@@ -94,6 +94,7 @@ scale = Vector2(0.045, 0.045)
 texture = ExtResource("7_7ff2g")
 
 [node name="PenguinGemLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 117.0
 offset_top = 424.0
 offset_right = 288.0
@@ -102,6 +103,7 @@ text = "50"
 label_settings = SubResource("LabelSettings_6dqut")
 
 [node name="FoodGemLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 120.0
 offset_top = 738.0
 offset_right = 291.0
@@ -110,6 +112,7 @@ text = "100"
 label_settings = SubResource("LabelSettings_6dqut")
 
 [node name="MedicineGemLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 119.0
 offset_top = 1081.0
 offset_right = 290.0
