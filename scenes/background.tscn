@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=16 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
 [ext_resource type="Texture2D" uid="uid://cq3olmajdse2h" path="res://images/hamburger.png" id="9_jbf0t"]
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="13_nhuns"]
+[ext_resource type="Texture2D" uid="uid://wurrnceejyug" path="res://images/mermaid.png" id="14_v2xan"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2wlqk"]
 line_spacing = 10.0
@@ -111,6 +112,15 @@ limit_left = -1700
 limit_right = 1760
 drag_horizontal_enabled = true
 
+[node name="MermaidButton" type="TextureButton" parent="."]
+visible = false
+offset_left = 801.0
+offset_top = 1737.0
+offset_right = 1825.0
+offset_bottom = 3273.0
+scale = Vector2(0.11, 0.11)
+texture_normal = ExtResource("14_v2xan")
+
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="pressed" from="CanvasMenu/SideBar" to="." method="_on_side_bar_pressed"]
 [connection signal="timeout" from="FishSpawnTimer" to="." method="_on_fish_spawn_timer_timeout"]
@@ -119,3 +129,4 @@ drag_horizontal_enabled = true
 [connection signal="area_exited" from="WaterArea" to="." method="_on_water_area_area_exited"]
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
 [connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]
+[connection signal="pressed" from="MermaidButton" to="." method="_on_ad_button_pressed"]

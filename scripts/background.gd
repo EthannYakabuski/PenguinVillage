@@ -106,6 +106,24 @@ func dataLoaded():
 	determineFish()
 	determineFood()
 	updateGemsLabel(PlayerData.getData()["Gems"])
+	if _rewarded_ad: 
+		_rewarded_ad.destroy()
+		_rewarded_ad = null
+		
+	var unit_id = "ca-app-pub-3940256099942544/5224354917"
+	
+	var rewarded_ad_load_callback := RewardedAdLoadCallback.new()
+	
+	rewarded_ad_load_callback.on_ad_failed_to_load = func(adError: LoadAdError) -> void: 
+		print(adError.message)
+	
+	rewarded_ad_load_callback.on_ad_loaded = func(rewarded_ad: RewardedAd) -> void: 
+		print("rewarded ad loaded")
+		_rewarded_ad = rewarded_ad
+		showMermaidButton()
+		
+		
+	RewardedAdLoader.new().load(unit_id, AdRequest.new(), rewarded_ad_load_callback)
 	
 #code to load banner ad
 func _create_ad_view() -> void:
@@ -129,33 +147,24 @@ func destroy_ad_view():
 		_ad_view.destroy()
 		_ad_view = null
 
+func showMermaidButton(): 
+	$MermaidButton.visible = true
+	
 #code to launch a rewarded ad, triggered manually by player
 func _on_ad_button_pressed() -> void:
-	if _rewarded_ad: 
-		_rewarded_ad.destroy()
-		_rewarded_ad = null
+	_rewarded_ad.full_screen_content_callback = _full_screen_content_callback
+	_rewarded_ad.show(on_user_earned_reward_listener)
+	$MermaidButton.visible = false
 		
-	var unit_id = "ca-app-pub-3940256099942544/5224354917"
-	
-	var rewarded_ad_load_callback := RewardedAdLoadCallback.new()
-	
-	rewarded_ad_load_callback.on_ad_failed_to_load = func(adError: LoadAdError) -> void: 
-		print(adError.message)
-	
-	rewarded_ad_load_callback.on_ad_loaded = func(rewarded_ad: RewardedAd) -> void: 
-		print("rewarded ad loaded")
-		_rewarded_ad = rewarded_ad
-		_rewarded_ad.full_screen_content_callback = _full_screen_content_callback
-		_rewarded_ad.show(on_user_earned_reward_listener)
-		
-	RewardedAdLoader.new().load(unit_id, AdRequest.new(), rewarded_ad_load_callback)
-		
-
 #called after user watches the manually launched rewarded ad
 func on_user_earned_reward(rewarded_item : RewardedItem):
 	print("on_user_earned_reward, rewarded_item: rewarded", rewarded_item.amount, rewarded_item.type)
 	#once we are using an actual unit-id from admob, the rewarded_item.amount and rewarded_item.type values are set in the admob console
-	
+	var currData = PlayerData.getData()
+	currData["Gems"] = currData["Gems"] + 50
+	updateGemsLabel(currData["Gems"])
+	PlayerData.setData(currData)
+	PlayerData.saveData()
 	#TODO - reward player with reward
 
 ##GOOGLE PLAY GAME SERVICES##
@@ -193,8 +202,17 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 				print(dataToParse)
 				currentData = JSON.parse_string(dataToParse)
 				PlayerData.setData(currentData)
+				updateLastLogin()
 				emit_signal("dataHasLoaded")
 	)
+	
+##updates players last login time
+func updateLastLogin() -> void: 
+	var currData = PlayerData.getData()
+	currData["LastLogin"] = str(Time.get_datetime_dict_from_system())
+	PlayerData.setData(currData)
+	PlayerData.saveData()
+
 ##PENGUINS##
 func determinePenguins() -> void: 
 	print("loading penguins")
@@ -434,7 +452,7 @@ func handleDrag(_pos: Vector2, delta: Vector2):
 func updateGemsLabel(amount): 
 	$CanvasMenu/GemIndicator/GemLabel.text = str(amount)
 	
-func penguinIsDropped(atPosition: Vector2): 
+func penguinIsDropped(_atPosition: Vector2): 
 	print("penguin has been dropped and received")
 	#spawn the penguin into the scene + animation
 	#update the players cloud data
@@ -447,7 +465,7 @@ func penguinIsDropped(atPosition: Vector2):
 		calculateCurrentPenguinPrice()
 	isDragging = false
 	
-func medicineIsDropped(atPosition: Vector2): 
+func medicineIsDropped(_atPosition: Vector2): 
 	print("medicine has been dropped and received")
 	#find the closest sick penguin
 	#heal the penguin + play animation
@@ -472,7 +490,7 @@ func medicineIsDropped(atPosition: Vector2):
 		print("there was no sick penguin, or there was an error")
 	isDragging = false
 	
-func foodIsDropped(atPosition: Vector2): 
+func foodIsDropped(_atPosition: Vector2): 
 	print("food has been dropped and received")
 	#feed all penguins + play animation
 	if PlayerData.getData()["Gems"] >= 100: 
