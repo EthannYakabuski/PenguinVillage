@@ -120,8 +120,8 @@ func dataLoaded():
 	rewarded_ad_load_callback.on_ad_loaded = func(rewarded_ad: RewardedAd) -> void: 
 		print("rewarded ad loaded")
 		_rewarded_ad = rewarded_ad
+		on_user_earned_reward_listener.on_user_earned_reward = on_user_earned_reward
 		showMermaidButton()
-		
 		
 	RewardedAdLoader.new().load(unit_id, AdRequest.new(), rewarded_ad_load_callback)
 	
