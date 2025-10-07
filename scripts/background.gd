@@ -317,6 +317,12 @@ func onFishCollected(fish, penguin) -> void:
 		foodBowls[0].addFood(10)
 	fish.queue_free()
 	penguin.addHealth(10)
+	var currData = PlayerData.getData()
+	currData["Gems"] = currData["Gems"] + 1
+	updateGemsLabel(currData["Gems"])
+	PlayerData.setData(currData)
+	PlayerData.saveData()
+	print("gem has been collected, and data has been saved to the cloud")
 	updatePenguinAndFoodSavedArray()
 	
 func onGemCollected(gem) -> void: 
@@ -325,7 +331,7 @@ func onGemCollected(gem) -> void:
 		gems.erase(gem)
 	gem.queue_free()
 	var currData = PlayerData.getData()
-	currData["Gems"] = currData["Gems"] + 1
+	currData["Gems"] = currData["Gems"] + 5
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
