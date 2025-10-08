@@ -104,9 +104,9 @@ func dataLoaded():
 	self.visible = true
 	#$WaterArea.visible = true
 	#$IceBergArea.visible = true
-	determinePenguins()
 	determineFish()
 	determineFood()
+	determinePenguins()
 	updateGemsLabel(PlayerData.getData()["Gems"])
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
@@ -508,6 +508,7 @@ func medicineIsDropped(_atPosition: Vector2):
 		if PlayerData.getData()["Gems"] >= 50: 
 			print("we found the closest sick penguin, clearing status")
 			closestPenguin.setSick(false)
+			closestPenguin.addFood(25)
 			spendGems(50)
 			updatePenguinAndFoodSavedArray()
 	else: 
