@@ -21,6 +21,7 @@ var gems = []
 var lastPoints: Vector2
 
 var currentPenguinPrice = 50
+var currentPenguinFoodReqSinceLastLogin = 0
 
 var penguinIsSelected = false
 
@@ -69,7 +70,7 @@ func androidAuthentication() -> void:
 			"Fish": [],
 			"Decorations": [], 
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 8, "day": 19, "weekday": 2, "hour": 23, "minute": 28, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 10, "day": 04, "weekday": 2, "hour": 23, "minute": 28, "second": 0, "dst": true },
 			"DailyRewards": [true, false, false, false, false, false, false],
 			"Gems": 250,
 			"Coins": 100,
@@ -78,6 +79,7 @@ func androidAuthentication() -> void:
 		var jsonStringDummyData = JSON.stringify(dummyData)
 		var jsonParsedDummyData = JSON.parse_string(jsonStringDummyData)
 		PlayerData.setData(jsonParsedDummyData)
+		updateLastLogin()
 		emit_signal("dataHasLoaded")
 	else: 
 		print("Plugin found")
@@ -209,11 +211,30 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 ##updates players last login time
 func updateLastLogin() -> void: 
 	var currData = PlayerData.getData()
+	calculatePenguinDamageFromLastLogin(currData["LastLogin"], Time.get_datetime_dict_from_system())
 	currData["LastLogin"] = str(Time.get_datetime_dict_from_system())
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 
 ##PENGUINS##
+func calculatePenguinDamageFromLastLogin(lastLogin, currentLogin): 
+	#print(lastLogin)
+	#print(currentLogin)
+	var lastLogin_unix = Time.get_unix_time_from_datetime_dict(lastLogin)
+	#print(lastLogin_unix)
+	var currentLogin_unix = Time.get_unix_time_from_datetime_dict(currentLogin)
+	var timeInSecondsSinceLastLogin = currentLogin_unix - lastLogin_unix
+	print("time in seconds since last login " + str(timeInSecondsSinceLastLogin))
+	var days = timeInSecondsSinceLastLogin / 86400
+	var hours = (timeInSecondsSinceLastLogin % 86400) / 3600
+	var minutes = (timeInSecondsSinceLastLogin % 3600) / 60
+	updatePenguinsFoodLevelsSinceLastLogin(days, hours, minutes)
+	
+func updatePenguinsFoodLevelsSinceLastLogin(days: int, hours: int, minutes: int): 
+	var foodRequired = int((days * 24) + (hours * 1) + (minutes * 0.17))
+	print("foodRequired: " + str(foodRequired))
+	currentPenguinFoodReqSinceLastLogin = foodRequired
+
 func determinePenguins() -> void: 
 	print("loading penguins")
 	#var penguin: Penguin = penguin_scene.instantiate()
@@ -231,6 +252,9 @@ func determinePenguins() -> void:
 		penguin.penguinNeedsGoal.connect(onGivePenguinGoal)
 		add_child(penguin)
 		penguins.push_back(penguin)
+	for penguin in penguins: 
+		penguin.useEnergy(currentPenguinFoodReqSinceLastLogin)
+	updatePenguinAndFoodSavedArray()
 		
 func addPenguinAtLocation(atPosition: Vector2) -> void: 
 	var penguin: Penguin = penguin_scene.instantiate()
