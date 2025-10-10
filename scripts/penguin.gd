@@ -153,7 +153,7 @@ func _on_input_event(_viewport, event, _shape_idx):
 ##UTILITY##
 func useEnergy(amount) -> void: 
 	food = food - amount
-	if food < 0: 
+	if food <= 0: 
 		setSick(true)
 		food = 0
 	$HealthIndicator.value = food

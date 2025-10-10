@@ -71,7 +71,8 @@ func androidAuthentication() -> void:
 			"Decorations": [], 
 			"AreasUnlocked": [false, false, false, false, false],
 			"LastLogin": { "year": 2025, "month": 10, "day": 04, "weekday": 2, "hour": 23, "minute": 28, "second": 0, "dst": true },
-			"DailyRewards": [true, false, false, false, false, false, false],
+			"DailyRewards": [false, false, false, false, false, false, false],
+			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 250,
 			"Coins": 100,
 			"Experience": 1233
@@ -108,6 +109,7 @@ func dataLoaded():
 	determineFood()
 	determinePenguins()
 	updateGemsLabel(PlayerData.getData()["Gems"])
+	determineDailyReward()
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
 		_rewarded_ad = null
@@ -168,6 +170,16 @@ func on_user_earned_reward(rewarded_item : RewardedItem):
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	#TODO - reward player with reward
+	
+func determineDailyReward(): 
+	pass
+	#check to see if todays daily reward has been claimed yet or not
+	#if it hasnt, calculate how many days have been logged in in a row
+	#if the user has logged in 7 days in a row, provide the weekly prize and reset the array if the reward is clicked
+	
+func _on_daily_reward_box_pressed() -> void:
+	pass
+	#check to see if the reward is the 7th sequential day, when pressed reset the dailyRewards arrays in player data
 
 ##GOOGLE PLAY GAME SERVICES##
 func _on_user_authenticated(is_authenticated: bool) -> void:
@@ -189,6 +201,7 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 					"AreasUnlocked": [false, false, false, false, false],
 					"LastLogin": str(newLoginTime),
 					"DailyRewards": [false, false, false, false, false, false, false],
+					"DailyRewardsClaimed" : [false, false, false, false, false, false, false],
 					"Gems": 100,
 					"Coins": 50,
 					"Experience": 0
@@ -213,6 +226,9 @@ func updateLastLogin() -> void:
 	var currData = PlayerData.getData()
 	calculatePenguinDamageFromLastLogin(currData["LastLogin"], Time.get_datetime_dict_from_system())
 	currData["LastLogin"] = str(Time.get_datetime_dict_from_system())
+	#print(Time.get_datetime_dict_from_system()["weekday"])
+	#updates the nth member of the daily rewards array to true
+	currData["DailyRewards"][Time.get_datetime_dict_from_system()["weekday"]] = true
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 
@@ -225,9 +241,18 @@ func calculatePenguinDamageFromLastLogin(lastLogin, currentLogin):
 	var currentLogin_unix = Time.get_unix_time_from_datetime_dict(currentLogin)
 	var timeInSecondsSinceLastLogin = currentLogin_unix - lastLogin_unix
 	print("time in seconds since last login " + str(timeInSecondsSinceLastLogin))
-	var days = timeInSecondsSinceLastLogin / 86400
-	var hours = (timeInSecondsSinceLastLogin % 86400) / 3600
-	var minutes = (timeInSecondsSinceLastLogin % 3600) / 60
+	#it has been more than a day since last login, reset the entire daily rewards array
+	if timeInSecondsSinceLastLogin > 86400:
+		print("it has been more than a day since last login, clearing the daily rewards array") 
+		var currData = PlayerData.getData()
+		for day in range(7): 
+			currData["DailyRewards"][day] = false
+			currData["DailyRewardsClaimed"][day] = false
+		PlayerData.setData(currData)
+		PlayerData.saveData()
+	var days = int(timeInSecondsSinceLastLogin / 86400.0)
+	var hours = int((timeInSecondsSinceLastLogin % 86400) / 3600.0)
+	var minutes = int((timeInSecondsSinceLastLogin % 3600) / 60.0)
 	updatePenguinsFoodLevelsSinceLastLogin(days, hours, minutes)
 	
 func updatePenguinsFoodLevelsSinceLastLogin(days: int, hours: int, minutes: int): 
@@ -253,6 +278,7 @@ func determinePenguins() -> void:
 		add_child(penguin)
 		penguins.push_back(penguin)
 	for penguin in penguins: 
+		print("penguin using energy from app being idle")
 		penguin.useEnergy(currentPenguinFoodReqSinceLastLogin)
 	updatePenguinAndFoodSavedArray()
 		
