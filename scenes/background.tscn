@@ -123,6 +123,7 @@ scale = Vector2(0.11, 0.11)
 texture_normal = ExtResource("14_v2xan")
 
 [node name="DailyRewardBox" type="TextureButton" parent="."]
+visible = false
 offset_left = 716.0
 offset_top = 883.0
 offset_right = 1740.0
