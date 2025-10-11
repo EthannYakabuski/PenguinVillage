@@ -266,7 +266,7 @@ func updateLastLogin() -> void:
 	var newestLogin = Time.get_datetime_dict_from_system()
 	lastLogin_global = newestLogin
 	calculatePenguinDamageFromLastLogin(currData["LastLogin"], newestLogin)
-	currData["LastLogin"] = str(newestLogin)
+	currData["LastLogin"] = newestLogin
 	#print(Time.get_datetime_dict_from_system()["weekday"])
 	currData["DailyRewards"][Time.get_datetime_dict_from_system()["weekday"]] = true
 	PlayerData.setData(currData)
