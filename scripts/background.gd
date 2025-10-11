@@ -215,6 +215,7 @@ func _on_daily_reward_box_pressed() -> void:
 	print("The player will collect " + str(gemsToCollect) + " gems")
 	currData["Gems"] = currData["Gems"] + gemsToCollect
 	updateGemsLabel(currData["Gems"])
+	$DailyRewardBox.visible = false
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 
@@ -237,7 +238,7 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 					"Fish": [],
 					"Decorations": [], 
 					"AreasUnlocked": [false, false, false, false, false],
-					"LastLogin": str(newLoginTime),
+					"LastLogin": newLoginTime,
 					"DailyRewards": [false, false, false, false, false, false, false],
 					"DailyRewardsClaimed" : [false, false, false, false, false, false, false],
 					"Gems": 100,
