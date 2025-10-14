@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=17 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://cq3olmajdse2h" path="res://images/hamburger.png" id="9_jbf0t"]
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="13_nhuns"]
 [ext_resource type="Texture2D" uid="uid://wurrnceejyug" path="res://images/mermaid.png" id="14_v2xan"]
+[ext_resource type="Texture2D" uid="uid://ep0gg1u01v3h" path="res://images/DailyRewardBox.png" id="15_22nuf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2wlqk"]
 line_spacing = 10.0
@@ -121,6 +122,15 @@ offset_bottom = 3273.0
 scale = Vector2(0.11, 0.11)
 texture_normal = ExtResource("14_v2xan")
 
+[node name="DailyRewardBox" type="TextureButton" parent="."]
+visible = false
+offset_left = 716.0
+offset_top = 883.0
+offset_right = 1740.0
+offset_bottom = 1907.0
+scale = Vector2(0.315, 0.315)
+texture_normal = ExtResource("15_22nuf")
+
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="pressed" from="CanvasMenu/SideBar" to="." method="_on_side_bar_pressed"]
 [connection signal="timeout" from="FishSpawnTimer" to="." method="_on_fish_spawn_timer_timeout"]
@@ -130,3 +140,4 @@ texture_normal = ExtResource("14_v2xan")
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
 [connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]
 [connection signal="pressed" from="MermaidButton" to="." method="_on_ad_button_pressed"]
+[connection signal="pressed" from="DailyRewardBox" to="." method="_on_daily_reward_box_pressed"]

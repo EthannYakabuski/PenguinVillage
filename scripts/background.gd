@@ -21,6 +21,9 @@ var gems = []
 var lastPoints: Vector2
 
 var currentPenguinPrice = 50
+var currentPenguinFoodReqSinceLastLogin = 0
+
+var lastLogin_global
 
 var penguinIsSelected = false
 
@@ -63,14 +66,16 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
+		lastLogin_global = { "year": 2025, "month": 10, "day": 10, "weekday": 5, "hour": 23, "minute": 28, "second": 0, "dst": true }
 		var dummyData = {
 			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": true}, {"health": 90, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 8, "day": 19, "weekday": 2, "hour": 23, "minute": 28, "second": 0, "dst": true },
-			"DailyRewards": [true, false, false, false, false, false, false],
+			"LastLogin": { "year": 2025, "month": 10, "day": 10, "weekday": 5, "hour": 23, "minute": 28, "second": 0, "dst": true },
+			"DailyRewards": [true, true, true, true, true, true, true],
+			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 250,
 			"Coins": 100,
 			"Experience": 1233
@@ -78,6 +83,7 @@ func androidAuthentication() -> void:
 		var jsonStringDummyData = JSON.stringify(dummyData)
 		var jsonParsedDummyData = JSON.parse_string(jsonStringDummyData)
 		PlayerData.setData(jsonParsedDummyData)
+		updateLastLogin()
 		emit_signal("dataHasLoaded")
 	else: 
 		print("Plugin found")
@@ -102,10 +108,11 @@ func dataLoaded():
 	self.visible = true
 	#$WaterArea.visible = true
 	#$IceBergArea.visible = true
-	determinePenguins()
 	determineFish()
 	determineFood()
+	determinePenguins()
 	updateGemsLabel(PlayerData.getData()["Gems"])
+	determineDailyReward()
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
 		_rewarded_ad = null
@@ -166,6 +173,51 @@ func on_user_earned_reward(rewarded_item : RewardedItem):
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	#TODO - reward player with reward
+	
+func determineDailyReward():
+	print("inside determineDailyReward") 
+	var weekday = lastLogin_global["weekday"]
+	print("determining daily reward it is weekday: " + str(weekday))
+	if not PlayerData.getData()["DailyRewardsClaimed"][weekday]: 
+		print("todays daily reward has not yet been claimed")
+		$DailyRewardBox.visible = true
+	else: 
+		print("todays daily reward has already been claimed")
+	
+func _on_daily_reward_box_pressed() -> void:
+	print("collecting daily reward from clicking on the present")
+	var currData = PlayerData.getData()
+	var rewardsClaimed = currData["DailyRewards"]
+	var currentDay = lastLogin_global["weekday"]
+	var subsequentTruesBehindCurrentDay = 0
+	var keepLooping = true
+	var loopVar = currentDay
+	while keepLooping: 
+		if rewardsClaimed[(loopVar - 1) % 7]: 
+			print("incrementing streak")
+			subsequentTruesBehindCurrentDay += 1
+			if subsequentTruesBehindCurrentDay == 6:
+				break
+			loopVar -= 1
+		else: 
+			print("stopping loop")
+			keepLooping = false
+	if subsequentTruesBehindCurrentDay == 6: 
+		print("player has logged in for a week straight, resetting arrays")
+		currData["DailyRewards"] = [false, false, false, false, false, false, false]
+		currData["DailyRewards"][currentDay] = true
+	var totalConsecutiveDays = subsequentTruesBehindCurrentDay + 1
+	print("the total number of consecutive days is: " + str(totalConsecutiveDays))
+	#need to reset all other days of the DailyRewardsClaimed array to false
+	currData["DailyRewardsClaimed"] = [false, false, false, false, false, false, false]
+	currData["DailyRewardsClaimed"][currentDay] = true
+	var gemsToCollect = 40 + 15*totalConsecutiveDays + 5*(totalConsecutiveDays*totalConsecutiveDays)
+	print("The player will collect " + str(gemsToCollect) + " gems")
+	currData["Gems"] = currData["Gems"] + gemsToCollect
+	updateGemsLabel(currData["Gems"])
+	$DailyRewardBox.visible = false
+	PlayerData.setData(currData)
+	PlayerData.saveData()
 
 ##GOOGLE PLAY GAME SERVICES##
 func _on_user_authenticated(is_authenticated: bool) -> void:
@@ -178,6 +230,7 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 				print("saved game not found, creating new player data")
 				#create new player data
 				var newLoginTime = Time.get_datetime_dict_from_system()
+				lastLogin_global = newLoginTime
 				print("newLoginTime: " + str(newLoginTime))
 				var newPlayerData = {
 					"Penguins": [{"health": 100, "food": 75, "sick": false}],
@@ -185,8 +238,9 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 					"Fish": [],
 					"Decorations": [], 
 					"AreasUnlocked": [false, false, false, false, false],
-					"LastLogin": str(newLoginTime),
+					"LastLogin": newLoginTime,
 					"DailyRewards": [false, false, false, false, false, false, false],
+					"DailyRewardsClaimed" : [false, false, false, false, false, false, false],
 					"Gems": 100,
 					"Coins": 50,
 					"Experience": 0
@@ -209,11 +263,43 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 ##updates players last login time
 func updateLastLogin() -> void: 
 	var currData = PlayerData.getData()
-	currData["LastLogin"] = str(Time.get_datetime_dict_from_system())
+	var newestLogin = Time.get_datetime_dict_from_system()
+	lastLogin_global = newestLogin
+	calculatePenguinDamageFromLastLogin(currData["LastLogin"], newestLogin)
+	currData["LastLogin"] = newestLogin
+	#print(Time.get_datetime_dict_from_system()["weekday"])
+	currData["DailyRewards"][Time.get_datetime_dict_from_system()["weekday"]] = true
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 
 ##PENGUINS##
+func calculatePenguinDamageFromLastLogin(lastLogin, currentLogin): 
+	#print(lastLogin)
+	#print(currentLogin)
+	var lastLogin_unix = Time.get_unix_time_from_datetime_dict(lastLogin)
+	#print(lastLogin_unix)
+	var currentLogin_unix = Time.get_unix_time_from_datetime_dict(currentLogin)
+	var timeInSecondsSinceLastLogin = currentLogin_unix - lastLogin_unix
+	print("time in seconds since last login " + str(timeInSecondsSinceLastLogin))
+	#it has been more than a day since last login, reset the entire daily rewards array
+	if timeInSecondsSinceLastLogin > 86400:
+		print("it has been more than a day since last login, clearing the daily rewards array") 
+		var currData = PlayerData.getData()
+		for day in range(7): 
+			currData["DailyRewards"][day] = false
+			currData["DailyRewardsClaimed"][day] = false
+		PlayerData.setData(currData)
+		PlayerData.saveData()
+	var days = int(timeInSecondsSinceLastLogin / 86400.0)
+	var hours = int((timeInSecondsSinceLastLogin % 86400) / 3600.0)
+	var minutes = int((timeInSecondsSinceLastLogin % 3600) / 60.0)
+	updatePenguinsFoodLevelsSinceLastLogin(days, hours, minutes)
+	
+func updatePenguinsFoodLevelsSinceLastLogin(days: int, hours: int, minutes: int): 
+	var foodRequired = int((days * 24) + (hours * 1) + (minutes * 0.17))
+	print("foodRequired: " + str(foodRequired))
+	currentPenguinFoodReqSinceLastLogin = foodRequired
+
 func determinePenguins() -> void: 
 	print("loading penguins")
 	#var penguin: Penguin = penguin_scene.instantiate()
@@ -231,6 +317,10 @@ func determinePenguins() -> void:
 		penguin.penguinNeedsGoal.connect(onGivePenguinGoal)
 		add_child(penguin)
 		penguins.push_back(penguin)
+	for penguin in penguins: 
+		print("penguin using energy from app being idle")
+		penguin.useEnergy(currentPenguinFoodReqSinceLastLogin)
+	updatePenguinAndFoodSavedArray()
 		
 func addPenguinAtLocation(atPosition: Vector2) -> void: 
 	var penguin: Penguin = penguin_scene.instantiate()
@@ -484,6 +574,7 @@ func medicineIsDropped(_atPosition: Vector2):
 		if PlayerData.getData()["Gems"] >= 50: 
 			print("we found the closest sick penguin, clearing status")
 			closestPenguin.setSick(false)
+			closestPenguin.addFood(25)
 			spendGems(50)
 			updatePenguinAndFoodSavedArray()
 	else: 
