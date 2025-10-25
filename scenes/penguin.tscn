@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://duea6pilwy37k"]
+[gd_scene load_steps=6 format=3 uid="uid://duea6pilwy37k"]
 
 [ext_resource type="Script" path="res://scripts/penguin.gd" id="1_3yk4v"]
 [ext_resource type="SpriteFrames" uid="uid://cot0itv4g4eta" path="res://animations/penguin_frames.tres" id="2_28ggd"]
 [ext_resource type="Texture2D" uid="uid://4r8eqqvlhwge" path="res://images/Heart_Outline.png" id="2_lxwiq"]
 [ext_resource type="Texture2D" uid="uid://24neilo8phk3" path="res://images/Heart_Progress_Texture.png" id="3_162y3"]
+[ext_resource type="AudioStream" uid="uid://d2vkjmc33risl" path="res://sounds/footstep.wav" id="5_viuhh"]
 
 [node name="Penguin" type="Area2D"]
 z_index = 1
@@ -38,6 +39,10 @@ disabled = true
 [node name="SickTimer" type="Timer" parent="."]
 wait_time = 3.0
 autostart = true
+
+[node name="FootStepSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_viuhh")
+volume_db = 20.0
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

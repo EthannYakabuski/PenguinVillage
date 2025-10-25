@@ -73,7 +73,7 @@ func androidAuthentication() -> void:
 			"Fish": [],
 			"Decorations": [], 
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 10, "day": 10, "weekday": 5, "hour": 23, "minute": 28, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 10, "day": 24, "weekday": 6, "hour": 17, "minute": 28, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 250,

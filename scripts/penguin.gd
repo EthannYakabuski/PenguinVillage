@@ -158,16 +158,19 @@ func useEnergy(amount) -> void:
 		food = 0
 	$HealthIndicator.value = food
 
-func moveToGoal() -> void: 
+func moveToGoal() -> void:
 	var direction = (goal - global_position).normalized()
 	if global_position.distance_to(goal) > 1:
 		$PenguinSprite.flip_h = direction.x < 0
 		global_position += direction * speed
+		if current_state == "Walk" and not $FootStepSound.playing: 
+			$FootStepSound.play()
 		#position = position.clamp(Vector2.ZERO, screen_size)
 	else: 
 		if current_area == "Water": 
 			setState("Swim")
 		else:
+			$FootStepSound.stop()
 			setState("Idle")
 		clearGoal()
 		
