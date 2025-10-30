@@ -66,7 +66,7 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 10, "day": 10, "weekday": 5, "hour": 23, "minute": 28, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 10, "day": 29, "weekday": 4, "hour": 21, "minute": 28, "second": 0, "dst": true }
 		var dummyData = {
 			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": true}, {"health": 90, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
@@ -78,7 +78,8 @@ func androidAuthentication() -> void:
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 250,
 			"Coins": 100,
-			"Experience": 1233
+			"Experience": 1233, 
+			"FishCaught": 0,
 		}
 		var jsonStringDummyData = JSON.stringify(dummyData)
 		var jsonParsedDummyData = JSON.parse_string(jsonStringDummyData)
@@ -243,7 +244,8 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 					"DailyRewardsClaimed" : [false, false, false, false, false, false, false],
 					"Gems": 100,
 					"Coins": 50,
-					"Experience": 0
+					"Experience": 0, 
+					"FishCaught": 0,
 				}
 				PlayerData.setData(newPlayerData)
 				emit_signal("dataHasLoaded")
@@ -427,6 +429,11 @@ func onFishCollected(fish, penguin) -> void:
 	penguin.addHealth(10)
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 1
+	currData["FishCaught"] = currData["FishCaught"] + 1
+	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAQ", currData["FishCaught"])
+	if currData["FishCaught"] == 1: 
+		print("player has unlocked 'Catch a fish' achievement")
+		$AchievementsClient.achievement_unlocked("CgkI8tzE1rMcEAIQAg")
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
