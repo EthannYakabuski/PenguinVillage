@@ -431,9 +431,7 @@ func onFishCollected(fish, penguin) -> void:
 	currData["Gems"] = currData["Gems"] + 1
 	currData["FishCaught"] = currData["FishCaught"] + 1
 	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAQ", currData["FishCaught"])
-	if currData["FishCaught"] == 1: 
-		print("player has unlocked 'Catch a fish' achievement")
-		$AchievementsClient.achievement_unlocked("CgkI8tzE1rMcEAIQAg")
+	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQAg")
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
