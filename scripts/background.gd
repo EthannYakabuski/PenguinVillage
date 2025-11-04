@@ -352,6 +352,7 @@ func determinePenguinIntelligence() -> void:
 				pass
 			else:
 				p.addFood(1)
+				$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBw", 1)
 				foodBowls[0].useFood(0.25)
 			#onGivePenguinGoal(p)
 			
@@ -432,6 +433,7 @@ func onFishCollected(fish, penguin) -> void:
 	currData["FishCaught"] = currData["FishCaught"] + 1
 	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAQ", currData["FishCaught"])
 	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQAg")
+	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBg", 1)
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
@@ -556,6 +558,8 @@ func penguinIsDropped(_atPosition: Vector2):
 		spendGems(currentPenguinPrice)
 		print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
 		addPenguinAtLocation(globalPosition)
+		var currentPenguinAmount = penguins.size()
+		$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAw", currentPenguinAmount)
 		updatePenguinAndFoodSavedArray()
 		calculateCurrentPenguinPrice()
 	isDragging = false
