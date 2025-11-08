@@ -66,14 +66,14 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 10, "day": 29, "weekday": 4, "hour": 21, "minute": 28, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 11, "day": 6, "weekday": 5, "hour": 17, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
 			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": true}, {"health": 90, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 10, "day": 24, "weekday": 6, "hour": 17, "minute": 28, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 11, "day": 6, "weekday": 5, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 250,
@@ -170,7 +170,9 @@ func on_user_earned_reward(rewarded_item : RewardedItem):
 	#once we are using an actual unit-id from admob, the rewarded_item.amount and rewarded_item.type values are set in the admob console
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 50
+	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 50)
 	updateGemsLabel(currData["Gems"])
+	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDA")
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	#TODO - reward player with reward
@@ -215,6 +217,7 @@ func _on_daily_reward_box_pressed() -> void:
 	var gemsToCollect = 40 + 15*totalConsecutiveDays + 5*(totalConsecutiveDays*totalConsecutiveDays)
 	print("The player will collect " + str(gemsToCollect) + " gems")
 	currData["Gems"] = currData["Gems"] + gemsToCollect
+	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", gemsToCollect)
 	updateGemsLabel(currData["Gems"])
 	$DailyRewardBox.visible = false
 	PlayerData.setData(currData)
@@ -360,6 +363,7 @@ func determinePenguinIntelligence() -> void:
 func determineFish() -> void: 
 	print("loading fish")
 	var fish: Fish = fish_scene.instantiate()
+	fish.setType("Blue")
 	fish.setLocation(500, 1700)
 	fish.fish_collected.connect(onFishCollected)
 	fish.fish_needs_target.connect(onGiveFishGoal)
@@ -429,12 +433,10 @@ func onFishCollected(fish, penguin) -> void:
 	fish.queue_free()
 	penguin.addHealth(10)
 	var currData = PlayerData.getData()
-	currData["Gems"] = currData["Gems"] + 1
 	currData["FishCaught"] = currData["FishCaught"] + 1
 	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAQ", currData["FishCaught"])
 	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQAg")
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBg", 1)
-	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print("gem has been collected, and data has been saved to the cloud")
@@ -447,6 +449,7 @@ func onGemCollected(gem) -> void:
 	gem.queue_free()
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 5
+	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 5)
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
@@ -559,6 +562,15 @@ func penguinIsDropped(_atPosition: Vector2):
 		print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
 		addPenguinAtLocation(globalPosition)
 		var currentPenguinAmount = penguins.size()
+		match currentPenguinAmount: 
+			2: 
+				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDw")
+			5: 
+				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEA")
+			10: 
+				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEQ")
+			20: 
+				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDg")
 		$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAw", currentPenguinAmount)
 		updatePenguinAndFoodSavedArray()
 		calculateCurrentPenguinPrice()
@@ -584,6 +596,7 @@ func medicineIsDropped(_atPosition: Vector2):
 			print("we found the closest sick penguin, clearing status")
 			closestPenguin.setSick(false)
 			closestPenguin.addFood(25)
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCA")
 			spendGems(50)
 			updatePenguinAndFoodSavedArray()
 	else: 
@@ -636,6 +649,13 @@ func _on_fish_spawn_timer_timeout() -> void:
 	print("fish spawn timeout")
 	$FishSpawnTimer.wait_time = randf_range(8,15)
 	var fish: Fish = fish_scene.instantiate()
+	var randomTypeValue = randf_range(0,100)
+	if(randomTypeValue < 90): 
+		fish.setType("blue")
+	elif (randomTypeValue > 90 and randomTypeValue < 97): 
+		fish.setType("purple")
+	else: 
+		fish.setType("gold")
 	var randomSpawnLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
 	var randomYDifferential = randf_range(200,350)
 	fish.setLocation(randomSpawnLocation.x, randomSpawnLocation.y+randomYDifferential)

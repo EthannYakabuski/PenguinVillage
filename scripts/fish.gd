@@ -2,7 +2,7 @@ extends Area2D
 
 class_name Fish
 
-@export var penguin_frames: SpriteFrames = preload("res://animations/fish_frames.tres")
+@export var fish_frames: SpriteFrames
 signal fish_collected(fish, penguin)
 signal fish_needs_target(fish)
 signal fish_danger_check(fish)
@@ -11,6 +11,7 @@ signal fish_idle_needs_new_goal(fish)
 #internals
 var sprite: AnimatedSprite2D
 var id
+var fishType
 
 #mechanics
 var current_state: String
@@ -56,6 +57,18 @@ func setSpeed(s) -> void:
 	
 func setLocation(x, y) -> void: 
 	position = Vector2(x, y)
+	
+func setType(type) -> void: 
+	fishType = type
+	if(type == "purple"): 
+		$FishSprite.sprite_frames = preload("res://animations/purple_fish_frames.tres")
+		fish_frames = preload("res://animations/purple_fish_frames.tres")
+	elif(type == "gold"): 
+		$FishSprite.sprite_frames = preload("res://animations/gold_fish_frames.tres")
+		fish_frames = preload("res://animations/gold_fish_frames.tres")
+	else: 
+		$FishSprite.sprite_frames = preload("res://animations/fish_frames.tres")
+		fish_frames = preload("res://animations/fish_frames.tres")
 
 ##GETTERS##
 func hasGoal() -> bool: 

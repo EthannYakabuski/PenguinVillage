@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" load_steps=3 format=3 uid="uid://i7gr6f0wr0d"]
+
+[ext_resource type="Texture2D" uid="uid://xp856ho3ij7p" path="res://images/goldenFish.png" id="1_af12m"]
+[ext_resource type="Texture2D" uid="uid://c2axxsifvabto" path="res://images/goldenFish_swim_one.png" id="2_xonqt"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_af12m")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_af12m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_xonqt")
+}],
+"loop": true,
+"name": &"Swim",
+"speed": 5.0
+}]
