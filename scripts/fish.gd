@@ -63,9 +63,11 @@ func setType(type) -> void:
 	if(type == "purple"): 
 		$FishSprite.sprite_frames = preload("res://animations/purple_fish_frames.tres")
 		fish_frames = preload("res://animations/purple_fish_frames.tres")
+		speed = 1.25
 	elif(type == "gold"): 
 		$FishSprite.sprite_frames = preload("res://animations/gold_fish_frames.tres")
 		fish_frames = preload("res://animations/gold_fish_frames.tres")
+		speed = 1.35
 	else: 
 		$FishSprite.sprite_frames = preload("res://animations/fish_frames.tres")
 		fish_frames = preload("res://animations/fish_frames.tres")

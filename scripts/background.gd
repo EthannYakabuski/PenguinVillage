@@ -66,14 +66,14 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 11, "day": 6, "weekday": 5, "hour": 17, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 11, "day": 12, "weekday": 4, "hour": 17, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
 			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": true}, {"health": 90, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 11, "day": 6, "weekday": 5, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 11, "day": 12, "weekday": 4, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 250,
@@ -303,7 +303,7 @@ func calculatePenguinDamageFromLastLogin(lastLogin, currentLogin):
 	updatePenguinsFoodLevelsSinceLastLogin(days, hours, minutes)
 	
 func updatePenguinsFoodLevelsSinceLastLogin(days: int, hours: int, minutes: int): 
-	var foodRequired = int((days * 24) + (hours * 1) + (minutes * 0.17))
+	var foodRequired = int((days * 30) + (hours * 1.25) + (minutes * 0.17))
 	print("foodRequired: " + str(foodRequired))
 	currentPenguinFoodReqSinceLastLogin = foodRequired
 
@@ -443,9 +443,9 @@ func onFishCollected(fish, penguin) -> void:
 	#catch 1000 fish achievement increment
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBg", 1)
 	if fish.getType() == "Purple": 
-		currData["Gems"] = currData["Gems"] + 5
+		currData["Gems"] = currData["Gems"] + 10
 		#collect 2500 gems achievement increment
-		$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 5)
+		$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 10)
 		updateGemsLabel(currData["Gems"])
 		#catch a purple fish achievement
 		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCw")
@@ -462,8 +462,8 @@ func onGemCollected(gem) -> void:
 		gems.erase(gem)
 	gem.queue_free()
 	var currData = PlayerData.getData()
-	currData["Gems"] = currData["Gems"] + 5
-	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 5)
+	currData["Gems"] = currData["Gems"] + 3
+	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 3)
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
@@ -722,7 +722,7 @@ func calculateCurrentPenguinPrice() -> void:
 	#scale factor
 	var scal = 22
 	#rate of growth
-	var p = 1.35
+	var p = 1.75
 	var calculatedExactCost = base + scal * pow(float(currentPenguins - 1), p)
 	var roundedCost = int(round(calculatedExactCost / 5.0) * 5.0)
 	print(roundedCost)

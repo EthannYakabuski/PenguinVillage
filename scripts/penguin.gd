@@ -20,6 +20,7 @@ var selected: bool = false
 
 #vitals
 var food = 100
+var steps = 0
 var health
 var sick = false
 
@@ -46,7 +47,7 @@ func setGoal(x, y) -> void:
 	print("setting goal -> x: " + str(x) + " y: " + str(y)) 
 	goal = Vector2(x, y)
 	hasAGoal = true
-	useEnergy(1)
+	useEnergy(3)
 	
 func setState(state: String) -> void: 
 	if state != current_state: 
@@ -166,6 +167,11 @@ func moveToGoal() -> void:
 	if global_position.distance_to(goal) > 1:
 		$PenguinSprite.flip_h = direction.x < 0
 		global_position += direction * speed
+		steps = steps + 1
+		#print(steps)
+		if steps >= 250: 
+			useEnergy(1)
+			steps = 0
 		if current_state == "Walk" and not $FootStepSound.playing: 
 			$FootStepSound.play()
 		#position = position.clamp(Vector2.ZERO, screen_size)
