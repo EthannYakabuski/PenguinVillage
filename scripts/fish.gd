@@ -74,6 +74,9 @@ func setType(type) -> void:
 func hasGoal() -> bool: 
 	return hasAGoal
 	
+func getType() -> String: 
+	return fishType
+	
 ##INTERACTIONS##
 
 ##UTILITY##

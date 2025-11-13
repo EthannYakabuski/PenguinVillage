@@ -207,6 +207,7 @@ func _on_daily_reward_box_pressed() -> void:
 			keepLooping = false
 	if subsequentTruesBehindCurrentDay == 6: 
 		print("player has logged in for a week straight, resetting arrays")
+		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEg")
 		currData["DailyRewards"] = [false, false, false, false, false, false, false]
 		currData["DailyRewards"][currentDay] = true
 	var totalConsecutiveDays = subsequentTruesBehindCurrentDay + 1
@@ -217,6 +218,7 @@ func _on_daily_reward_box_pressed() -> void:
 	var gemsToCollect = 40 + 15*totalConsecutiveDays + 5*(totalConsecutiveDays*totalConsecutiveDays)
 	print("The player will collect " + str(gemsToCollect) + " gems")
 	currData["Gems"] = currData["Gems"] + gemsToCollect
+	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBA", currData["Gems"])
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", gemsToCollect)
 	updateGemsLabel(currData["Gems"])
 	$DailyRewardBox.visible = false
@@ -434,9 +436,21 @@ func onFishCollected(fish, penguin) -> void:
 	penguin.addHealth(10)
 	var currData = PlayerData.getData()
 	currData["FishCaught"] = currData["FishCaught"] + 1
+	#total fish caught leaderboard score update
 	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAQ", currData["FishCaught"])
+	#catch a fish achivement
 	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQAg")
+	#catch 1000 fish achievement increment
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBg", 1)
+	if fish.getType() == "Purple": 
+		currData["Gems"] = currData["Gems"] + 5
+		#collect 2500 gems achievement increment
+		$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 5)
+		updateGemsLabel(currData["Gems"])
+		#catch a purple fish achievement
+		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCw")
+	if fish.getType() == "Gold": 
+		currData["Experience"] = currData["Experience"] + 250
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print("gem has been collected, and data has been saved to the cloud")
@@ -519,6 +533,17 @@ func onFishDanger(fish) -> void:
 func onPenguinSelected(state) -> void: 
 	penguinIsSelected = state
 	print("penguin selected")
+	
+func onPenguinDied() -> void: 
+	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCQ")
+	for i in range(penguins.size() -1, -1, -1): 
+		var penguin = penguins[i]
+		if penguin.current_state == "Dead": 
+			penguin.queue_free()
+			penguins.remove_at(i)
+	print(penguins)
+	updatePenguinAndFoodSavedArray()
+			
 
 ##EVENT LISTENERS##
 func _on_ice_berg_area_area_entered(area: Area2D) -> void:

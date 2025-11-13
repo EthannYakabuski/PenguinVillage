@@ -142,6 +142,9 @@ func getSick() -> bool:
 func _on_input_event(_viewport, event, _shape_idx): 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
 		print("Penguin Clicked")
+		if current_state == "Dead":
+			print("calling get parent penguin died") 
+			get_parent().onPenguinDied()
 		selected = true
 		$HealthIndicator.visible = true
 		if !sick:
@@ -185,9 +188,9 @@ func _on_penguin_sprite_animation_looped() -> void:
 	elif current_state == "Slide": 
 		setState("StillSliding")
 	elif current_state == "Hurt": 
-		print("animation looped")
-		print(last_state)
 		setState(last_state)
+	elif current_state == "Die": 
+		setState("Dead")
 		
 func _on_penguin_sprite_animation_changed() -> void:
 	if (current_state == "Swim"): 
@@ -208,7 +211,13 @@ func _on_sliding_goal_timer_timeout() -> void:
 
 
 func _on_sick_timer_timeout() -> void:
-	if sick: 
-		setState("Hurt")
+	if sick and current_state != "Dead":
+		var randomChanceOfDeath = randf_range(0,100)
+		if (randomChanceOfDeath > 97): 
+			setState("Die")
+			hasAGoal = false
+		else:  
+			setState("Hurt")
+			$SickTimer.wait_time = randf_range(3,5)
 		useEnergy(1)
 		
