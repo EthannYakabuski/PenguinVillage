@@ -442,14 +442,14 @@ func onFishCollected(fish, penguin) -> void:
 	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQAg")
 	#catch 1000 fish achievement increment
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBg", 1)
-	if fish.getType() == "Purple": 
+	if fish.getType() == "purple": 
 		currData["Gems"] = currData["Gems"] + 10
 		#collect 2500 gems achievement increment
 		$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 10)
 		updateGemsLabel(currData["Gems"])
 		#catch a purple fish achievement
 		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCw")
-	if fish.getType() == "Gold": 
+	if fish.getType() == "gold": 
 		currData["Experience"] = currData["Experience"] + 250
 	PlayerData.setData(currData)
 	PlayerData.saveData()
