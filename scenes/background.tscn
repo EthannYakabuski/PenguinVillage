@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=24 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://txl61j3jkvgi" path="res://images/experienceBar_outline.png" id="18_otdhd"]
 [ext_resource type="Texture2D" uid="uid://b5p0gg236sav5" path="res://images/experienceBar.png" id="19_nr76q"]
 [ext_resource type="Texture2D" uid="uid://i2g1ovlp7slw" path="res://images/levelIcon.png" id="20_8rged"]
+[ext_resource type="AudioStream" uid="uid://bomf360dbou4h" path="res://sounds/Morning.mp3" id="21_7ey0k"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2wlqk"]
 line_spacing = 10.0
@@ -146,6 +147,9 @@ limit_left = -1700
 limit_right = 1760
 drag_horizontal_enabled = true
 
+[node name="MainMusic" type="AudioStreamPlayer2D" parent="Camera"]
+stream = ExtResource("21_7ey0k")
+
 [node name="MermaidButton" type="TextureButton" parent="."]
 visible = false
 offset_left = 801.0
@@ -178,5 +182,6 @@ script = ExtResource("17_r48o1")
 [connection signal="area_exited" from="WaterArea" to="." method="_on_water_area_area_exited"]
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
 [connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]
+[connection signal="finished" from="Camera/MainMusic" to="." method="_on_main_music_finished"]
 [connection signal="pressed" from="MermaidButton" to="." method="_on_ad_button_pressed"]
 [connection signal="pressed" from="DailyRewardBox" to="." method="_on_daily_reward_box_pressed"]

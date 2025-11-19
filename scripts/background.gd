@@ -54,8 +54,7 @@ func _ready() -> void:
 	$DropControl.penguinDropped.connect(penguinIsDropped)
 	$DropControl.foodDropped.connect(foodIsDropped)
 	$DropControl.medicineDropped.connect(medicineIsDropped)
-	for i in range(1, 101): 
-		calculateExperienceRequiredForLevelUp(i)
+	$Camera/MainMusic.play()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -801,3 +800,7 @@ func _on_side_bar_pressed() -> void:
 	else: 
 		$CanvasMenu.remove_child(sidebarHandle)
 		sidebarActive = false
+
+
+func _on_main_music_finished() -> void:
+	$Camera/MainMusic.play()
