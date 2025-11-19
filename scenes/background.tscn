@@ -71,7 +71,6 @@ offset_left = -2736.0
 offset_top = -582.0
 offset_right = -900.0
 offset_bottom = 618.0
-text = "100"
 label_settings = SubResource("LabelSettings_2wlqk")
 
 [node name="LevelBar" type="TextureProgressBar" parent="CanvasMenu"]
