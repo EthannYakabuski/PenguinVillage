@@ -801,6 +801,5 @@ func _on_side_bar_pressed() -> void:
 		$CanvasMenu.remove_child(sidebarHandle)
 		sidebarActive = false
 
-
 func _on_main_music_finished() -> void:
 	$Camera/MainMusic.play()
