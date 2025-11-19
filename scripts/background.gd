@@ -54,12 +54,14 @@ func _ready() -> void:
 	$DropControl.penguinDropped.connect(penguinIsDropped)
 	$DropControl.foodDropped.connect(foodIsDropped)
 	$DropControl.medicineDropped.connect(medicineIsDropped)
+	for i in range(1, 101): 
+		calculateExperienceRequiredForLevelUp(i)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	determinePenguinIntelligence()
 	determineFishIntelligence()
-
+	
 ##SOCIAL CONNECTIONS##
 func androidAuthentication() -> void: 
 	if not GodotPlayGameServices.android_plugin: 
@@ -73,12 +75,14 @@ func androidAuthentication() -> void:
 			"Fish": [],
 			"Decorations": [], 
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 11, "day": 12, "weekday": 4, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 11, "day": 16, "weekday": 1, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 250,
 			"Coins": 100,
-			"Experience": 1233, 
+			"Experience": 1287, 
+			"LevelExperience": 15,
+			"PlayerLevel": 1,
 			"FishCaught": 0,
 		}
 		var jsonStringDummyData = JSON.stringify(dummyData)
@@ -113,6 +117,7 @@ func dataLoaded():
 	determineFood()
 	determinePenguins()
 	updateGemsLabel(PlayerData.getData()["Gems"])
+	updateExperienceBar(PlayerData.getData()["Experience"])
 	determineDailyReward()
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
@@ -250,6 +255,8 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 					"Gems": 100,
 					"Coins": 50,
 					"Experience": 0, 
+					"LevelExperience": 0,
+					"PlayerLevel": 1, 
 					"FishCaught": 0,
 				}
 				PlayerData.setData(newPlayerData)
@@ -444,13 +451,16 @@ func onFishCollected(fish, penguin) -> void:
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBg", 1)
 	if fish.getType() == "purple": 
 		currData["Gems"] = currData["Gems"] + 10
+		givePlayerExperience(10)
 		#collect 2500 gems achievement increment
 		$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 10)
 		updateGemsLabel(currData["Gems"])
 		#catch a purple fish achievement
 		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCw")
 	if fish.getType() == "gold": 
-		currData["Experience"] = currData["Experience"] + 250
+		givePlayerExperience(50)
+	if fish.getType() == "blue": 
+		givePlayerExperience(5)
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print("gem has been collected, and data has been saved to the cloud")
@@ -462,7 +472,8 @@ func onGemCollected(gem) -> void:
 		gems.erase(gem)
 	gem.queue_free()
 	var currData = PlayerData.getData()
-	currData["Gems"] = currData["Gems"] + 3
+	currData["Gems"] = currData["Gems"] + 5
+	givePlayerExperience(5)
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 3)
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
@@ -490,6 +501,45 @@ func spendGems(gemsSpent) -> void:
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print(currData)
+	
+func givePlayerExperience(amount) -> void: 
+	print("giving player " + str(amount) + "experience")
+	var currData = PlayerData.getData()
+	var currentPlayerLevel = currData["PlayerLevel"]
+	var currentTotalExperience = currData["Experience"]
+	var currentLevelExperience = currData["LevelExperience"]
+	var currentTotalExperienceToLevelUp = calculateExperienceRequiredForLevelUp(currentPlayerLevel)
+	
+	currentTotalExperience = currentTotalExperience + amount
+	currentLevelExperience = currentLevelExperience + amount
+	
+	#the maximum xp that can be given to a player at one time is 100, when buying a new penguin
+	#the player has leveled up
+	if currentLevelExperience >= currentTotalExperienceToLevelUp:
+		print("player has leveled up") 
+		currentPlayerLevel = currentPlayerLevel + 1
+		currentLevelExperience = currentLevelExperience - currentTotalExperienceToLevelUp
+		#it is possible the player has leveled up more than once during this action, but not more than twice
+		var doubleLevelUpExpNeeded = calculateExperienceRequiredForLevelUp(currentPlayerLevel)
+		if currentLevelExperience >= doubleLevelUpExpNeeded: 
+			print("the player has leveled up again")
+			currentPlayerLevel = currentPlayerLevel + 1
+			currentLevelExperience = currentLevelExperience - doubleLevelUpExpNeeded
+		
+	updateExperienceBarLocal(str(currentPlayerLevel), int(currentLevelExperience))
+	currData["PlayerLevel"] = currentPlayerLevel
+	currData["Experience"] = currentTotalExperience
+	currData["LevelExperience"] = currentLevelExperience
+	
+	PlayerData.setData(currData)
+	PlayerData.saveData()
+	
+	
+func calculateExperienceRequiredForLevelUp(level) -> int: 
+	var calculatedExactXp = 50 + 2 * pow(float(level - 1), 1.75)
+	var roundedXp = int(round(calculatedExactXp / 5.0) * 5.0)
+	print(roundedXp)
+	return roundedXp
 	
 func onFishDanger(fish) -> void: 
 	var closestPenguin = getThreatPosition(fish)
@@ -544,7 +594,6 @@ func onPenguinDied() -> void:
 	print(penguins)
 	updatePenguinAndFoodSavedArray()
 			
-
 ##EVENT LISTENERS##
 func _on_ice_berg_area_area_entered(area: Area2D) -> void:
 	print("something entered ice berg area")
@@ -577,6 +626,15 @@ func handleDrag(_pos: Vector2, delta: Vector2):
 func updateGemsLabel(amount): 
 	$CanvasMenu/GemIndicator/GemLabel.text = str(amount)
 	
+func updateExperienceBar(experience): 
+	$CanvasMenu/LevelLabel.text = str(PlayerData.getData()["PlayerLevel"])
+	var currentExperience = int(PlayerData.getData()["LevelExperience"])
+	$CanvasMenu/LevelBar.value = currentExperience
+	
+func updateExperienceBarLocal(level, currentExperience):
+	$CanvasMenu/LevelLabel.text = level
+	$CanvasMenu/LevelBar.value = currentExperience
+	
 func penguinIsDropped(_atPosition: Vector2): 
 	print("penguin has been dropped and received")
 	#spawn the penguin into the scene + animation
@@ -586,6 +644,7 @@ func penguinIsDropped(_atPosition: Vector2):
 		spendGems(currentPenguinPrice)
 		print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
 		addPenguinAtLocation(globalPosition)
+		givePlayerExperience(100)
 		var currentPenguinAmount = penguins.size()
 		match currentPenguinAmount: 
 			2: 
@@ -621,6 +680,7 @@ func medicineIsDropped(_atPosition: Vector2):
 			print("we found the closest sick penguin, clearing status")
 			closestPenguin.setSick(false)
 			closestPenguin.addFood(25)
+			givePlayerExperience(25)
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCA")
 			spendGems(50)
 			updatePenguinAndFoodSavedArray()
@@ -638,6 +698,7 @@ func foodIsDropped(_atPosition: Vector2):
 			bowl.addFood(100)
 		updatePenguinAndFoodSavedArray()
 		spendGems(100)
+		givePlayerExperience(25)
 	isDragging = false
 	
 func dragToggle(): 

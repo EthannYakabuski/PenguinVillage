@@ -32,7 +32,6 @@ outline_color = Color(0, 0, 0, 1)
 font_size = 60
 
 [node name="Background" type="Area2D"]
-visible = false
 script = ExtResource("1_31116")
 penguin_scene = ExtResource("2_cvr2x")
 fish_scene = ExtResource("3_2xu8c")
@@ -74,27 +73,26 @@ offset_bottom = 618.0
 text = "100"
 label_settings = SubResource("LabelSettings_2wlqk")
 
-[node name="LevelBar" type="TextureProgressBar" parent="CanvasMenu"]
-offset_left = 404.0
-offset_top = 55.0
-offset_right = 945.0
-offset_bottom = 201.0
-scale = Vector2(0.415, 0.415)
-value = 50.0
+[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasMenu"]
+offset_left = 798.0
+offset_top = 102.0
+offset_right = 2334.0
+offset_bottom = 1126.0
+scale = Vector2(0.205, 0.205)
 texture_under = ExtResource("18_otdhd")
 texture_progress = ExtResource("19_nr76q")
-tint_progress = Color(0, 0.32549, 0.619608, 1)
+tint_progress = Color(0.321569, 0.996078, 0, 1)
 
 [node name="LevelIcon" type="Sprite2D" parent="CanvasMenu"]
-position = Vector2(300, 84)
+position = Vector2(765, 201)
 scale = Vector2(0.135, 0.135)
 texture = ExtResource("20_8rged")
 
 [node name="LevelLabel" type="Label" parent="CanvasMenu"]
-offset_left = 245.0
-offset_top = 30.0
-offset_right = 355.0
-offset_bottom = 141.0
+offset_left = 710.0
+offset_top = 145.0
+offset_right = 820.0
+offset_bottom = 256.0
 label_settings = SubResource("LabelSettings_665uo")
 horizontal_alignment = 1
 vertical_alignment = 1
