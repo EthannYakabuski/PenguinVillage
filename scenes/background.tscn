@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=25 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bvng737d4r640" path="res://images/iceberg_water_modified.png" id="5_7pg7q"]
 [ext_resource type="PackedScene" uid="uid://ueb0gkdh6ns7" path="res://scenes/sidebar.tscn" id="5_457nt"]
 [ext_resource type="Script" path="res://scripts/drop_control.gd" id="6_d244v"]
+[ext_resource type="PackedScene" uid="uid://drs4fd23andww" path="res://scenes/experience_shard.tscn" id="6_jha60"]
 [ext_resource type="Texture2D" uid="uid://dt74qwqs1km8q" path="res://images/iceberg_icebergs_modified.png" id="6_yjrk6"]
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/sign_in/sign_in_client.gd" id="7_cnlxl"]
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
@@ -39,6 +40,7 @@ penguin_scene = ExtResource("2_cvr2x")
 fish_scene = ExtResource("3_2xu8c")
 food_scene = ExtResource("4_m3tx2")
 gem_scene = ExtResource("5_3osnf")
+experienceShard_scene = ExtResource("6_jha60")
 sidebar = ExtResource("5_457nt")
 
 [node name="DropControl" type="Control" parent="."]

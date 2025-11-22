@@ -3,6 +3,7 @@ extends Node2D
 @export var fish_scene: PackedScene
 @export var food_scene: PackedScene
 @export var gem_scene: PackedScene
+@export var experienceShard_scene: PackedScene
 @export var sidebar: PackedScene
 @onready var fishTimer: Timer = $FishSpawnTimer
 
@@ -371,7 +372,7 @@ func determinePenguinIntelligence() -> void:
 func determineFish() -> void: 
 	print("loading fish")
 	var fish: Fish = fish_scene.instantiate()
-	fish.setType("Blue")
+	fish.setType("blue")
 	fish.setLocation(500, 1700)
 	fish.fish_collected.connect(onFishCollected)
 	fish.fish_needs_target.connect(onGiveFishGoal)
@@ -450,16 +451,16 @@ func onFishCollected(fish, penguin) -> void:
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBg", 1)
 	if fish.getType() == "purple": 
 		currData["Gems"] = currData["Gems"] + 10
-		givePlayerExperience(10)
+		givePlayerExperience(10, fish.global_position)
 		#collect 2500 gems achievement increment
 		$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 10)
 		updateGemsLabel(currData["Gems"])
 		#catch a purple fish achievement
 		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCw")
 	if fish.getType() == "gold": 
-		givePlayerExperience(50)
+		givePlayerExperience(50, fish.global_position)
 	if fish.getType() == "blue": 
-		givePlayerExperience(5)
+		givePlayerExperience(5, fish.global_position)
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print("gem has been collected, and data has been saved to the cloud")
@@ -472,7 +473,7 @@ func onGemCollected(gem) -> void:
 	gem.queue_free()
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 5
-	givePlayerExperience(5)
+	givePlayerExperience(5, gem.global_position)
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 3)
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
@@ -501,8 +502,9 @@ func spendGems(gemsSpent) -> void:
 	PlayerData.saveData()
 	print(currData)
 	
-func givePlayerExperience(amount) -> void: 
+func givePlayerExperience(amount, location) -> void: 
 	print("giving player " + str(amount) + "experience")
+	addIndicator(amount, location)
 	var currData = PlayerData.getData()
 	var currentPlayerLevel = currData["PlayerLevel"]
 	var currentTotalExperience = currData["Experience"]
@@ -532,7 +534,13 @@ func givePlayerExperience(amount) -> void:
 	
 	PlayerData.setData(currData)
 	PlayerData.saveData()
-	
+
+func addIndicator(amount, position): 
+	var newIndicator = experienceShard_scene.instantiate()
+	newIndicator.position = position
+	newIndicator.setLabel(amount)
+	add_child(newIndicator)
+	newIndicator.startTimer()
 	
 func calculateExperienceRequiredForLevelUp(level) -> int: 
 	var calculatedExactXp = 50 + 2 * pow(float(level - 1), 1.75)
@@ -643,7 +651,7 @@ func penguinIsDropped(_atPosition: Vector2):
 		spendGems(currentPenguinPrice)
 		print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
 		addPenguinAtLocation(globalPosition)
-		givePlayerExperience(100)
+		givePlayerExperience(100, globalPosition)
 		var currentPenguinAmount = penguins.size()
 		match currentPenguinAmount: 
 			2: 
@@ -679,7 +687,7 @@ func medicineIsDropped(_atPosition: Vector2):
 			print("we found the closest sick penguin, clearing status")
 			closestPenguin.setSick(false)
 			closestPenguin.addFood(25)
-			givePlayerExperience(25)
+			givePlayerExperience(25, closestPenguin.global_position)
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCA")
 			spendGems(50)
 			updatePenguinAndFoodSavedArray()
@@ -687,7 +695,7 @@ func medicineIsDropped(_atPosition: Vector2):
 		print("there was no sick penguin, or there was an error")
 	isDragging = false
 	
-func foodIsDropped(_atPosition: Vector2): 
+func foodIsDropped(atPosition: Vector2): 
 	print("food has been dropped and received")
 	#feed all penguins + play animation
 	if PlayerData.getData()["Gems"] >= 100: 
@@ -697,7 +705,7 @@ func foodIsDropped(_atPosition: Vector2):
 			bowl.addFood(100)
 		updatePenguinAndFoodSavedArray()
 		spendGems(100)
-		givePlayerExperience(25)
+		givePlayerExperience(25, atPosition)
 	isDragging = false
 	
 func dragToggle(): 

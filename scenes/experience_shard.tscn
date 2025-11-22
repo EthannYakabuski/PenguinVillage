@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://drs4fd23andww"]
+
+[ext_resource type="Texture2D" uid="uid://dm0gmmqalu35u" path="res://images/experienceShard.png" id="1_2ren7"]
+[ext_resource type="Script" path="res://scripts/experience_shard.gd" id="2_34kto"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_73kto"]
+font_size = 150
+
+[node name="ExperienceShard" type="Sprite2D"]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_2ren7")
+script = ExtResource("2_34kto")
+
+[node name="ExperienceLabel" type="Label" parent="."]
+offset_left = -117.333
+offset_top = -120.0
+offset_right = 109.667
+offset_bottom = 85.0
+label_settings = SubResource("LabelSettings_73kto")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VisibleTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="VisibleTimer" to="." method="_on_visible_timer_timeout"]
