@@ -55,27 +55,32 @@ func _ready() -> void:
 	$DropControl.penguinDropped.connect(penguinIsDropped)
 	$DropControl.foodDropped.connect(foodIsDropped)
 	$DropControl.medicineDropped.connect(medicineIsDropped)
-	$Camera/MainMusic.play()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	determinePenguinIntelligence()
 	determineFishIntelligence()
 	
+func playCorrectMusic() -> void: 
+	if lastLogin_global["hour"] >= 17:
+		$Camera/MainMusic_Evening.play()
+	else:
+		$Camera/MainMusic.play() 
+		
 ##SOCIAL CONNECTIONS##
 func androidAuthentication() -> void: 
 	if not GodotPlayGameServices.android_plugin: 
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 11, "day": 12, "weekday": 4, "hour": 17, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 11, "day": 21, "weekday": 6, "hour": 13, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
 			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": true}, {"health": 90, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 11, "day": 16, "weekday": 1, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 11, "day": 21, "weekday": 6, "hour": 13, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 250,
@@ -279,6 +284,7 @@ func updateLastLogin() -> void:
 	var currData = PlayerData.getData()
 	var newestLogin = Time.get_datetime_dict_from_system()
 	lastLogin_global = newestLogin
+	playCorrectMusic()
 	calculatePenguinDamageFromLastLogin(currData["LastLogin"], newestLogin)
 	currData["LastLogin"] = newestLogin
 	#print(Time.get_datetime_dict_from_system()["weekday"])
@@ -364,6 +370,9 @@ func determinePenguinIntelligence() -> void:
 				pass
 			else:
 				p.addFood(1)
+				p.stopStepSound()
+				if not $Camera/FoodEatSound.playing: 
+					$Camera/FoodEatSound.play()
 				$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBw", 1)
 				foodBowls[0].useFood(0.25)
 			#onGivePenguinGoal(p)
@@ -435,6 +444,7 @@ func updatePenguinAndFoodSavedArray():
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish, penguin) -> void: 
 	print("fish collected")
+	$Camera/FishCaughtSound.play()
 	if fish in fishes: 
 		fishes.erase(fish)
 		#TODO dynamically add food to the closest food bowl after a fish is caught
@@ -478,6 +488,7 @@ func onGemCollected(gem) -> void:
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
+	$Camera/GemCollectedSound.play()
 	print("gem has been collected, and data has been saved to the cloud")
 	print(PlayerData.getData())
 
@@ -651,6 +662,7 @@ func penguinIsDropped(_atPosition: Vector2):
 		spendGems(currentPenguinPrice)
 		print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
 		addPenguinAtLocation(globalPosition)
+		$Camera/PurchaseSound.play()
 		givePlayerExperience(100, globalPosition)
 		var currentPenguinAmount = penguins.size()
 		match currentPenguinAmount: 
@@ -687,6 +699,7 @@ func medicineIsDropped(_atPosition: Vector2):
 			print("we found the closest sick penguin, clearing status")
 			closestPenguin.setSick(false)
 			closestPenguin.addFood(25)
+			$Camera/PurchaseSound.play()
 			givePlayerExperience(25, closestPenguin.global_position)
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCA")
 			spendGems(50)
@@ -698,7 +711,8 @@ func medicineIsDropped(_atPosition: Vector2):
 func foodIsDropped(atPosition: Vector2): 
 	print("food has been dropped and received")
 	#feed all penguins + play animation
-	if PlayerData.getData()["Gems"] >= 100: 
+	if PlayerData.getData()["Gems"] >= 100:
+		$Camera/PurchaseSound.play() 
 		for penguin in penguins: 
 			penguin.setFood(100)
 		for bowl in foodBowls: 
@@ -811,3 +825,6 @@ func _on_side_bar_pressed() -> void:
 
 func _on_main_music_finished() -> void:
 	$Camera/MainMusic.play()
+
+func _on_main_music_evening_finished() -> void:
+	$Camera/MainMusic_Evening.play()

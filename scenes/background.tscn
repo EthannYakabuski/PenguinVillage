@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=30 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -20,8 +20,13 @@
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/achievements/achievements_client.gd" id="17_r48o1"]
 [ext_resource type="Texture2D" uid="uid://txl61j3jkvgi" path="res://images/experienceBar_outline.png" id="18_otdhd"]
 [ext_resource type="Texture2D" uid="uid://b5p0gg236sav5" path="res://images/experienceBar.png" id="19_nr76q"]
+[ext_resource type="AudioStream" uid="uid://cn6f5gnyw0t2u" path="res://sounds/807775__designerschoice__foodeat-samsung-galaxy-smartphone_cat-eating-dry-crunchy-food_nicholas-judy_tdc.wav" id="19_q85dq"]
 [ext_resource type="Texture2D" uid="uid://i2g1ovlp7slw" path="res://images/levelIcon.png" id="20_8rged"]
+[ext_resource type="AudioStream" uid="uid://732ylysr03yj" path="res://sounds/592346__axilirate__collect-crystal.wav" id="20_cmnnu"]
 [ext_resource type="AudioStream" uid="uid://bomf360dbou4h" path="res://sounds/Morning.mp3" id="21_7ey0k"]
+[ext_resource type="AudioStream" uid="uid://ciukonpgc35a3" path="res://sounds/342750__rhodesmas__coins-purchase-4.wav" id="21_e3tja"]
+[ext_resource type="AudioStream" uid="uid://byqxgb6m7v2ji" path="res://sounds/408008__judith136__55.wav" id="22_xvgkq"]
+[ext_resource type="AudioStream" uid="uid://cb27i3xuibqby" path="res://sounds/Evening.mp3" id="23_k8lir"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2wlqk"]
 line_spacing = 10.0
@@ -152,6 +157,23 @@ drag_horizontal_enabled = true
 [node name="MainMusic" type="AudioStreamPlayer2D" parent="Camera"]
 stream = ExtResource("21_7ey0k")
 
+[node name="FoodEatSound" type="AudioStreamPlayer2D" parent="Camera"]
+stream = ExtResource("19_q85dq")
+volume_db = 15.0
+
+[node name="GemCollectedSound" type="AudioStreamPlayer2D" parent="Camera"]
+stream = ExtResource("20_cmnnu")
+
+[node name="PurchaseSound" type="AudioStreamPlayer2D" parent="Camera"]
+stream = ExtResource("21_e3tja")
+
+[node name="FishCaughtSound" type="AudioStreamPlayer2D" parent="Camera"]
+stream = ExtResource("22_xvgkq")
+volume_db = 24.0
+
+[node name="MainMusic_Evening" type="AudioStreamPlayer2D" parent="Camera"]
+stream = ExtResource("23_k8lir")
+
 [node name="MermaidButton" type="TextureButton" parent="."]
 visible = false
 offset_left = 801.0
@@ -185,5 +207,6 @@ script = ExtResource("17_r48o1")
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
 [connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]
 [connection signal="finished" from="Camera/MainMusic" to="." method="_on_main_music_finished"]
+[connection signal="finished" from="Camera/MainMusic_Evening" to="." method="_on_main_music_evening_finished"]
 [connection signal="pressed" from="MermaidButton" to="." method="_on_ad_button_pressed"]
 [connection signal="pressed" from="DailyRewardBox" to="." method="_on_daily_reward_box_pressed"]

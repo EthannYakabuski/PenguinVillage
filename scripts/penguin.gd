@@ -89,6 +89,9 @@ func startTime() -> void:
 func stopTime() -> void: 
 	$SlidingGoalTimer.stop()
 	
+func stopStepSound() -> void: 
+	$FootStepSound.stop()
+	
 func setHealth(h) -> void: 
 	print("setting penguin health to " + str(h))
 	health = h
@@ -201,6 +204,7 @@ func _on_penguin_sprite_animation_looped() -> void:
 func _on_penguin_sprite_animation_changed() -> void:
 	if (current_state == "Swim"): 
 		speed = 2
+		$WaterSplashSound.play(2)
 	elif (current_state == "Jump" or current_state == "Dive"): 
 		speed = 3
 	elif (current_state == "Slide" || current_state == "StillSliding"): 
@@ -209,6 +213,8 @@ func _on_penguin_sprite_animation_changed() -> void:
 		speed = 1.25
 	if sick: 
 		speed = speed * 0.5
+		
+
 
 func _on_sliding_goal_timer_timeout() -> void:
 	$SlidingGoalTimer.wait_time = randf_range(1,2)
@@ -226,4 +232,3 @@ func _on_sick_timer_timeout() -> void:
 			setState("Hurt")
 			$SickTimer.wait_time = randf_range(3,5)
 		useEnergy(1)
-		
