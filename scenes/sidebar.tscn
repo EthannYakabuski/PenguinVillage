@@ -13,7 +13,7 @@ font_size = 75
 font_color = Color(0.811765, 0.27451, 0.960784, 1)
 
 [node name="Background2" type="Control"]
-z_index = -1
+z_index = -2
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1

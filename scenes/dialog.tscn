@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3 uid="uid://fewi742cqr1r"]
+
+[ext_resource type="Texture2D" uid="uid://buc0p1qkdasqx" path="res://images/modalDialog.png" id="1_eqik4"]
+[ext_resource type="Texture2D" uid="uid://i2g1ovlp7slw" path="res://images/levelIcon.png" id="2_2o1u8"]
+[ext_resource type="Script" path="res://scripts/dialog.gd" id="2_xtxmx"]
+[ext_resource type="Texture2D" uid="uid://mryjgy2oakmu" path="res://images/modalButton.png" id="3_85uyg"]
+[ext_resource type="LabelSettings" uid="uid://db1v37x52a55k" path="res://fonts/modalDialog_font.tres" id="5_31t1s"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_lib02"]
+font_size = 400
+
+[sub_resource type="LabelSettings" id="LabelSettings_mv5k1"]
+font_size = 124
+font_color = Color(0, 0.352941, 0.643137, 1)
+shadow_size = 17
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="Dialog" type="Sprite2D"]
+z_index = -1
+position = Vector2(540, 996)
+texture = ExtResource("1_eqik4")
+script = ExtResource("2_xtxmx")
+
+[node name="LevelIndicator" type="Sprite2D" parent="."]
+position = Vector2(290, -201)
+scale = Vector2(0.155, 0.155)
+texture = ExtResource("2_2o1u8")
+
+[node name="LevelLabel" type="Label" parent="LevelIndicator"]
+offset_left = -400.0
+offset_top = -387.097
+offset_right = 405.0
+offset_bottom = 388.903
+label_settings = SubResource("LabelSettings_lib02")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AcceptPrize" type="TextureButton" parent="."]
+offset_left = -170.0
+offset_top = -11.0
+offset_right = 854.0
+offset_bottom = 1013.0
+scale = Vector2(0.335, 0.335)
+texture_normal = ExtResource("3_85uyg")
+
+[node name="ButtonLabel" type="Label" parent="AcceptPrize"]
+layout_mode = 0
+offset_left = 179.0
+offset_top = 344.0
+offset_right = 842.0
+offset_bottom = 668.0
+text = "Accept"
+label_settings = ExtResource("5_31t1s")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelUpLabel" type="Label" parent="."]
+offset_left = -365.0
+offset_top = -299.0
+offset_right = 210.0
+offset_bottom = -101.0
+text = "Level up"
+label_settings = SubResource("LabelSettings_mv5k1")
+
+[connection signal="pressed" from="AcceptPrize" to="." method="_on_accept_prize_pressed"]

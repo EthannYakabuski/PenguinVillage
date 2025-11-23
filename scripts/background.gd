@@ -5,12 +5,14 @@ extends Node2D
 @export var gem_scene: PackedScene
 @export var experienceShard_scene: PackedScene
 @export var sidebar: PackedScene
+@export var modalDialog: PackedScene
 @onready var fishTimer: Timer = $FishSpawnTimer
 
 #UI interactions
 var sidebarActive = false
 var sidebarHandle
 var isDragging = false
+var levelUpDialog
 
 var penguins = []
 var fishes = []
@@ -86,7 +88,7 @@ func androidAuthentication() -> void:
 			"Gems": 250,
 			"Coins": 100,
 			"Experience": 1287, 
-			"LevelExperience": 15,
+			"LevelExperience": 70,
 			"PlayerLevel": 1,
 			"FishCaught": 0,
 		}
@@ -468,6 +470,7 @@ func onFishCollected(fish, penguin) -> void:
 		#catch a purple fish achievement
 		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCw")
 	if fish.getType() == "gold": 
+		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCg")
 		givePlayerExperience(50, fish.global_position)
 	if fish.getType() == "blue": 
 		givePlayerExperience(5, fish.global_position)
@@ -516,6 +519,7 @@ func spendGems(gemsSpent) -> void:
 func givePlayerExperience(amount, location) -> void: 
 	print("giving player " + str(amount) + "experience")
 	addIndicator(amount, location)
+	var doubleLevel = false
 	var currData = PlayerData.getData()
 	var currentPlayerLevel = currData["PlayerLevel"]
 	var currentTotalExperience = currData["Experience"]
@@ -535,9 +539,15 @@ func givePlayerExperience(amount, location) -> void:
 		var doubleLevelUpExpNeeded = calculateExperienceRequiredForLevelUp(currentPlayerLevel)
 		if currentLevelExperience >= doubleLevelUpExpNeeded: 
 			print("the player has leveled up again")
+			doubleLevel = true
 			currentPlayerLevel = currentPlayerLevel + 1
 			currentLevelExperience = currentLevelExperience - doubleLevelUpExpNeeded
 		
+	levelUpDialog = modalDialog.instantiate()
+	levelUpDialog.prizeAccepted.connect(levelUpPrizeAccepted)
+	levelUpDialog.setDisplayedLevel(currentPlayerLevel, doubleLevel)
+	$CanvasMenu.add_child(levelUpDialog)
+	#add_child(levelUpDialog) 
 	updateExperienceBarLocal(str(currentPlayerLevel), int(currentLevelExperience))
 	currData["PlayerLevel"] = currentPlayerLevel
 	currData["Experience"] = currentTotalExperience
@@ -545,6 +555,10 @@ func givePlayerExperience(amount, location) -> void:
 	
 	PlayerData.setData(currData)
 	PlayerData.saveData()
+
+func levelUpPrizeAccepted() -> void: 
+	print("prize accepted in main")
+	levelUpDialog = null
 
 func addIndicator(amount, position): 
 	var newIndicator = experienceShard_scene.instantiate()
