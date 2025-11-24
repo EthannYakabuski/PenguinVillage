@@ -1,10 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://fewi742cqr1r"]
+[gd_scene load_steps=13 format=3 uid="uid://fewi742cqr1r"]
 
 [ext_resource type="Texture2D" uid="uid://buc0p1qkdasqx" path="res://images/modalDialog.png" id="1_eqik4"]
 [ext_resource type="Texture2D" uid="uid://i2g1ovlp7slw" path="res://images/levelIcon.png" id="2_2o1u8"]
 [ext_resource type="Script" path="res://scripts/dialog.gd" id="2_xtxmx"]
 [ext_resource type="Texture2D" uid="uid://mryjgy2oakmu" path="res://images/modalButton.png" id="3_85uyg"]
 [ext_resource type="LabelSettings" uid="uid://db1v37x52a55k" path="res://fonts/modalDialog_font.tres" id="5_31t1s"]
+[ext_resource type="Texture2D" uid="uid://cqxpncoxu8bx6" path="res://images/FoodBag.png" id="6_1al6y"]
+[ext_resource type="Texture2D" uid="uid://b763me5ubg5yl" path="res://images/Medicine.png" id="7_fu7cy"]
+[ext_resource type="Texture2D" uid="uid://1yeca3tyhlgs" path="res://images/penguin_walk01@2x.png" id="8_n2o1y"]
+[ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="9_u8aqf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_lib02"]
 font_size = 400
@@ -15,6 +19,13 @@ font_color = Color(0, 0.352941, 0.643137, 1)
 shadow_size = 17
 shadow_color = Color(0, 0, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_o3mx1"]
+line_spacing = 10.0
+font_size = 480
+font_color = Color(0.811765, 0.27451, 0.960784, 1)
+outline_size = 75
+outline_color = Color(0, 0, 0, 1)
+
 [node name="Dialog" type="Sprite2D"]
 z_index = -1
 position = Vector2(540, 996)
@@ -22,14 +33,14 @@ texture = ExtResource("1_eqik4")
 script = ExtResource("2_xtxmx")
 
 [node name="LevelIndicator" type="Sprite2D" parent="."]
-position = Vector2(290, -201)
+position = Vector2(286, -218)
 scale = Vector2(0.155, 0.155)
 texture = ExtResource("2_2o1u8")
 
 [node name="LevelLabel" type="Label" parent="LevelIndicator"]
-offset_left = -400.0
+offset_left = -406.452
 offset_top = -387.097
-offset_right = 405.0
+offset_right = 398.548
 offset_bottom = 388.903
 label_settings = SubResource("LabelSettings_lib02")
 horizontal_alignment = 1
@@ -37,9 +48,9 @@ vertical_alignment = 1
 
 [node name="AcceptPrize" type="TextureButton" parent="."]
 offset_left = -170.0
-offset_top = -11.0
+offset_top = -20.0
 offset_right = 854.0
-offset_bottom = 1013.0
+offset_bottom = 1004.0
 scale = Vector2(0.335, 0.335)
 texture_normal = ExtResource("3_85uyg")
 
@@ -55,11 +66,42 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="LevelUpLabel" type="Label" parent="."]
-offset_left = -365.0
-offset_top = -299.0
-offset_right = 210.0
-offset_bottom = -101.0
+offset_left = -366.0
+offset_top = -311.0
+offset_right = 209.0
+offset_bottom = -113.0
 text = "Level up"
 label_settings = SubResource("LabelSettings_mv5k1")
+
+[node name="FoodBag" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(106, -34)
+scale = Vector2(0.165, 0.165)
+texture = ExtResource("6_1al6y")
+
+[node name="Medicine" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(106, -31)
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("7_fu7cy")
+
+[node name="PenguinPrize" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(121, -28)
+scale = Vector2(1.095, 1.095)
+texture = ExtResource("8_n2o1y")
+
+[node name="Gems" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-159, -33)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("9_u8aqf")
+
+[node name="GemAmountLabel" type="Label" parent="Gems"]
+offset_left = 651.852
+offset_top = -296.296
+offset_right = 1199.85
+offset_bottom = 358.704
+label_settings = SubResource("LabelSettings_o3mx1")
 
 [connection signal="pressed" from="AcceptPrize" to="." method="_on_accept_prize_pressed"]

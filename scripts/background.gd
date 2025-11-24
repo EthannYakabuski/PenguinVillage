@@ -53,6 +53,7 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	androidAuthentication()
 	admobConfiguration()
+	randomize()
 	penguinNeedsGoal.connect(onGivePenguinGoal)
 	$DropControl.penguinDropped.connect(penguinIsDropped)
 	$DropControl.foodDropped.connect(foodIsDropped)
@@ -520,6 +521,7 @@ func givePlayerExperience(amount, location) -> void:
 	print("giving player " + str(amount) + "experience")
 	addIndicator(amount, location)
 	var doubleLevel = false
+	var singleLevel = false
 	var currData = PlayerData.getData()
 	var currentPlayerLevel = currData["PlayerLevel"]
 	var currentTotalExperience = currData["Experience"]
@@ -533,6 +535,7 @@ func givePlayerExperience(amount, location) -> void:
 	#the player has leveled up
 	if currentLevelExperience >= currentTotalExperienceToLevelUp:
 		print("player has leveled up") 
+		singleLevel = true
 		currentPlayerLevel = currentPlayerLevel + 1
 		currentLevelExperience = currentLevelExperience - currentTotalExperienceToLevelUp
 		#it is possible the player has leveled up more than once during this action, but not more than twice
@@ -542,11 +545,13 @@ func givePlayerExperience(amount, location) -> void:
 			doubleLevel = true
 			currentPlayerLevel = currentPlayerLevel + 1
 			currentLevelExperience = currentLevelExperience - doubleLevelUpExpNeeded
-		
-	levelUpDialog = modalDialog.instantiate()
-	levelUpDialog.prizeAccepted.connect(levelUpPrizeAccepted)
-	levelUpDialog.setDisplayedLevel(currentPlayerLevel, doubleLevel)
-	$CanvasMenu.add_child(levelUpDialog)
+	
+	if singleLevel or doubleLevel: 
+		levelUpDialog = modalDialog.instantiate()
+		levelUpDialog.prizeAccepted.connect(levelUpPrizeAccepted)
+		levelUpDialog.setDisplayedLevel(currentPlayerLevel, doubleLevel)
+		$CanvasMenu.add_child(levelUpDialog)
+			
 	#add_child(levelUpDialog) 
 	updateExperienceBarLocal(str(currentPlayerLevel), int(currentLevelExperience))
 	currData["PlayerLevel"] = currentPlayerLevel

@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://fewi742cqr1r" path="res://scenes/dialog.tscn" id="8_3ywcs"]
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
 [ext_resource type="Texture2D" uid="uid://cq3olmajdse2h" path="res://images/hamburger.png" id="9_jbf0t"]
+[ext_resource type="LabelSettings" uid="uid://x3tsvw6k2ueq" path="res://fonts/gemLabelFont.tres" id="12_h8weg"]
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="13_nhuns"]
 [ext_resource type="Texture2D" uid="uid://wurrnceejyug" path="res://images/mermaid.png" id="14_v2xan"]
 [ext_resource type="Texture2D" uid="uid://ep0gg1u01v3h" path="res://images/DailyRewardBox.png" id="15_22nuf"]
@@ -28,13 +29,6 @@
 [ext_resource type="AudioStream" uid="uid://ciukonpgc35a3" path="res://sounds/342750__rhodesmas__coins-purchase-4.wav" id="21_e3tja"]
 [ext_resource type="AudioStream" uid="uid://byqxgb6m7v2ji" path="res://sounds/408008__judith136__55.wav" id="22_xvgkq"]
 [ext_resource type="AudioStream" uid="uid://cb27i3xuibqby" path="res://sounds/Evening.mp3" id="23_k8lir"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_2wlqk"]
-line_spacing = 10.0
-font_size = 800
-font_color = Color(0.811765, 0.27451, 0.960784, 1)
-outline_size = 75
-outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_665uo"]
 font_size = 60
@@ -81,7 +75,7 @@ offset_left = -2736.0
 offset_top = -582.0
 offset_right = -900.0
 offset_bottom = 618.0
-label_settings = SubResource("LabelSettings_2wlqk")
+label_settings = ExtResource("12_h8weg")
 
 [node name="LevelBar" type="TextureProgressBar" parent="CanvasMenu"]
 offset_left = 404.0
