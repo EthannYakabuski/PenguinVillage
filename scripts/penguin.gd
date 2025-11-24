@@ -23,6 +23,7 @@ var food = 100
 var steps = 0
 var health
 var sick = false
+var isDying = false
 
 #collision polygons
 var walkOrIdlePolygons
@@ -40,7 +41,11 @@ func _ready() -> void:
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	pass
+	if isDying: 
+		position.y = position.y - 2
+		modulate.a = modulate.a - 0.01
+		if modulate.a <= 0: 
+			queue_free()
 
 ##SETTERS##
 func setGoal(x, y) -> void:
@@ -185,7 +190,10 @@ func moveToGoal() -> void:
 			$FootStepSound.stop()
 			setState("Idle")
 		clearGoal()
-		
+
+func initiateDeath() -> void: 
+	print("penguin is going to heaven")
+	isDying = true
 
 func _on_penguin_sprite_animation_looped() -> void:
 	if current_state == "Dive" && current_area == "Water": 
@@ -200,6 +208,7 @@ func _on_penguin_sprite_animation_looped() -> void:
 		setState(last_state)
 	elif current_state == "Die": 
 		setState("Dead")
+		$PenguinSprite.modulate = Color(1,0.3,0.3,0.8)
 		
 func _on_penguin_sprite_animation_changed() -> void:
 	if (current_state == "Swim"): 

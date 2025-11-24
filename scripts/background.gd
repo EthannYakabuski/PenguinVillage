@@ -534,7 +534,8 @@ func givePlayerExperience(amount, location) -> void:
 	#the maximum xp that can be given to a player at one time is 100, when buying a new penguin
 	#the player has leveled up
 	if currentLevelExperience >= currentTotalExperienceToLevelUp:
-		print("player has leveled up") 
+		print("player has leveled up")
+		$Camera/LevelUpSound.play()
 		singleLevel = true
 		currentPlayerLevel = currentPlayerLevel + 1
 		currentLevelExperience = currentLevelExperience - currentTotalExperienceToLevelUp
@@ -626,8 +627,9 @@ func onPenguinDied() -> void:
 	for i in range(penguins.size() -1, -1, -1): 
 		var penguin = penguins[i]
 		if penguin.current_state == "Dead": 
-			penguin.queue_free()
+			#penguin.queue_free()
 			penguins.remove_at(i)
+			penguin.initiateDeath()
 	print(penguins)
 	updatePenguinAndFoodSavedArray()
 			
@@ -828,7 +830,10 @@ func calculateCurrentPenguinPrice() -> void:
 	var roundedCost = int(round(calculatedExactCost / 5.0) * 5.0)
 	print(roundedCost)
 	sidebarHandle.setCurrentPenguinCost(roundedCost)
-	currentPenguinPrice = roundedCost
+	if currentPenguins == 0: 
+		currentPenguinPrice = 0
+	else: 
+		currentPenguinPrice = roundedCost
 
 func _on_side_bar_pressed() -> void:
 	print("side bar pressed")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=32 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -29,6 +29,7 @@
 [ext_resource type="AudioStream" uid="uid://ciukonpgc35a3" path="res://sounds/342750__rhodesmas__coins-purchase-4.wav" id="21_e3tja"]
 [ext_resource type="AudioStream" uid="uid://byqxgb6m7v2ji" path="res://sounds/408008__judith136__55.wav" id="22_xvgkq"]
 [ext_resource type="AudioStream" uid="uid://cb27i3xuibqby" path="res://sounds/Evening.mp3" id="23_k8lir"]
+[ext_resource type="AudioStream" uid="uid://bujw703a2wsf3" path="res://sounds/442943__qubodup__level-up.wav" id="26_pwmgm"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_665uo"]
 font_size = 60
@@ -169,6 +170,10 @@ volume_db = 24.0
 
 [node name="MainMusic_Evening" type="AudioStreamPlayer2D" parent="Camera"]
 stream = ExtResource("23_k8lir")
+
+[node name="LevelUpSound" type="AudioStreamPlayer2D" parent="Camera"]
+stream = ExtResource("26_pwmgm")
+volume_db = -5.0
 
 [node name="MermaidButton" type="TextureButton" parent="."]
 visible = false

@@ -50,6 +50,7 @@ func setDisplayedPrize(level, doubleLevel) -> void:
 		$Gems.position.x = $Gems.position.x - 100
 		if randomPrize in range(1,30): 
 			print("prize is two food bags")
+			foodGained = 2
 			var foodBagClone = $FoodBag.duplicate()
 			foodBagClone.position.x = foodBagClone.position.x - 100
 			foodBagClone.visible = true
@@ -58,12 +59,15 @@ func setDisplayedPrize(level, doubleLevel) -> void:
 			$FoodBag.visible = true
 		elif randomPrize in range(31,50): 
 			print("prize is a food bag and a medicine")
+			foodGained = 1
+			medicineGained = 1
 			$FoodBag.position.x = $FoodBag.position.x - 100
 			$Medicine.position.x = $Medicine.position.x + 100
 			$FoodBag.visible = true
 			$Medicine.visible = true
 		elif randomPrize in range(51,75): 
 			print("prize is two medicine")
+			medicineGained = 2
 			var medicineClone = $Medicine.duplicate()
 			medicineClone.position.x = medicineClone.position.x - 100
 			medicineClone.visible = true
@@ -72,18 +76,23 @@ func setDisplayedPrize(level, doubleLevel) -> void:
 			$Medicine.visible = true
 		elif randomPrize in range(76,85): 
 			print("prize is a food bag and a penguin")
+			foodGained = 1
+			penguinsGained = 1
 			$FoodBag.position.x = $FoodBag.position.x - 100
 			$PenguinPrize.position.x = $PenguinPrize.position.x + 100
 			$FoodBag.visible = true
 			$PenguinPrize.visible = true
 		elif randomPrize in range(86,95): 
 			print("prize is a medicine and a penguin")
+			medicineGained = 1
+			penguinsGained = 1
 			$Medicine.position.x = $Medicine.position.x - 100
 			$PenguinPrize.position.x = $PenguinPrize.position.x + 100
 			$Medicine.visible = true
 			$PenguinPrize.visible = true
 		elif randomPrize in range(96,100): 
 			print("prize is two free penguins")
+			penguinsGained = 2
 			var penguinClone = $PenguinPrize.duplicate()
 			penguinClone.position.x = penguinClone.position.x - 100
 			$PenguinPrize.position.x = $PenguinPrize.position.x + 100
