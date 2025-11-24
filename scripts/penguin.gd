@@ -45,6 +45,7 @@ func _process(_delta: float) -> void:
 		position.y = position.y - 2
 		modulate.a = modulate.a - 0.01
 		if modulate.a <= 0: 
+			$DeadSound.stop()
 			queue_free()
 
 ##SETTERS##
@@ -193,6 +194,7 @@ func moveToGoal() -> void:
 
 func initiateDeath() -> void: 
 	print("penguin is going to heaven")
+	$DeadSound.play(9.78)
 	isDying = true
 
 func _on_penguin_sprite_animation_looped() -> void:
@@ -205,6 +207,7 @@ func _on_penguin_sprite_animation_looped() -> void:
 	elif current_state == "Slide": 
 		setState("StillSliding")
 	elif current_state == "Hurt": 
+		$Sneeze.stop()
 		setState(last_state)
 	elif current_state == "Die": 
 		setState("Dead")
@@ -230,7 +233,6 @@ func _on_sliding_goal_timer_timeout() -> void:
 	penguinNeedsGoal.emit(self)
 	#emit_signal("penguinNeedsGoal", self)
 
-
 func _on_sick_timer_timeout() -> void:
 	if sick and current_state != "Dead":
 		var randomChanceOfDeath = randf_range(0,100)
@@ -239,5 +241,6 @@ func _on_sick_timer_timeout() -> void:
 			hasAGoal = false
 		else:  
 			setState("Hurt")
-			$SickTimer.wait_time = randf_range(3,5)
+			$Sneeze.play(4.14)
+			$SickTimer.wait_time = randf_range(8,15)
 		useEnergy(1)
