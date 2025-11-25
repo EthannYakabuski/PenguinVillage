@@ -24,6 +24,8 @@ var gems = []
 var lastPoints: Vector2
 
 var currentPenguinPrice = 50
+var currentFoodPrice = 100
+var currentMedicinePrice = 75
 var currentPenguinFoodReqSinceLastLogin = 0
 
 var lastLogin_global
@@ -82,6 +84,7 @@ func androidAuthentication() -> void:
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
+			"Inventory": [1,2,0],
 			"AreasUnlocked": [false, false, false, false, false],
 			"LastLogin": { "year": 2025, "month": 11, "day": 21, "weekday": 6, "hour": 13, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
@@ -256,6 +259,7 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 					"Food": [{"amount": 25, "locationX": 300, "locationY": 1150}],
 					"Fish": [],
 					"Decorations": [], 
+					"Inventory": [0,0,0],
 					"AreasUnlocked": [false, false, false, false, false],
 					"LastLogin": newLoginTime,
 					"DailyRewards": [false, false, false, false, false, false, false],
@@ -562,8 +566,16 @@ func givePlayerExperience(amount, location) -> void:
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 
-func levelUpPrizeAccepted() -> void: 
+func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained) -> void: 
 	print("prize accepted in main")
+	var currData = PlayerData.getData()
+	currData["Gems"] = currData["Gems"] + int(gemsGained)
+	currData["Inventory"][0] = currData["Inventory"][0] + penguinsGained
+	currData["Inventory"][1] = currData["Inventory"][1] + foodGained
+	currData["Inventory"][2] = currData["Inventory"][2] + medicineGained
+	PlayerData.setData(currData)
+	PlayerData.saveData()
+	calculateCurrentPenguinPrice()
 	levelUpDialog = null
 
 func addIndicator(amount, position): 
@@ -679,7 +691,14 @@ func penguinIsDropped(_atPosition: Vector2):
 	#spawn the penguin into the scene + animation
 	#update the players cloud data
 	var globalPosition = $Camera.get_global_mouse_position()
-	if PlayerData.getData()["Gems"] >= currentPenguinPrice: 
+	if PlayerData.getData()["Gems"] >= currentPenguinPrice:
+		#if the current penguin price is 0, and its not because there are no penguins
+		#then the player is using a free penguin from their inventory
+		if currentPenguinPrice == 0 and penguins.size() > 0: 
+			var currData = PlayerData.getData()
+			currData["Inventory"][0] = currData["Inventory"][0] - 1
+			PlayerData.setData(currData)
+			PlayerData.saveData() 
 		spendGems(currentPenguinPrice)
 		print("Penguin added at: " + str(globalPosition.x) + " && " + str(globalPosition.y))
 		addPenguinAtLocation(globalPosition)
@@ -716,14 +735,21 @@ func medicineIsDropped(_atPosition: Vector2):
 				closestPenguin = penguin
 	if closestPenguin: 
 		print("we found the closest sick penguin, checking gem amount available")
-		if PlayerData.getData()["Gems"] >= 50: 
+		if PlayerData.getData()["Gems"] >= currentMedicinePrice: 
 			print("we found the closest sick penguin, clearing status")
 			closestPenguin.setSick(false)
 			closestPenguin.addFood(25)
 			$Camera/PurchaseSound.play()
 			givePlayerExperience(25, closestPenguin.global_position)
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCA")
-			spendGems(50)
+			spendGems(currentMedicinePrice)
+			#if the currentMedicinePrice is 0, the player is using a medicine from their inventory
+			if currentMedicinePrice == 0:
+				var currData = PlayerData.getData()
+				currData["Inventory"][2] = currData["Inventory"][2] - 1
+				PlayerData.setData(currData)
+				PlayerData.saveData()
+			calculateCurrentPenguinPrice() 
 			updatePenguinAndFoodSavedArray()
 	else: 
 		print("there was no sick penguin, or there was an error")
@@ -732,15 +758,22 @@ func medicineIsDropped(_atPosition: Vector2):
 func foodIsDropped(atPosition: Vector2): 
 	print("food has been dropped and received")
 	#feed all penguins + play animation
-	if PlayerData.getData()["Gems"] >= 100:
+	if PlayerData.getData()["Gems"] >= currentFoodPrice:
+		#if the current food price is 0, the player is using a free food bag from their inventory
+		if currentFoodPrice == 0:
+			var currData = PlayerData.getData()
+			currData["Inventory"][1] = currData["Inventory"][1] - 1
+			PlayerData.setData(currData)
+			PlayerData.saveData() 
 		$Camera/PurchaseSound.play() 
 		for penguin in penguins: 
 			penguin.setFood(100)
 		for bowl in foodBowls: 
 			bowl.addFood(100)
 		updatePenguinAndFoodSavedArray()
-		spendGems(100)
+		spendGems(currentFoodPrice)
 		givePlayerExperience(25, atPosition)
+		calculateCurrentPenguinPrice()
 	isDragging = false
 	
 func dragToggle(): 
@@ -828,12 +861,27 @@ func calculateCurrentPenguinPrice() -> void:
 	var p = 1.75
 	var calculatedExactCost = base + scal * pow(float(currentPenguins - 1), p)
 	var roundedCost = int(round(calculatedExactCost / 5.0) * 5.0)
+	var currData = PlayerData.getData()
 	print(roundedCost)
-	sidebarHandle.setCurrentPenguinCost(roundedCost)
-	if currentPenguins == 0: 
+	if currentPenguins == 0 or currData["Inventory"][0] > 0: 
 		currentPenguinPrice = 0
 	else: 
 		currentPenguinPrice = roundedCost
+	sidebarHandle.setCurrentPenguinCost(currentPenguinPrice)
+	#if the player has free food bags in their inventory
+	if currData["Inventory"][1] > 0: 
+		sidebarHandle.setCurrentFoodCost(0)
+		currentFoodPrice = 0
+	else: 
+		currentFoodPrice = 100
+		sidebarHandle.setCurrentFoodCost(100)
+	#if the player has free medicine in their inventory
+	if currData["Inventory"][2] > 0: 
+		sidebarHandle.setCurrentMedicineCost(0)
+		currentMedicinePrice = 0
+	else: 
+		currentMedicinePrice = 75
+		sidebarHandle.setCurrentMedicineCost(75)
 
 func _on_side_bar_pressed() -> void:
 	print("side bar pressed")

@@ -21,7 +21,7 @@ func setDisplayedLevel(level, doubleLevel) -> void:
 
 func _on_accept_prize_pressed() -> void:
 	print("accepting level up prize")
-	prizeAccepted.emit()
+	prizeAccepted.emit(gemsGained, penguinsGained, foodGained, medicineGained)
 	queue_free()
 	
 func setDisplayedPrize(level, doubleLevel) -> void: 
