@@ -33,7 +33,6 @@ func setDisplayedPrize(level, doubleLevel) -> void:
 	$Gems.visible = true
 	var randomPrize = randi_range(1,100)
 	if not doubleLevel:
-		randomPrize = 50
 		if randomPrize in range(1,51): 
 			print("prize is a free food bag")
 			foodGained = 1
