@@ -13,6 +13,7 @@ var sidebarActive = false
 var sidebarHandle
 var isDragging = false
 var levelUpDialog
+var loading = true
 
 var penguins = []
 var fishes = []
@@ -65,6 +66,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	determinePenguinIntelligence()
 	determineFishIntelligence()
+	if(loading): 
+		$LoadingBar.value = $LoadingBar.value + 1
 	
 func playCorrectMusic() -> void: 
 	if lastLogin_global["hour"] >= 17:
@@ -78,7 +81,7 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 11, "day": 21, "weekday": 6, "hour": 13, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 11, "day": 25, "weekday": 3, "hour": 13, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
 			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": true}, {"health": 90, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
@@ -86,7 +89,7 @@ func androidAuthentication() -> void:
 			"Decorations": [], 
 			"Inventory": [1,2,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 11, "day": 21, "weekday": 6, "hour": 13, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 11, "day": 25, "weekday": 3, "hour": 13, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 250,
@@ -100,6 +103,8 @@ func androidAuthentication() -> void:
 		var jsonParsedDummyData = JSON.parse_string(jsonStringDummyData)
 		PlayerData.setData(jsonParsedDummyData)
 		updateLastLogin()
+		#simulates connection time to load players saved data in a real device
+		await get_tree().create_timer(2.0).timeout
 		emit_signal("dataHasLoaded")
 	else: 
 		print("Plugin found")
@@ -121,7 +126,9 @@ func onAdInitializationComplete(_status : InitializationStatus):
 #code to call after data has been loaded from google store
 func dataLoaded(): 
 	print("loading screen")
-	self.visible = true
+	loading = false
+	makeEverythingVisible()
+	$LoadingBar.visible = false
 	#$WaterArea.visible = true
 	#$IceBergArea.visible = true
 	determineFish()
@@ -149,6 +156,11 @@ func dataLoaded():
 		
 	RewardedAdLoader.new().load(unit_id, AdRequest.new(), rewarded_ad_load_callback)
 	
+func makeEverythingVisible() -> void: 
+	$CanvasMenu.visible = true
+	$WaterArea.visible = true
+	$IceBergArea.visible = true
+
 #code to load banner ad
 func _create_ad_view() -> void:
 	#free memory
@@ -337,7 +349,7 @@ func determinePenguins() -> void:
 	for penguinData in penguinsData: 
 		var penguin: Penguin = penguin_scene.instantiate()
 		var randomLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
-		penguin.setLocation(randomLocation.x, randomLocation.y-300)
+		penguin.setLocation(randomLocation.x, randomLocation.y)
 		penguin.setSick(penguinData["sick"])
 		penguin.setHealth(penguinData["health"])
 		penguin.setFood(penguinData["food"])
@@ -503,7 +515,7 @@ func onGemCollected(gem) -> void:
 func onGivePenguinGoal(penguin) -> void: 
 	print("giving a sliding penguin a new goal")
 	var randomGoalLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
-	penguin.setGoal(randomGoalLocation.x, randomGoalLocation.y)
+	penguin.setGoal(randomGoalLocation.x, randomGoalLocation.y-100)
 	penguin.startTime()
 	#penguin.setState("Walk")
 
@@ -558,7 +570,8 @@ func givePlayerExperience(amount, location) -> void:
 		$CanvasMenu.add_child(levelUpDialog)
 			
 	#add_child(levelUpDialog) 
-	updateExperienceBarLocal(str(currentPlayerLevel), int(currentLevelExperience))
+	var afterLevelUpExperienceRequired = calculateExperienceRequiredForLevelUp(currentPlayerLevel)
+	updateExperienceBarLocal(str(currentPlayerLevel), int(currentLevelExperience), int(afterLevelUpExperienceRequired))
 	currData["PlayerLevel"] = currentPlayerLevel
 	currData["Experience"] = currentTotalExperience
 	currData["LevelExperience"] = currentLevelExperience
@@ -578,9 +591,9 @@ func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained
 	calculateCurrentPenguinPrice()
 	levelUpDialog = null
 
-func addIndicator(amount, position): 
+func addIndicator(amount, positionOfShard): 
 	var newIndicator = experienceShard_scene.instantiate()
-	newIndicator.position = position
+	newIndicator.position = positionOfShard
 	newIndicator.setLabel(amount)
 	add_child(newIndicator)
 	newIndicator.startTimer()
@@ -677,14 +690,19 @@ func handleDrag(_pos: Vector2, delta: Vector2):
 func updateGemsLabel(amount): 
 	$CanvasMenu/GemIndicator/GemLabel.text = str(amount)
 	
-func updateExperienceBar(experience): 
+func updateExperienceBar(_experience): 
 	$CanvasMenu/LevelLabel.text = str(PlayerData.getData()["PlayerLevel"])
 	var currentExperience = int(PlayerData.getData()["LevelExperience"])
 	$CanvasMenu/LevelBar.value = currentExperience
 	
-func updateExperienceBarLocal(level, currentExperience):
+func updateExperienceBarLocal(level, currentExperience, totalExperienceRequired):
+	print("level " + level)
+	print("currentExperience " + str(currentExperience))
+	print("totalExperienceRequired " + str(totalExperienceRequired))
 	$CanvasMenu/LevelLabel.text = level
-	$CanvasMenu/LevelBar.value = currentExperience
+	var currentPercentage = (float(currentExperience) / float(totalExperienceRequired)) * 100
+	$CanvasMenu/LevelBar.value = currentPercentage
+	print("setting experience bar to " + str(currentPercentage))
 	
 func penguinIsDropped(_atPosition: Vector2): 
 	print("penguin has been dropped and received")
@@ -837,14 +855,56 @@ func _on_gem_spawn_timer_timeout() -> void:
 	gem.gem_collected.connect(onGemCollected)
 	add_child(gem)
 	gems.push_back(gem)
-
+	
 func get_random_point_in_collision_polygon(collision_polygon: CollisionPolygon2D) -> Vector2:
-	var points := collision_polygon.polygon
-	var triangles := Geometry2D.triangulate_polygon(points)
-	if triangles.is_empty():
+	var poly: PackedVector2Array = collision_polygon.polygon
+	if poly.size() < 3:
 		return collision_polygon.global_position
-	var triangle_index := randi_range(0, triangles.size() / 3-1) * 3
-	return points[triangles[triangle_index]]
+
+	var tri_idx: PackedInt32Array = Geometry2D.triangulate_polygon(poly)
+	if tri_idx.is_empty():
+		return collision_polygon.global_position
+
+	# --- Build cumulative area table (for weighted triangle selection) ---
+	var cumulative := PackedFloat32Array()
+	cumulative.resize(tri_idx.size() / 3)
+	var total_area := 0.0
+
+	var ci := 0
+	for i in range(0, tri_idx.size(), 3):
+		var a: Vector2 = poly[tri_idx[i]]
+		var b: Vector2 = poly[tri_idx[i + 1]]
+		var c: Vector2 = poly[tri_idx[i + 2]]
+		var area: float = abs((b - a).cross(c - a)) * 0.5  # triangle area
+		total_area += area
+		cumulative[ci] = total_area
+		ci += 1
+
+	if total_area <= 0.0:
+		return collision_polygon.global_position
+
+	# --- Pick a triangle proportional to its area ---
+	var r := randf() * total_area
+	var t_index := 0
+	while t_index < cumulative.size() and r > cumulative[t_index]:
+		t_index += 1
+	var base := t_index * 3
+
+	var A: Vector2 = poly[tri_idx[base]]
+	var B: Vector2 = poly[tri_idx[base + 1]]
+	var C: Vector2 = poly[tri_idx[base + 2]]
+
+	# --- Uniform random point in triangle ABC using barycentric coordinates ---
+	# Use the sqrt trick so density is uniform over area.
+	var r1 := randf()
+	var r2 := randf()
+	var sqrt_r1 := sqrt(r1)
+	var u := 1.0 - sqrt_r1
+	var v := r2 * sqrt_r1
+	var w := 1.0 - u - v
+
+	var p_local: Vector2 = A * u + B * v + C * w
+	return collision_polygon.to_global(p_local)  # if you want a global/world-space point
 	
 func is_point_inside_polygon(collision_polygon: CollisionPolygon2D, point: Vector2) -> bool:
 	var local_point = collision_polygon.get_global_transform().affine_inverse() * point
@@ -900,3 +960,6 @@ func _on_main_music_finished() -> void:
 
 func _on_main_music_evening_finished() -> void:
 	$Camera/MainMusic_Evening.play()
+	
+func _on_loading_bar_child_entered_tree(_node: Node) -> void:
+	$LoadingBar/LoadingPenguin.play()

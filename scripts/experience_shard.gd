@@ -7,7 +7,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	position.y = position.y - 2
 	modulate.a = modulate.a - 0.01
 	scale = scale + Vector2.ONE * 0.001

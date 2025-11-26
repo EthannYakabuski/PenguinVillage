@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=34 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -30,12 +30,13 @@
 [ext_resource type="AudioStream" uid="uid://byqxgb6m7v2ji" path="res://sounds/408008__judith136__55.wav" id="22_xvgkq"]
 [ext_resource type="AudioStream" uid="uid://cb27i3xuibqby" path="res://sounds/Evening.mp3" id="23_k8lir"]
 [ext_resource type="AudioStream" uid="uid://bujw703a2wsf3" path="res://sounds/442943__qubodup__level-up.wav" id="26_pwmgm"]
+[ext_resource type="Texture2D" uid="uid://b66oc2ftw7uso" path="res://images/bg-icebergs-1.png" id="31_6p3yc"]
+[ext_resource type="SpriteFrames" uid="uid://cot0itv4g4eta" path="res://animations/penguin_frames.tres" id="31_yskkx"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_665uo"]
 font_size = 60
 
 [node name="Background" type="Area2D"]
-visible = false
 script = ExtResource("1_31116")
 penguin_scene = ExtResource("2_cvr2x")
 fish_scene = ExtResource("3_2xu8c")
@@ -56,6 +57,7 @@ script = ExtResource("6_d244v")
 
 [node name="CanvasMenu" type="CanvasLayer" parent="."]
 layer = 0
+visible = false
 
 [node name="SideBar" type="TextureButton" parent="CanvasMenu"]
 offset_left = 22.0
@@ -115,6 +117,7 @@ autostart = true
 polygon = PackedVector2Array(-1294, -129, -1305, 1954, 2369, 1991, 2353, -123)
 
 [node name="WaterArea" type="Area2D" parent="."]
+visible = false
 position = Vector2(0, -105)
 
 [node name="WaterSprite" type="Sprite2D" parent="WaterArea"]
@@ -126,6 +129,7 @@ texture = ExtResource("5_7pg7q")
 polygon = PackedVector2Array(-1266, 1502, -1111, 1686, -880, 1448, -766, 1589, -654, 1765, -523, 1598, -425, 1594, -288, 1769, -83, 1443, 137, 1587, 316, 1762, 453, 1524, 681, 1663, 987, 1596, 1078, 1759, 1177, 1596, 1428, 1689, 1579, 1598, 1737, 1754, 1910, 1598, 2061, 1815, 2261, 1721, 2342, 1504, 2342, 2023, -1272, 2025)
 
 [node name="IceBergArea" type="Area2D" parent="."]
+visible = false
 position = Vector2(0, -100)
 
 [node name="IceBergSprite" type="Sprite2D" parent="IceBergArea"]
@@ -201,6 +205,28 @@ script = ExtResource("16_l1ro8")
 [node name="AchievementsClient" type="Node" parent="."]
 script = ExtResource("17_r48o1")
 
+[node name="LoadingBar" type="TextureProgressBar" parent="."]
+z_as_relative = false
+offset_left = 263.0
+offset_top = 1162.0
+offset_right = 798.0
+offset_bottom = 1299.0
+texture_under = ExtResource("18_otdhd")
+texture_progress = ExtResource("19_nr76q")
+tint_progress = Color(0, 0.32549, 0.619608, 1)
+
+[node name="LoadingBackground" type="Sprite2D" parent="LoadingBar"]
+z_index = -1
+position = Vector2(284, -392)
+scale = Vector2(3.21, 3.21)
+texture = ExtResource("31_6p3yc")
+
+[node name="LoadingPenguin" type="AnimatedSprite2D" parent="LoadingBar"]
+position = Vector2(322, -395)
+scale = Vector2(4.61, 4.61)
+sprite_frames = ExtResource("31_yskkx")
+animation = &"Walk"
+
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="pressed" from="CanvasMenu/SideBar" to="." method="_on_side_bar_pressed"]
 [connection signal="timeout" from="FishSpawnTimer" to="." method="_on_fish_spawn_timer_timeout"]
@@ -213,3 +239,4 @@ script = ExtResource("17_r48o1")
 [connection signal="finished" from="Camera/MainMusic" to="." method="_on_main_music_finished"]
 [connection signal="pressed" from="MermaidButton" to="." method="_on_ad_button_pressed"]
 [connection signal="pressed" from="DailyRewardBox" to="." method="_on_daily_reward_box_pressed"]
+[connection signal="child_entered_tree" from="LoadingBar" to="." method="_on_loading_bar_child_entered_tree"]
