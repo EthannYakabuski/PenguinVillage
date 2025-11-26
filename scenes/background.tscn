@@ -151,9 +151,6 @@ limit_left = -1700
 limit_right = 1760
 drag_horizontal_enabled = true
 
-[node name="MainMusic" type="AudioStreamPlayer2D" parent="Camera"]
-stream = ExtResource("21_7ey0k")
-
 [node name="FoodEatSound" type="AudioStreamPlayer2D" parent="Camera"]
 stream = ExtResource("19_q85dq")
 volume_db = 15.0
@@ -168,12 +165,17 @@ stream = ExtResource("21_e3tja")
 stream = ExtResource("22_xvgkq")
 volume_db = 24.0
 
-[node name="MainMusic_Evening" type="AudioStreamPlayer2D" parent="Camera"]
+[node name="MainMusic_Evening" type="AudioStreamPlayer" parent="Camera"]
 stream = ExtResource("23_k8lir")
+volume_db = -15.0
 
 [node name="LevelUpSound" type="AudioStreamPlayer2D" parent="Camera"]
 stream = ExtResource("26_pwmgm")
 volume_db = -5.0
+
+[node name="MainMusic" type="AudioStreamPlayer" parent="Camera"]
+stream = ExtResource("21_7ey0k")
+volume_db = -15.0
 
 [node name="MermaidButton" type="TextureButton" parent="."]
 visible = false
@@ -207,7 +209,7 @@ script = ExtResource("17_r48o1")
 [connection signal="area_exited" from="WaterArea" to="." method="_on_water_area_area_exited"]
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
 [connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]
-[connection signal="finished" from="Camera/MainMusic" to="." method="_on_main_music_finished"]
 [connection signal="finished" from="Camera/MainMusic_Evening" to="." method="_on_main_music_evening_finished"]
+[connection signal="finished" from="Camera/MainMusic" to="." method="_on_main_music_finished"]
 [connection signal="pressed" from="MermaidButton" to="." method="_on_ad_button_pressed"]
 [connection signal="pressed" from="DailyRewardBox" to="." method="_on_daily_reward_box_pressed"]
