@@ -202,6 +202,7 @@ func _on_penguin_sprite_animation_looped() -> void:
 		setState("Swim")
 	elif current_state == "Jump" && current_area == "Ice" && hasAGoal: 
 		setState("Walk")
+		get_parent().doesWaterAreaHaveThisPenguin(self)
 	elif current_state == "Jump" && current_area == "Ice":
 		setState("Idle")
 	elif current_state == "Walk" && current_area == "Water": 
@@ -220,7 +221,7 @@ func _on_penguin_sprite_animation_changed() -> void:
 		speed = 2
 		$WaterSplashSound.play(2)
 	elif (current_state == "Jump" or current_state == "Dive"): 
-		speed = 3
+		speed = 3.5
 	elif (current_state == "Slide" || current_state == "StillSliding"): 
 		speed = 2.25
 	else: 

@@ -687,6 +687,12 @@ func _on_water_area_area_exited(area: Area2D) -> void:
 		print("a penguin exited the water area")
 		area.setCollisionGons("Walk")
 		area.setCurrentArea("Ice")
+		
+func doesWaterAreaHaveThisPenguin(penguin: Penguin) -> void: 
+	if $WaterArea.get_overlapping_areas().has(penguin): 
+		print("penguing is in fact in the water area, setting to swim")
+		penguin.setCurrentArea("Water")
+		penguin.setState("Swim")
 	
 ##GUI###
 func handleDrag(_pos: Vector2, delta: Vector2): 
