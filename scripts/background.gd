@@ -83,7 +83,7 @@ func androidAuthentication() -> void:
 		#create dummy data for testing
 		lastLogin_global = { "year": 2025, "month": 11, "day": 27, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 75, "sick": true}],
+			"Penguins": [{"health": 50, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
@@ -829,25 +829,28 @@ func _on_input_event(_viewport, event, _shape_idx):
 func _on_fish_spawn_timer_timeout() -> void:
 	#choose a new timeout
 	print("fish spawn timeout")
-	$FishSpawnTimer.wait_time = randf_range(8,15)
-	var fish: Fish = fish_scene.instantiate()
-	var randomTypeValue = randf_range(0,100)
-	if(randomTypeValue < 90): 
-		fish.setType("blue")
-	elif (randomTypeValue > 90 and randomTypeValue < 97): 
-		fish.setType("purple")
+	if fishes.size() < 25: 
+		$FishSpawnTimer.wait_time = randf_range(8,15)
+		var fish: Fish = fish_scene.instantiate()
+		var randomTypeValue = randf_range(0,100)
+		if(randomTypeValue < 90): 
+			fish.setType("blue")
+		elif (randomTypeValue > 90 and randomTypeValue < 97): 
+			fish.setType("purple")
+		else: 
+			fish.setType("gold")
+		var randomSpawnLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
+		var randomYDifferential = randf_range(200,350)
+		fish.setLocation(randomSpawnLocation.x, randomSpawnLocation.y+randomYDifferential)
+		fish.fish_collected.connect(onFishCollected)
+		fish.fish_needs_target.connect(onGiveFishGoal)
+		fish.fish_idle_needs_new_goal.connect(onGiveFishGoal)
+		fish.fish_danger_check.connect(onFishDanger)
+		add_child(fish)
+		onGiveFishGoal(fish)
+		fishes.push_back(fish)
 	else: 
-		fish.setType("gold")
-	var randomSpawnLocation = get_random_point_in_collision_polygon($WaterArea/WaterCollision)
-	var randomYDifferential = randf_range(200,350)
-	fish.setLocation(randomSpawnLocation.x, randomSpawnLocation.y+randomYDifferential)
-	fish.fish_collected.connect(onFishCollected)
-	fish.fish_needs_target.connect(onGiveFishGoal)
-	fish.fish_idle_needs_new_goal.connect(onGiveFishGoal)
-	fish.fish_danger_check.connect(onFishDanger)
-	add_child(fish)
-	onGiveFishGoal(fish)
-	fishes.push_back(fish)
+		print("there are already 25 fish in the pond, skipping")
 	
 func _on_gem_spawn_timer_timeout() -> void:
 	print("gem spawn timeout")
