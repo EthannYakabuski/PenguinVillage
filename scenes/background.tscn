@@ -114,7 +114,12 @@ wait_time = 15.0
 autostart = true
 
 [node name="LocationClickCollision" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(-1294, -129, -1305, 1954, 2369, 1991, 2353, -123)
+polygon = PackedVector2Array(-1061, -5, -936, -3, -772, 65, -684, 255, -438, 26, -419, -3, -240, -3, -212, 108, -85, 65, -25, 204, 130, 277, 339, 77, 552, 105, 642, 201, 854, 29, 993, 303, 1103, 190, 1131, -3, 1658, 5, 1696, 78, 1791, 2, 1896, 2, 2137, 272, 2210, 212, 2331, 297, 2356, 885, 2359, 1993, -1314, 1956, -1272, 274, -1237, 273)
+
+[node name="AirArea" type="Area2D" parent="."]
+
+[node name="AirCollision" type="CollisionPolygon2D" parent="AirArea"]
+polygon = PackedVector2Array(-1264, 289, -1066, -7, -926, -7, -768, 63, -684, 253, -443, 25, -424, -3, -239, -3, -211, 102, -86, 61, -24, 204, 131, 274, 337, 76, 556, 106, 641, 195, 848, 29, 994, 297, 1099, 191, 1135, -5, 1660, 2, 1696, 76, 1800, -1, 1902, 0, 2136, 270, 2213, 208, 2338, 295, 2470, 295, 2472, -516, -1376, -516, -1378, 304)
 
 [node name="WaterArea" type="Area2D" parent="."]
 visible = false
@@ -231,6 +236,7 @@ animation = &"Walk"
 [connection signal="pressed" from="CanvasMenu/SideBar" to="." method="_on_side_bar_pressed"]
 [connection signal="timeout" from="FishSpawnTimer" to="." method="_on_fish_spawn_timer_timeout"]
 [connection signal="timeout" from="GemSpawnTimer" to="." method="_on_gem_spawn_timer_timeout"]
+[connection signal="area_entered" from="AirArea" to="." method="_on_air_area_area_entered"]
 [connection signal="area_entered" from="WaterArea" to="." method="_on_water_area_area_entered"]
 [connection signal="area_exited" from="WaterArea" to="." method="_on_water_area_area_exited"]
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]

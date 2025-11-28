@@ -61,6 +61,11 @@ func _ready() -> void:
 	$DropControl.penguinDropped.connect(penguinIsDropped)
 	$DropControl.foodDropped.connect(foodIsDropped)
 	$DropControl.medicineDropped.connect(medicineIsDropped)
+	#prepare the sidebar handle so that we can accept level up prizes and keep track of
+	#current penguin cost even before the player has explicitly toggled the sidebar
+	sidebarHandle = sidebar.instantiate()
+	sidebarHandle.isDraggingSignal.connect(dragToggle)
+	calculateCurrentPenguinPrice()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -952,9 +957,6 @@ func calculateCurrentPenguinPrice() -> void:
 func _on_side_bar_pressed() -> void:
 	print("side bar pressed")
 	if not sidebarActive: 
-		sidebarHandle = sidebar.instantiate()
-		sidebarHandle.isDraggingSignal.connect(dragToggle)
-		calculateCurrentPenguinPrice()
 		$CanvasMenu.add_child(sidebarHandle)
 		sidebarActive = true
 	else: 
@@ -969,3 +971,9 @@ func _on_main_music_evening_finished() -> void:
 	
 func _on_loading_bar_child_entered_tree(_node: Node) -> void:
 	$LoadingBar/LoadingPenguin.play()
+
+func _on_air_area_area_entered(area: Area2D) -> void:
+	print("there is a penguin in the air area, forcing a slide")
+	if area is Penguin: 
+		area.setState("Slide")
+		onGivePenguinGoal(area)
