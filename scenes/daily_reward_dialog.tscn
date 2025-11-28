@@ -1,0 +1,258 @@
+[gd_scene load_steps=12 format=3 uid="uid://daqo8ec4i8q21"]
+
+[ext_resource type="Script" path="res://scripts/daily_reward_dialog.gd" id="1_663h8"]
+[ext_resource type="Texture2D" uid="uid://buc0p1qkdasqx" path="res://images/modalDialog.png" id="1_e2ydo"]
+[ext_resource type="Texture2D" uid="uid://mryjgy2oakmu" path="res://images/modalButton.png" id="3_a3q5v"]
+[ext_resource type="LabelSettings" uid="uid://db1v37x52a55k" path="res://fonts/modalDialog_font.tres" id="4_buq27"]
+[ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="5_hy3fv"]
+[ext_resource type="Texture2D" uid="uid://cqxpncoxu8bx6" path="res://images/FoodBag.png" id="6_sbycv"]
+[ext_resource type="Texture2D" uid="uid://b763me5ubg5yl" path="res://images/Medicine.png" id="7_d6ods"]
+[ext_resource type="Texture2D" uid="uid://dhple4vxuawh1" path="res://images/penguin_walk01.png" id="8_bedcg"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_b5ndg"]
+font_size = 109
+font_color = Color(0, 0.352941, 0.643137, 1)
+shadow_size = 17
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mv03r"]
+font_size = 35
+font_color = Color(0, 0.352941, 0.643137, 1)
+shadow_size = 17
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_h5212"]
+line_spacing = 10.0
+font_size = 480
+font_color = Color(0.811765, 0.27451, 0.960784, 1)
+outline_size = 75
+outline_color = Color(0, 0, 0, 1)
+
+[node name="DailyRewardDialog" type="Sprite2D"]
+position = Vector2(540, 996)
+texture = ExtResource("1_e2ydo")
+script = ExtResource("1_663h8")
+
+[node name="DailyLabel" type="Label" parent="."]
+offset_left = -373.0
+offset_top = -310.0
+offset_right = 370.0
+offset_bottom = -147.0
+text = "Daily Rewards"
+label_settings = SubResource("LabelSettings_b5ndg")
+
+[node name="AcceptPrize" type="TextureButton" parent="."]
+offset_left = -116.0
+offset_top = 70.0
+offset_right = 908.0
+offset_bottom = 1094.0
+scale = Vector2(0.235, 0.235)
+texture_normal = ExtResource("3_a3q5v")
+
+[node name="ButtonLabel" type="Label" parent="AcceptPrize"]
+layout_mode = 0
+offset_left = 179.0
+offset_top = 344.0
+offset_right = 842.0
+offset_bottom = 668.0
+text = "Accept"
+label_settings = ExtResource("4_buq27")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Day1Label" type="Label" parent="."]
+offset_left = -403.0
+offset_top = -152.0
+offset_right = -306.0
+offset_bottom = -94.0
+text = "Day 1"
+label_settings = SubResource("LabelSettings_mv03r")
+
+[node name="GemSprite" type="Sprite2D" parent="Day1Label"]
+position = Vector2(43, 97)
+scale = Vector2(0.055, 0.055)
+texture = ExtResource("5_hy3fv")
+
+[node name="GemAmountLabel" type="Label" parent="Day1Label/GemSprite"]
+offset_left = -272.727
+offset_top = 763.637
+offset_right = 275.273
+offset_bottom = 1418.64
+text = "50"
+label_settings = SubResource("LabelSettings_h5212")
+
+[node name="FoodBag" type="Sprite2D" parent="Day1Label"]
+position = Vector2(48, 226)
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("6_sbycv")
+
+[node name="Day2Label" type="Label" parent="."]
+offset_left = -289.0
+offset_top = -152.0
+offset_right = -185.0
+offset_bottom = -96.0
+text = "Day 2"
+label_settings = SubResource("LabelSettings_mv03r")
+
+[node name="FoodBag" type="Sprite2D" parent="Day2Label"]
+position = Vector2(48, 226)
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("6_sbycv")
+
+[node name="GemSprite" type="Sprite2D" parent="Day2Label"]
+position = Vector2(47, 97)
+scale = Vector2(0.055, 0.055)
+texture = ExtResource("5_hy3fv")
+
+[node name="GemAmountLabel" type="Label" parent="Day2Label/GemSprite"]
+offset_left = -436.364
+offset_top = 763.636
+offset_right = 385.636
+offset_bottom = 1418.64
+text = "100"
+label_settings = SubResource("LabelSettings_h5212")
+
+[node name="Day3Label" type="Label" parent="."]
+offset_left = -171.0
+offset_top = -152.0
+offset_right = -63.0
+offset_bottom = -92.0
+text = "Day 3"
+label_settings = SubResource("LabelSettings_mv03r")
+
+[node name="GemSprite" type="Sprite2D" parent="Day3Label"]
+position = Vector2(45, 97)
+scale = Vector2(0.055, 0.055)
+texture = ExtResource("5_hy3fv")
+
+[node name="GemAmountLabel" type="Label" parent="Day3Label/GemSprite"]
+offset_left = -436.364
+offset_top = 763.636
+offset_right = 385.636
+offset_bottom = 1418.64
+text = "150"
+label_settings = SubResource("LabelSettings_h5212")
+
+[node name="Medicine" type="Sprite2D" parent="Day3Label"]
+position = Vector2(45, 225)
+scale = Vector2(0.06, 0.06)
+texture = ExtResource("7_d6ods")
+
+[node name="Day4Label" type="Label" parent="."]
+offset_left = -55.0
+offset_top = -152.0
+offset_right = 47.0
+offset_bottom = -101.0
+text = "Day 4"
+label_settings = SubResource("LabelSettings_mv03r")
+
+[node name="GemSprite" type="Sprite2D" parent="Day4Label"]
+position = Vector2(47, 97)
+scale = Vector2(0.055, 0.055)
+texture = ExtResource("5_hy3fv")
+
+[node name="GemAmountLabel" type="Label" parent="Day4Label/GemSprite"]
+offset_left = -436.364
+offset_top = 763.636
+offset_right = 385.636
+offset_bottom = 1418.64
+text = "100"
+label_settings = SubResource("LabelSettings_h5212")
+
+[node name="Penguin" type="Sprite2D" parent="Day4Label"]
+position = Vector2(51, 228)
+texture = ExtResource("8_bedcg")
+
+[node name="Day5Label" type="Label" parent="."]
+offset_left = 62.0
+offset_top = -152.0
+offset_right = 165.0
+offset_bottom = -100.0
+text = "Day 5
+"
+label_settings = SubResource("LabelSettings_mv03r")
+
+[node name="GemSprite" type="Sprite2D" parent="Day5Label"]
+position = Vector2(47, 97)
+scale = Vector2(0.055, 0.055)
+texture = ExtResource("5_hy3fv")
+
+[node name="GemAmountLabel" type="Label" parent="Day5Label/GemSprite"]
+offset_left = -436.364
+offset_top = 763.636
+offset_right = 385.636
+offset_bottom = 1418.64
+text = "200"
+label_settings = SubResource("LabelSettings_h5212")
+
+[node name="FoodBag" type="Sprite2D" parent="Day5Label"]
+position = Vector2(60, 222)
+scale = Vector2(0.06, 0.06)
+texture = ExtResource("6_sbycv")
+
+[node name="FoodBag2" type="Sprite2D" parent="Day5Label"]
+position = Vector2(31, 225)
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("6_sbycv")
+
+[node name="Day6Label" type="Label" parent="."]
+offset_left = 178.0
+offset_top = -152.0
+offset_right = 281.0
+offset_bottom = -100.0
+text = "Day 6
+"
+label_settings = SubResource("LabelSettings_mv03r")
+
+[node name="GemSprite" type="Sprite2D" parent="Day6Label"]
+position = Vector2(47, 97)
+scale = Vector2(0.055, 0.055)
+texture = ExtResource("5_hy3fv")
+
+[node name="GemAmountLabel" type="Label" parent="Day6Label/GemSprite"]
+offset_left = -436.364
+offset_top = 763.636
+offset_right = 385.636
+offset_bottom = 1418.64
+text = "100"
+label_settings = SubResource("LabelSettings_h5212")
+
+[node name="FoodBag" type="Sprite2D" parent="Day6Label"]
+position = Vector2(64, 226)
+scale = Vector2(0.06, 0.06)
+texture = ExtResource("6_sbycv")
+
+[node name="Penguin" type="Sprite2D" parent="Day6Label"]
+position = Vector2(46, 224)
+texture = ExtResource("8_bedcg")
+
+[node name="Day7Label" type="Label" parent="."]
+offset_left = 294.0
+offset_top = -152.0
+offset_right = 397.0
+offset_bottom = -100.0
+text = "Day 7
+"
+label_settings = SubResource("LabelSettings_mv03r")
+
+[node name="GemSprite" type="Sprite2D" parent="Day7Label"]
+position = Vector2(47, 97)
+scale = Vector2(0.055, 0.055)
+texture = ExtResource("5_hy3fv")
+
+[node name="GemAmountLabel" type="Label" parent="Day7Label/GemSprite"]
+offset_left = -436.364
+offset_top = 763.636
+offset_right = 385.636
+offset_bottom = 1418.64
+text = "300"
+label_settings = SubResource("LabelSettings_h5212")
+
+[node name="FoodBag" type="Sprite2D" parent="Day7Label"]
+position = Vector2(64, 226)
+scale = Vector2(0.06, 0.06)
+texture = ExtResource("6_sbycv")
+
+[node name="Penguin" type="Sprite2D" parent="Day7Label"]
+position = Vector2(46, 224)
+texture = ExtResource("8_bedcg")
