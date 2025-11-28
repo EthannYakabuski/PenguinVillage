@@ -179,7 +179,7 @@ volume_db = -5.0
 
 [node name="MainMusic" type="AudioStreamPlayer" parent="Camera"]
 stream = ExtResource("21_7ey0k")
-volume_db = -15.0
+volume_db = -7.0
 
 [node name="MermaidButton" type="TextureButton" parent="."]
 visible = false

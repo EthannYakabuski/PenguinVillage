@@ -227,7 +227,6 @@ func _on_penguin_sprite_animation_changed() -> void:
 		speed = speed * 0.5
 		
 
-
 func _on_sliding_goal_timer_timeout() -> void:
 	$SlidingGoalTimer.wait_time = randf_range(1,2)
 	penguinNeedsGoal.emit(self)
@@ -236,11 +235,11 @@ func _on_sliding_goal_timer_timeout() -> void:
 func _on_sick_timer_timeout() -> void:
 	if sick and current_state != "Dead":
 		var randomChanceOfDeath = randf_range(0,100)
-		if (randomChanceOfDeath > 97): 
+		if (randomChanceOfDeath > 95): 
 			setState("Die")
 			hasAGoal = false
 		else:  
 			setState("Hurt")
 			$Sneeze.play(4.14)
-			$SickTimer.wait_time = randf_range(8,15)
+			$SickTimer.wait_time = randf_range(3,8)
 		useEnergy(1)

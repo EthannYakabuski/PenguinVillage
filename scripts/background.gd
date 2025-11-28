@@ -685,7 +685,9 @@ func _on_water_area_area_exited(area: Area2D) -> void:
 	
 ##GUI###
 func handleDrag(_pos: Vector2, delta: Vector2): 
-	$Camera.position.x -= delta.x
+	var proposedPosition = $Camera.position.x - delta.x
+	var clamped = clamp(proposedPosition, $Camera.limit_left, $Camera.limit_right)
+	$Camera.position.x += (clamped - $Camera.position.x)
 	
 func updateGemsLabel(amount): 
 	$CanvasMenu/GemIndicator/GemLabel.text = str(amount)
