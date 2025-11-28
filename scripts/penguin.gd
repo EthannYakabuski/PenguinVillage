@@ -204,6 +204,8 @@ func _on_penguin_sprite_animation_looped() -> void:
 		setState("Walk")
 	elif current_state == "Jump" && current_area == "Ice":
 		setState("Idle")
+	elif current_state == "Walk" && current_area == "Water": 
+		setState("Swim")
 	elif current_state == "Slide": 
 		setState("StillSliding")
 	elif current_state == "Hurt": 

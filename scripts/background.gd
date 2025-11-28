@@ -81,18 +81,18 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 11, "day": 25, "weekday": 3, "hour": 13, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 11, "day": 27, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 75, "sick": false}, {"health": 50, "food": 50, "sick": true}, {"health": 90, "food": 75, "sick": false}],
+			"Penguins": [{"health": 50, "food": 75, "sick": true}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"Inventory": [1,2,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 11, "day": 25, "weekday": 3, "hour": 13, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 11, "day": 27, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
-			"Gems": 250,
+			"Gems": 1050,
 			"Coins": 100,
 			"Experience": 1287, 
 			"LevelExperience": 70,
@@ -811,6 +811,7 @@ func _on_input_event(_viewport, event, _shape_idx):
 				var globalPosition = $Camera.get_global_mouse_position()
 				print("InputEvent -> x: " + str(globalPosition.x) + " y: " + str(globalPosition.y))
 				p.setGoal(globalPosition.x, globalPosition.y)
+				p.stopTime()
 				p.setSelected(false)
 				if p.current_area == "Water": 
 					p.setState("Swim")
