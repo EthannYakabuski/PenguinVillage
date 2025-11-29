@@ -1,0 +1,183 @@
+[gd_scene load_steps=23 format=3 uid="uid://dytu4e5k0syu1"]
+
+[ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
+[ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
+[ext_resource type="PackedScene" uid="uid://dwfar8q4eytr" path="res://scenes/fish.tscn" id="3_2xu8c"]
+[ext_resource type="PackedScene" uid="uid://cfat6v41erd3c" path="res://scenes/food.tscn" id="4_m3tx2"]
+[ext_resource type="PackedScene" uid="uid://c1mgm6di4qxak" path="res://scenes/gem.tscn" id="5_3osnf"]
+[ext_resource type="Texture2D" uid="uid://bvng737d4r640" path="res://images/iceberg_water_modified.png" id="5_7pg7q"]
+[ext_resource type="PackedScene" uid="uid://ueb0gkdh6ns7" path="res://scenes/sidebar.tscn" id="5_457nt"]
+[ext_resource type="Script" path="res://scripts/drop_control.gd" id="6_d244v"]
+[ext_resource type="Texture2D" uid="uid://dt74qwqs1km8q" path="res://images/iceberg_icebergs_modified.png" id="6_yjrk6"]
+[ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/sign_in/sign_in_client.gd" id="7_cnlxl"]
+[ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
+[ext_resource type="Texture2D" uid="uid://cq3olmajdse2h" path="res://images/hamburger.png" id="9_jbf0t"]
+[ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="13_nhuns"]
+[ext_resource type="Texture2D" uid="uid://wurrnceejyug" path="res://images/mermaid.png" id="14_v2xan"]
+[ext_resource type="Texture2D" uid="uid://ep0gg1u01v3h" path="res://images/DailyRewardBox.png" id="15_22nuf"]
+[ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/leaderboards/leaderboards_client.gd" id="16_l1ro8"]
+[ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/achievements/achievements_client.gd" id="17_r48o1"]
+[ext_resource type="Texture2D" uid="uid://txl61j3jkvgi" path="res://images/experienceBar_outline.png" id="18_otdhd"]
+[ext_resource type="Texture2D" uid="uid://b5p0gg236sav5" path="res://images/experienceBar.png" id="19_nr76q"]
+[ext_resource type="Texture2D" uid="uid://i2g1ovlp7slw" path="res://images/levelIcon.png" id="20_8rged"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2wlqk"]
+line_spacing = 10.0
+font_size = 800
+font_color = Color(0.811765, 0.27451, 0.960784, 1)
+outline_size = 75
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_665uo"]
+font_size = 60
+
+[node name="Background" type="Area2D"]
+visible = false
+script = ExtResource("1_31116")
+penguin_scene = ExtResource("2_cvr2x")
+fish_scene = ExtResource("3_2xu8c")
+food_scene = ExtResource("4_m3tx2")
+gem_scene = ExtResource("5_3osnf")
+sidebar = ExtResource("5_457nt")
+
+[node name="DropControl" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -1257.0
+offset_right = 2340.0
+offset_bottom = 1987.0
+mouse_filter = 1
+script = ExtResource("6_d244v")
+
+[node name="CanvasMenu" type="CanvasLayer" parent="."]
+layer = 0
+
+[node name="SideBar" type="TextureButton" parent="CanvasMenu"]
+offset_left = 22.0
+offset_top = 17.0
+offset_right = 1046.0
+offset_bottom = 1041.0
+scale = Vector2(0.12, 0.12)
+mouse_filter = 1
+texture_normal = ExtResource("9_jbf0t")
+
+[node name="GemIndicator" type="Sprite2D" parent="CanvasMenu"]
+position = Vector2(1001, 84)
+scale = Vector2(0.11, 0.11)
+texture = ExtResource("13_nhuns")
+
+[node name="GemLabel" type="Label" parent="CanvasMenu/GemIndicator"]
+offset_left = -2736.0
+offset_top = -582.0
+offset_right = -900.0
+offset_bottom = 618.0
+text = "100"
+label_settings = SubResource("LabelSettings_2wlqk")
+
+[node name="LevelBar" type="TextureProgressBar" parent="CanvasMenu"]
+offset_left = 404.0
+offset_top = 55.0
+offset_right = 945.0
+offset_bottom = 201.0
+scale = Vector2(0.415, 0.415)
+value = 50.0
+texture_under = ExtResource("18_otdhd")
+texture_progress = ExtResource("19_nr76q")
+tint_progress = Color(0, 0.32549, 0.619608, 1)
+
+[node name="LevelIcon" type="Sprite2D" parent="CanvasMenu"]
+position = Vector2(300, 84)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("20_8rged")
+
+[node name="LevelLabel" type="Label" parent="CanvasMenu"]
+offset_left = 245.0
+offset_top = 30.0
+offset_right = 355.0
+offset_bottom = 141.0
+label_settings = SubResource("LabelSettings_665uo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FishSpawnTimer" type="Timer" parent="."]
+wait_time = 12.0
+autostart = true
+
+[node name="GemSpawnTimer" type="Timer" parent="."]
+wait_time = 15.0
+autostart = true
+
+[node name="LocationClickCollision" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-1294, -129, -1305, 1954, 2369, 1991, 2353, -123)
+
+[node name="WaterArea" type="Area2D" parent="."]
+position = Vector2(0, -105)
+
+[node name="WaterSprite" type="Sprite2D" parent="WaterArea"]
+position = Vector2(540, 1273)
+scale = Vector2(3, 3)
+texture = ExtResource("5_7pg7q")
+
+[node name="WaterCollision" type="CollisionPolygon2D" parent="WaterArea"]
+polygon = PackedVector2Array(-1266, 1502, -1111, 1686, -880, 1448, -766, 1589, -654, 1765, -523, 1598, -425, 1594, -288, 1769, -83, 1443, 137, 1587, 316, 1762, 453, 1524, 681, 1663, 987, 1596, 1078, 1759, 1177, 1596, 1428, 1689, 1579, 1598, 1737, 1754, 1910, 1598, 2061, 1815, 2261, 1721, 2342, 1504, 2342, 2023, -1272, 2025)
+
+[node name="IceBergArea" type="Area2D" parent="."]
+position = Vector2(0, -100)
+
+[node name="IceBergSprite" type="Sprite2D" parent="IceBergArea"]
+position = Vector2(537, 878)
+scale = Vector2(3, 3)
+texture = ExtResource("6_yjrk6")
+
+[node name="IceCollision" type="CollisionPolygon2D" parent="IceBergArea"]
+polygon = PackedVector2Array(-1144, 1429, -1109, 1667, -877, 1420, -739, 1595, -654, 1741, -528, 1580, -422, 1578, -290, 1741, -90, 1416, 146, 1571, 314, 1737, 365, 1646, 446, 1501, 684, 1652, 992, 1580, 1080, 1743, 1177, 1580, 1426, 1673, 1575, 1584, 1735, 1735, 1911, 1582, 2064, 1797, 2256, 1709, 2264, 1474, 2267, 953, -1139, 941)
+
+[node name="Android_SignIn" type="Node" parent="."]
+script = ExtResource("7_cnlxl")
+
+[node name="IceMountainCollision" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-1260, 302, -1057, -3, -925, 3, -768, 65, -683, 257, -437, 24, -424, 1, -237, 1, -209, 110, -84, 65, -25, 209, 3, 218, 134, 277, 340, 76, 552, 108, 645, 208, 853, 29, 994, 307, 1105, 190, 1135, -1, 1661, 1, 1694, 81, 1800, 1, 1896, 4, 2135, 272, 2216, 208, 2335, 298, 2329, 851, -1259, 844)
+
+[node name="Android_SavedGames" type="Node" parent="."]
+script = ExtResource("8_nxtdk")
+
+[node name="Camera" type="Camera2D" parent="."]
+offset = Vector2(540, 960)
+limit_left = -1700
+limit_right = 1760
+drag_horizontal_enabled = true
+
+[node name="MermaidButton" type="TextureButton" parent="."]
+visible = false
+offset_left = 801.0
+offset_top = 1737.0
+offset_right = 1825.0
+offset_bottom = 3273.0
+scale = Vector2(0.11, 0.11)
+texture_normal = ExtResource("14_v2xan")
+
+[node name="DailyRewardBox" type="TextureButton" parent="."]
+visible = false
+offset_left = 716.0
+offset_top = 883.0
+offset_right = 1740.0
+offset_bottom = 1907.0
+scale = Vector2(0.315, 0.315)
+texture_normal = ExtResource("15_22nuf")
+
+[node name="LeaderboardsClient" type="Node" parent="."]
+script = ExtResource("16_l1ro8")
+
+[node name="AchievementsClient" type="Node" parent="."]
+script = ExtResource("17_r48o1")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="pressed" from="CanvasMenu/SideBar" to="." method="_on_side_bar_pressed"]
+[connection signal="timeout" from="FishSpawnTimer" to="." method="_on_fish_spawn_timer_timeout"]
+[connection signal="timeout" from="GemSpawnTimer" to="." method="_on_gem_spawn_timer_timeout"]
+[connection signal="area_entered" from="WaterArea" to="." method="_on_water_area_area_entered"]
+[connection signal="area_exited" from="WaterArea" to="." method="_on_water_area_area_exited"]
+[connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
+[connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]
+[connection signal="pressed" from="MermaidButton" to="." method="_on_ad_button_pressed"]
+[connection signal="pressed" from="DailyRewardBox" to="." method="_on_daily_reward_box_pressed"]

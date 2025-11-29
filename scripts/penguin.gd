@@ -20,8 +20,10 @@ var selected: bool = false
 
 #vitals
 var food = 100
+var steps = 0
 var health
 var sick = false
+var isDying = false
 
 #collision polygons
 var walkOrIdlePolygons
@@ -39,14 +41,19 @@ func _ready() -> void:
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	pass
+	if isDying: 
+		position.y = position.y - 2
+		modulate.a = modulate.a - 0.01
+		if modulate.a <= 0: 
+			$DeadSound.stop()
+			queue_free()
 
 ##SETTERS##
 func setGoal(x, y) -> void:
 	print("setting goal -> x: " + str(x) + " y: " + str(y)) 
 	goal = Vector2(x, y)
 	hasAGoal = true
-	useEnergy(1)
+	useEnergy(3)
 	
 func setState(state: String) -> void: 
 	if state != current_state: 
@@ -87,6 +94,9 @@ func startTime() -> void:
 	
 func stopTime() -> void: 
 	$SlidingGoalTimer.stop()
+	
+func stopStepSound() -> void: 
+	$FootStepSound.stop()
 	
 func setHealth(h) -> void: 
 	print("setting penguin health to " + str(h))
@@ -142,6 +152,9 @@ func getSick() -> bool:
 func _on_input_event(_viewport, event, _shape_idx): 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
 		print("Penguin Clicked")
+		if current_state == "Dead":
+			print("calling get parent penguin died") 
+			get_parent().onPenguinDied()
 		selected = true
 		$HealthIndicator.visible = true
 		if !sick:
@@ -158,54 +171,78 @@ func useEnergy(amount) -> void:
 		food = 0
 	$HealthIndicator.value = food
 
-func moveToGoal() -> void: 
+func moveToGoal() -> void:
 	var direction = (goal - global_position).normalized()
 	if global_position.distance_to(goal) > 1:
 		$PenguinSprite.flip_h = direction.x < 0
 		global_position += direction * speed
+		steps = steps + 1
+		#print(steps)
+		if steps >= 250: 
+			useEnergy(1)
+			steps = 0
+		if current_state == "Walk" and not $FootStepSound.playing: 
+			$FootStepSound.play()
 		#position = position.clamp(Vector2.ZERO, screen_size)
 	else: 
 		if current_area == "Water": 
 			setState("Swim")
 		else:
+			$FootStepSound.stop()
 			setState("Idle")
 		clearGoal()
-		
+
+func initiateDeath() -> void: 
+	print("penguin is going to heaven")
+	$DeadSound.play(9.78)
+	isDying = true
 
 func _on_penguin_sprite_animation_looped() -> void:
 	if current_state == "Dive" && current_area == "Water": 
 		setState("Swim")
 	elif current_state == "Jump" && current_area == "Ice" && hasAGoal: 
 		setState("Walk")
+		get_parent().doesWaterAreaHaveThisPenguin(self)
 	elif current_state == "Jump" && current_area == "Ice":
 		setState("Idle")
+	elif current_state == "Walk" && current_area == "Water": 
+		setState("Swim")
 	elif current_state == "Slide": 
 		setState("StillSliding")
 	elif current_state == "Hurt": 
-		print("animation looped")
-		print(last_state)
+		$Sneeze.stop()
 		setState(last_state)
+	elif current_state == "Die": 
+		setState("Dead")
+		$PenguinSprite.modulate = Color(1,0.3,0.3,0.8)
 		
 func _on_penguin_sprite_animation_changed() -> void:
 	if (current_state == "Swim"): 
 		speed = 2
+		$WaterSplashSound.play(2)
 	elif (current_state == "Jump" or current_state == "Dive"): 
-		speed = 3
+		speed = 3.5
 	elif (current_state == "Slide" || current_state == "StillSliding"): 
 		speed = 2.25
 	else: 
 		speed = 1.25
 	if sick: 
 		speed = speed * 0.5
+		
 
 func _on_sliding_goal_timer_timeout() -> void:
 	$SlidingGoalTimer.wait_time = randf_range(1,2)
 	penguinNeedsGoal.emit(self)
 	#emit_signal("penguinNeedsGoal", self)
 
-
 func _on_sick_timer_timeout() -> void:
-	if sick: 
-		setState("Hurt")
+	if sick and current_state != "Dead":
+		var randomChanceOfDeath = randf_range(0,100)
+		if (randomChanceOfDeath > 95): 
+			setState("Die")
+			hasAGoal = false
+		else:  
+			setState("Hurt")
+			$Sneeze.play(4.14)
+			$SickTimer.wait_time = randf_range(3,8)
 		useEnergy(1)
-		

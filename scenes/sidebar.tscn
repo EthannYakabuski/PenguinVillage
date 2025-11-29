@@ -12,8 +12,8 @@
 font_size = 75
 font_color = Color(0.811765, 0.27451, 0.960784, 1)
 
-[node name="Background" type="Control"]
-z_index = -1
+[node name="Background2" type="Control"]
+z_index = -2
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
@@ -117,7 +117,7 @@ offset_left = 119.0
 offset_top = 1081.0
 offset_right = 290.0
 offset_bottom = 1286.0
-text = "50"
+text = "75"
 label_settings = SubResource("LabelSettings_6dqut")
 
 [connection signal="isDragging" from="SideBarBackground/PenguinPurchaseControl" to="." method="_on_purchase_control_is_dragging"]

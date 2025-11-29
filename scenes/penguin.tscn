@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://duea6pilwy37k"]
+[gd_scene load_steps=9 format=3 uid="uid://duea6pilwy37k"]
 
 [ext_resource type="Script" path="res://scripts/penguin.gd" id="1_3yk4v"]
 [ext_resource type="SpriteFrames" uid="uid://cot0itv4g4eta" path="res://animations/penguin_frames.tres" id="2_28ggd"]
 [ext_resource type="Texture2D" uid="uid://4r8eqqvlhwge" path="res://images/Heart_Outline.png" id="2_lxwiq"]
 [ext_resource type="Texture2D" uid="uid://24neilo8phk3" path="res://images/Heart_Progress_Texture.png" id="3_162y3"]
+[ext_resource type="AudioStream" uid="uid://d2vkjmc33risl" path="res://sounds/footstep.wav" id="5_viuhh"]
+[ext_resource type="AudioStream" uid="uid://d1o5weibe0fne" path="res://sounds/499004__16g_panska_sand_nikolas__15-frog-jumping-into-water.wav" id="6_ualp3"]
+[ext_resource type="AudioStream" uid="uid://cuf1bb8eb1xh2" path="res://sounds/561726__har2h__cat-coughing.wav" id="7_5i2xp"]
+[ext_resource type="AudioStream" uid="uid://b4hf4xfwd4qg7" path="res://sounds/232444__afleetingspeck__game-over-sounds-1.wav" id="8_4m2ba"]
 
 [node name="Penguin" type="Area2D"]
 z_index = 1
@@ -24,7 +28,7 @@ tint_progress = Color(0.803922, 0.156863, 0.317647, 1)
 [node name="PenguinSprite" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_28ggd")
-animation = &"Hurt"
+animation = &"Dive"
 
 [node name="PenguinCollision" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-24.6667, -17.3333, -27.3333, -9.33333, -29.3333, -1.33333, -32.6667, 4.66667, -34.6667, 10, -32.6667, 14.6667, -28.6667, 16, -29.3333, 22, -26, 25.3333, -22, 28, -18, 31.3333, -12, 30, -3.33333, 30, 6, 26.6667, 12.6667, 26, 18, 23.3333, 23.3333, 20.6667, 22.6667, 14, 18.6667, 11.3333, 18.6667, 5.33333, 18.6667, 0.666667, 21.3333, -2.66667, 24, -4.66667, 25.3333, -8.66667, 25.3333, -12, 20.6667, -14.6667, 15.3333, -18.6667, 12.6667, -25.3333, 8.66667, -30.6667, 2, -32.6667, -4, -32.6667, -10.6667, -30.6667, -16, -28, -20, -24)
@@ -38,6 +42,22 @@ disabled = true
 [node name="SickTimer" type="Timer" parent="."]
 wait_time = 3.0
 autostart = true
+
+[node name="FootStepSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_viuhh")
+volume_db = 20.0
+
+[node name="WaterSplashSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_ualp3")
+volume_db = 18.0
+
+[node name="Sneeze" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_5i2xp")
+volume_db = -18.0
+
+[node name="DeadSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_4m2ba")
+volume_db = 5.0
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

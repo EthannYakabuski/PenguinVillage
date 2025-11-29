@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" load_steps=3 format=3 uid="uid://cki1h1jfqwscv"]
+
+[ext_resource type="Texture2D" uid="uid://omnlu2r0l37v" path="res://images/purpleFish.png" id="1_k3q8x"]
+[ext_resource type="Texture2D" uid="uid://dpxrcmv8n6472" path="res://images/purpleFish_swimOne.png" id="2_04sxc"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_k3q8x")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_k3q8x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_04sxc")
+}],
+"loop": true,
+"name": &"Swim",
+"speed": 5.0
+}]
