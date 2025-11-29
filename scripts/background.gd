@@ -586,7 +586,17 @@ func givePlayerExperience(amount, location) -> void:
 	currData["PlayerLevel"] = currentPlayerLevel
 	currData["Experience"] = currentTotalExperience
 	currData["LevelExperience"] = currentLevelExperience
-	
+	match currentPlayerLevel:
+		5,6:
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEw")
+		10,11:
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFA")
+		20,21: 
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFQ")
+		30:
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFg")
+		50: 
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFw")
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 
