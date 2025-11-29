@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=35 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/sign_in/sign_in_client.gd" id="7_cnlxl"]
 [ext_resource type="PackedScene" uid="uid://fewi742cqr1r" path="res://scenes/dialog.tscn" id="8_3ywcs"]
 [ext_resource type="Script" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
+[ext_resource type="PackedScene" uid="uid://daqo8ec4i8q21" path="res://scenes/daily_reward_dialog.tscn" id="9_83l73"]
 [ext_resource type="Texture2D" uid="uid://cq3olmajdse2h" path="res://images/hamburger.png" id="9_jbf0t"]
 [ext_resource type="LabelSettings" uid="uid://x3tsvw6k2ueq" path="res://fonts/gemLabelFont.tres" id="12_h8weg"]
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="13_nhuns"]
@@ -45,6 +46,7 @@ gem_scene = ExtResource("5_3osnf")
 experienceShard_scene = ExtResource("6_jha60")
 sidebar = ExtResource("5_457nt")
 modalDialog = ExtResource("8_3ywcs")
+modalDailyDialog = ExtResource("9_83l73")
 
 [node name="DropControl" type="Control" parent="."]
 layout_mode = 3
@@ -197,11 +199,11 @@ texture_normal = ExtResource("14_v2xan")
 
 [node name="DailyRewardBox" type="TextureButton" parent="."]
 visible = false
-offset_left = 716.0
-offset_top = 883.0
-offset_right = 1740.0
-offset_bottom = 1907.0
-scale = Vector2(0.315, 0.315)
+offset_left = 866.97
+offset_top = 979.465
+offset_right = 1890.97
+offset_bottom = 2003.47
+scale = Vector2(0.18, 0.18)
 texture_normal = ExtResource("15_22nuf")
 
 [node name="LeaderboardsClient" type="Node" parent="."]

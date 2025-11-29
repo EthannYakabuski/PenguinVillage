@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://daqo8ec4i8q21"]
+[gd_scene load_steps=13 format=3 uid="uid://daqo8ec4i8q21"]
 
 [ext_resource type="Script" path="res://scripts/daily_reward_dialog.gd" id="1_663h8"]
 [ext_resource type="Texture2D" uid="uid://buc0p1qkdasqx" path="res://images/modalDialog.png" id="1_e2ydo"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cqxpncoxu8bx6" path="res://images/FoodBag.png" id="6_sbycv"]
 [ext_resource type="Texture2D" uid="uid://b763me5ubg5yl" path="res://images/Medicine.png" id="7_d6ods"]
 [ext_resource type="Texture2D" uid="uid://dhple4vxuawh1" path="res://images/penguin_walk01.png" id="8_bedcg"]
+[ext_resource type="Texture2D" uid="uid://babedc8cwfena" path="res://images/dailyRewardHighlight.png" id="9_sg56x"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_b5ndg"]
 font_size = 109
@@ -86,6 +87,13 @@ position = Vector2(48, 226)
 scale = Vector2(0.075, 0.075)
 texture = ExtResource("6_sbycv")
 
+[node name="CurrentHighlight" type="Sprite2D" parent="Day1Label"]
+visible = false
+position = Vector2(48.0704, 134.043)
+rotation = 1.5708
+scale = Vector2(0.520785, 0.755826)
+texture = ExtResource("9_sg56x")
+
 [node name="Day2Label" type="Label" parent="."]
 offset_left = -289.0
 offset_top = -152.0
@@ -111,6 +119,13 @@ offset_right = 385.636
 offset_bottom = 1418.64
 text = "100"
 label_settings = SubResource("LabelSettings_h5212")
+
+[node name="CurrentHighlight" type="Sprite2D" parent="Day2Label"]
+visible = false
+position = Vector2(48.0704, 134.043)
+rotation = 1.5708
+scale = Vector2(0.520785, 0.755826)
+texture = ExtResource("9_sg56x")
 
 [node name="Day3Label" type="Label" parent="."]
 offset_left = -171.0
@@ -138,6 +153,13 @@ position = Vector2(45, 225)
 scale = Vector2(0.06, 0.06)
 texture = ExtResource("7_d6ods")
 
+[node name="CurrentHighlight" type="Sprite2D" parent="Day3Label"]
+visible = false
+position = Vector2(48.0704, 134.043)
+rotation = 1.5708
+scale = Vector2(0.520785, 0.755826)
+texture = ExtResource("9_sg56x")
+
 [node name="Day4Label" type="Label" parent="."]
 offset_left = -55.0
 offset_top = -152.0
@@ -162,6 +184,13 @@ label_settings = SubResource("LabelSettings_h5212")
 [node name="Penguin" type="Sprite2D" parent="Day4Label"]
 position = Vector2(51, 228)
 texture = ExtResource("8_bedcg")
+
+[node name="CurrentHighlight" type="Sprite2D" parent="Day4Label"]
+visible = false
+position = Vector2(48.0704, 134.043)
+rotation = 1.5708
+scale = Vector2(0.520785, 0.755826)
+texture = ExtResource("9_sg56x")
 
 [node name="Day5Label" type="Label" parent="."]
 offset_left = 62.0
@@ -195,6 +224,13 @@ position = Vector2(31, 225)
 scale = Vector2(0.075, 0.075)
 texture = ExtResource("6_sbycv")
 
+[node name="CurrentHighlight" type="Sprite2D" parent="Day5Label"]
+visible = false
+position = Vector2(48.0704, 134.043)
+rotation = 1.5708
+scale = Vector2(0.520785, 0.755826)
+texture = ExtResource("9_sg56x")
+
 [node name="Day6Label" type="Label" parent="."]
 offset_left = 178.0
 offset_top = -152.0
@@ -226,6 +262,13 @@ texture = ExtResource("6_sbycv")
 position = Vector2(46, 224)
 texture = ExtResource("8_bedcg")
 
+[node name="CurrentHighlight" type="Sprite2D" parent="Day6Label"]
+visible = false
+position = Vector2(48.0704, 134.043)
+rotation = 1.5708
+scale = Vector2(0.520785, 0.755826)
+texture = ExtResource("9_sg56x")
+
 [node name="Day7Label" type="Label" parent="."]
 offset_left = 294.0
 offset_top = -152.0
@@ -256,3 +299,12 @@ texture = ExtResource("6_sbycv")
 [node name="Penguin" type="Sprite2D" parent="Day7Label"]
 position = Vector2(46, 224)
 texture = ExtResource("8_bedcg")
+
+[node name="CurrentHighlight" type="Sprite2D" parent="Day7Label"]
+visible = false
+position = Vector2(48.0704, 134.043)
+rotation = 1.5708
+scale = Vector2(0.520785, 0.755826)
+texture = ExtResource("9_sg56x")
+
+[connection signal="pressed" from="AcceptPrize" to="." method="_on_accept_prize_pressed"]

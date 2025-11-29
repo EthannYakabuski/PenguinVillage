@@ -6,6 +6,7 @@ extends Node2D
 @export var experienceShard_scene: PackedScene
 @export var sidebar: PackedScene
 @export var modalDialog: PackedScene
+@export var modalDailyDialog: PackedScene
 @onready var fishTimer: Timer = $FishSpawnTimer
 
 #UI interactions
@@ -13,6 +14,7 @@ var sidebarActive = false
 var sidebarHandle
 var isDragging = false
 var levelUpDialog
+var dailyDialog
 var loading = true
 
 var penguins = []
@@ -86,7 +88,7 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 11, "day": 27, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 11, "day": 28, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
 			"Penguins": [{"health": 50, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
@@ -94,7 +96,7 @@ func androidAuthentication() -> void:
 			"Decorations": [], 
 			"Inventory": [1,2,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 11, "day": 27, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 11, "day": 28, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -222,6 +224,8 @@ func determineDailyReward():
 	
 func _on_daily_reward_box_pressed() -> void:
 	print("collecting daily reward from clicking on the present")
+	dailyDialog = modalDailyDialog.instantiate()
+	dailyDialog.rewardAccepted.connect(levelUpPrizeAccepted)
 	var currData = PlayerData.getData()
 	var rewardsClaimed = currData["DailyRewards"]
 	var currentDay = lastLogin_global["weekday"]
@@ -245,15 +249,17 @@ func _on_daily_reward_box_pressed() -> void:
 		currData["DailyRewards"][currentDay] = true
 	var totalConsecutiveDays = subsequentTruesBehindCurrentDay + 1
 	print("the total number of consecutive days is: " + str(totalConsecutiveDays))
+	dailyDialog.setCurrentDay(totalConsecutiveDays)
+	$CanvasMenu.add_child(dailyDialog)
 	#need to reset all other days of the DailyRewardsClaimed array to false
 	currData["DailyRewardsClaimed"] = [false, false, false, false, false, false, false]
 	currData["DailyRewardsClaimed"][currentDay] = true
-	var gemsToCollect = 40 + 15*totalConsecutiveDays + 5*(totalConsecutiveDays*totalConsecutiveDays)
-	print("The player will collect " + str(gemsToCollect) + " gems")
-	currData["Gems"] = currData["Gems"] + gemsToCollect
-	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBA", currData["Gems"])
-	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", gemsToCollect)
-	updateGemsLabel(currData["Gems"])
+	#var gemsToCollect = 40 + 15*totalConsecutiveDays + 5*(totalConsecutiveDays*totalConsecutiveDays)
+	#print("The player will collect " + str(gemsToCollect) + " gems")
+	#currData["Gems"] = currData["Gems"] + gemsToCollect
+	#$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBA", currData["Gems"])
+	#$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", gemsToCollect)
+	#updateGemsLabel(currData["Gems"])
 	$DailyRewardBox.visible = false
 	PlayerData.setData(currData)
 	PlayerData.saveData()
@@ -591,6 +597,9 @@ func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained
 	currData["Inventory"][0] = currData["Inventory"][0] + penguinsGained
 	currData["Inventory"][1] = currData["Inventory"][1] + foodGained
 	currData["Inventory"][2] = currData["Inventory"][2] + medicineGained
+	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBA", currData["Gems"])
+	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", gemsGained)
+	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	calculateCurrentPenguinPrice()
