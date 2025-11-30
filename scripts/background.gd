@@ -94,7 +94,7 @@ func androidAuthentication() -> void:
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
-			"Inventory": [1,2,0],
+			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
 			"LastLogin": { "year": 2025, "month": 11, "day": 28, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
@@ -267,6 +267,8 @@ func _on_daily_reward_box_pressed() -> void:
 ##GOOGLE PLAY GAME SERVICES##
 func _on_user_authenticated(is_authenticated: bool) -> void:
 	print("Hi from Godot! User is authenticated? %s" % is_authenticated)
+	var newLoginTime = Time.get_datetime_dict_from_system()
+	lastLogin_global = newLoginTime
 	if is_authenticated: 
 		$Android_SavedGames.load_game("VillageData", false)
 		$Android_SavedGames.game_loaded.connect(
@@ -274,8 +276,6 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 			if !snapshot: 
 				print("saved game not found, creating new player data")
 				#create new player data
-				var newLoginTime = Time.get_datetime_dict_from_system()
-				lastLogin_global = newLoginTime
 				print("newLoginTime: " + str(newLoginTime))
 				var newPlayerData = {
 					"Penguins": [{"health": 100, "food": 75, "sick": false}],
