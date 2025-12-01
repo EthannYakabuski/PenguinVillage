@@ -67,7 +67,6 @@ func _ready() -> void:
 	#current penguin cost even before the player has explicitly toggled the sidebar
 	sidebarHandle = sidebar.instantiate()
 	sidebarHandle.isDraggingSignal.connect(dragToggle)
-	calculateCurrentPenguinPrice()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -144,6 +143,7 @@ func dataLoaded():
 	updateGemsLabel(PlayerData.getData()["Gems"])
 	updateExperienceBar(PlayerData.getData()["Experience"])
 	determineDailyReward()
+	calculateCurrentPenguinPrice()
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
 		_rewarded_ad = null
