@@ -87,15 +87,15 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 11, "day": 28, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 12, "day": 1, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 75, "sick": false}],
+			"Penguins": [{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 11, "day": 28, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 12, "day": 1, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -360,7 +360,7 @@ func determinePenguins() -> void:
 	for penguinData in penguinsData: 
 		var penguin: Penguin = penguin_scene.instantiate()
 		var randomLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
-		penguin.setLocation(randomLocation.x, randomLocation.y)
+		penguin.setLocation(randomLocation.x, randomLocation.y - 150)
 		penguin.setSick(penguinData["sick"])
 		penguin.setHealth(penguinData["health"])
 		penguin.setFood(penguinData["food"])
