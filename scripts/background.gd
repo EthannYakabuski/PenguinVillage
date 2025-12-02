@@ -469,7 +469,7 @@ func updatePenguinAndFoodSavedArray():
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print("penguin data has been updated and saved to the cloud")
-	print(PlayerData.getData())
+	#print(PlayerData.getData())
 
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish, penguin) -> void: 
@@ -709,9 +709,19 @@ func _on_water_area_area_exited(area: Area2D) -> void:
 		
 func doesWaterAreaHaveThisPenguin(penguin: Penguin) -> void: 
 	if $WaterArea.get_overlapping_areas().has(penguin): 
-		print("penguing is in fact in the water area, setting to swim")
+		print("penguin is in fact in the water area, setting to swim")
 		penguin.setCurrentArea("Water")
 		penguin.setState("Swim")
+
+func doesIceAreaHaveThisPenguin(penguin: Penguin) -> void: 
+	if $IceBergArea.get_overlapping_areas().has(penguin): 
+		print("penguin is in fact in the ice area, setting to walk if it has a goal")
+		penguin.setCurrentArea("Ice")
+		penguin.stopTime()
+		if penguin.hasGoal(): 
+			penguin.setState("Walk")
+		else: 
+			penguin.setState("Idle")
 	
 ##GUI###
 func handleDrag(_pos: Vector2, delta: Vector2): 
