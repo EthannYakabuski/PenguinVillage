@@ -389,7 +389,7 @@ func determinePenguinIntelligence() -> void:
 		if p.hasGoal():  
 			p.moveToGoal()
 		if p.getState() == "Idle": 
-			if is_point_inside_polygon($IceMountainCollision, p.position): 
+			if is_point_inside_polygon($IceMountainArea/IceMountainCollision, p.position): 
 				print("there is an idle penguin in the iceberg slide")
 				p.setState("Slide")
 				onGivePenguinGoal(p)
@@ -707,6 +707,12 @@ func _on_water_area_area_exited(area: Area2D) -> void:
 		area.setCollisionGons("Walk")
 		area.setCurrentArea("Ice")
 		
+func doesIceMountainHaveThisPenguin(penguin: Penguin) -> bool: 
+	if $IceMountainArea.get_overlapping_areas().has(penguin): 
+		return true
+	else:
+		return false
+
 func doesWaterAreaHaveThisPenguin(penguin: Penguin) -> void: 
 	if $WaterArea.get_overlapping_areas().has(penguin): 
 		print("penguin is in fact in the water area, setting to swim")
@@ -855,10 +861,15 @@ func _on_input_event(_viewport, event, _shape_idx):
 				p.setSelected(false)
 				if p.current_area == "Water": 
 					p.setState("Swim")
-				else: 
-					if p.current_state == "StillSliding" and globalPosition.y > p.position.y: 
+				else:
+					#a penguin walking on the ice mountain is given a new target below itself -> should slide down mountain
+					if p.current_state == "Walk" and globalPosition.y > p.position.y and doesIceMountainHaveThisPenguin(p): 
+						p.setState("Slide") 
+					#a penguin sliding down the mountain, is given a new target below itself -> should keep sliding
+					elif p.current_state == "StillSliding" and globalPosition.y > p.position.y: 
 						pass
-					else: 
+					#otherwise the penguin should be walking
+					else:
 						p.setState("Walk")
 	elif event is InputEventScreenDrag or event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		#print("InputEventScreenDrag or InputEventMouseMotion")
@@ -899,7 +910,7 @@ func _on_gem_spawn_timer_timeout() -> void:
 	print("gem spawn timeout")
 	$GemSpawnTimer.wait_time = randf_range(10,20)
 	var gem = gem_scene.instantiate()
-	var randomSpawn = get_random_point_in_collision_polygon($IceMountainCollision)
+	var randomSpawn = get_random_point_in_collision_polygon($IceMountainArea/IceMountainCollision)
 	gem.global_position = randomSpawn
 	gem.gem_collected.connect(onGemCollected)
 	add_child(gem)
