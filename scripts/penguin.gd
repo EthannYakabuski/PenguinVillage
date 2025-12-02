@@ -216,6 +216,8 @@ func _on_penguin_sprite_animation_looped() -> void:
 		setState(last_state)
 	elif current_state == "StillSliding": 
 		get_parent().doesIceAreaHaveThisPenguin(self)
+	elif current_state == "Swim": 
+		get_parent().doesIceAreaHaveThisPenguin(self)
 	elif current_state == "Die": 
 		setState("Dead")
 		$PenguinSprite.modulate = Color(1,0.3,0.3,0.8)
