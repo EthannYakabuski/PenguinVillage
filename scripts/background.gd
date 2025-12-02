@@ -856,7 +856,10 @@ func _on_input_event(_viewport, event, _shape_idx):
 				if p.current_area == "Water": 
 					p.setState("Swim")
 				else: 
-					p.setState("Walk")
+					if p.current_state == "StillSliding" and globalPosition.y > p.position.y: 
+						pass
+					else: 
+						p.setState("Walk")
 	elif event is InputEventScreenDrag or event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		#print("InputEventScreenDrag or InputEventMouseMotion")
 		#print("event position " + str(event.position.x))
