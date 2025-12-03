@@ -224,6 +224,7 @@ func determineDailyReward():
 	
 func _on_daily_reward_box_pressed() -> void:
 	print("collecting daily reward from clicking on the present")
+	$Camera/GemCollectedSound.play()
 	dailyDialog = modalDailyDialog.instantiate()
 	dailyDialog.rewardAccepted.connect(levelUpPrizeAccepted)
 	var currData = PlayerData.getData()
@@ -605,6 +606,7 @@ func givePlayerExperience(amount, location) -> void:
 
 func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained) -> void: 
 	print("prize accepted in main")
+	$Camera/GemCollectedSound.play()
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + int(gemsGained)
 	currData["Inventory"][0] = currData["Inventory"][0] + penguinsGained
