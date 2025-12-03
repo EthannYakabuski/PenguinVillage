@@ -480,8 +480,8 @@ func onFishCollected(fish, penguin) -> void:
 	$Camera/FishCaughtSound.play()
 	if fish in fishes: 
 		fishes.erase(fish)
-		#TODO dynamically add food to the closest food bowl after a fish is caught
-		foodBowls[0].addFood(10)
+		for bowl in foodBowls: 
+			bowl.addFood(10)
 	fish.queue_free()
 	penguin.addHealth(10)
 	var currData = PlayerData.getData()
