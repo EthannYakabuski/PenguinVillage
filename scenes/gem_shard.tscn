@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://c75bsuwtfqfj8"]
+
+[ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="1_qc33o"]
+[ext_resource type="Script" path="res://scripts/gem_shard.gd" id="2_qf52n"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_b4f75"]
+font_size = 400
+shadow_size = 26
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="GemShard" type="Sprite2D"]
+scale = Vector2(0.07, 0.07)
+texture = ExtResource("1_qc33o")
+script = ExtResource("2_qf52n")
+
+[node name="AmountLabel" type="Label" parent="."]
+offset_left = -225.0
+offset_top = -235.0
+offset_right = 245.0
+offset_bottom = 311.0
+label_settings = SubResource("LabelSettings_b4f75")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VisibleTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="VisibleTimer" to="." method="_on_visible_timer_timeout"]

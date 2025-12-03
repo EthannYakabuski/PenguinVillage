@@ -7,6 +7,7 @@ extends Node2D
 @export var sidebar: PackedScene
 @export var modalDialog: PackedScene
 @export var modalDailyDialog: PackedScene
+@export var gemShard_scene: PackedScene
 @onready var fishTimer: Timer = $FishSpawnTimer
 
 #UI interactions
@@ -496,6 +497,7 @@ func onFishCollected(fish, penguin) -> void:
 	if fish.getType() == "purple": 
 		currData["Gems"] = currData["Gems"] + 10
 		givePlayerExperience(10, fish.global_position)
+		addGemIndicator(10, Vector2(fish.global_position.x+50,fish.global_position.y))
 		#collect 2500 gems achievement increment
 		$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 10)
 		updateGemsLabel(currData["Gems"])
@@ -519,7 +521,8 @@ func onGemCollected(gem) -> void:
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 5
 	givePlayerExperience(5, gem.global_position)
-	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 3)
+	addGemIndicator(5, Vector2(gem.global_position.x+50,gem.global_position.y))
+	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 5)
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
@@ -622,6 +625,13 @@ func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained
 
 func addIndicator(amount, positionOfShard): 
 	var newIndicator = experienceShard_scene.instantiate()
+	newIndicator.position = positionOfShard
+	newIndicator.setLabel(amount)
+	add_child(newIndicator)
+	newIndicator.startTimer()
+	
+func addGemIndicator(amount, positionOfShard): 
+	var newIndicator = gemShard_scene.instantiate()
 	newIndicator.position = positionOfShard
 	newIndicator.setLabel(amount)
 	add_child(newIndicator)
