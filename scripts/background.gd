@@ -7,6 +7,7 @@ extends Node2D
 @export var sidebar: PackedScene
 @export var modalDialog: PackedScene
 @export var modalDailyDialog: PackedScene
+@export var gemShard_scene: PackedScene
 @onready var fishTimer: Timer = $FishSpawnTimer
 
 #UI interactions
@@ -67,7 +68,6 @@ func _ready() -> void:
 	#current penguin cost even before the player has explicitly toggled the sidebar
 	sidebarHandle = sidebar.instantiate()
 	sidebarHandle.isDraggingSignal.connect(dragToggle)
-	calculateCurrentPenguinPrice()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -88,15 +88,15 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 11, "day": 28, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 12, "day": 1, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 75, "sick": false}],
+			"Penguins": [{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
-			"Inventory": [1,2,0],
+			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 11, "day": 28, "weekday": 3, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 12, "day": 1, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -144,6 +144,7 @@ func dataLoaded():
 	updateGemsLabel(PlayerData.getData()["Gems"])
 	updateExperienceBar(PlayerData.getData()["Experience"])
 	determineDailyReward()
+	calculateCurrentPenguinPrice()
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
 		_rewarded_ad = null
@@ -224,6 +225,7 @@ func determineDailyReward():
 	
 func _on_daily_reward_box_pressed() -> void:
 	print("collecting daily reward from clicking on the present")
+	$Camera/GemCollectedSound.play()
 	dailyDialog = modalDailyDialog.instantiate()
 	dailyDialog.rewardAccepted.connect(levelUpPrizeAccepted)
 	var currData = PlayerData.getData()
@@ -267,6 +269,8 @@ func _on_daily_reward_box_pressed() -> void:
 ##GOOGLE PLAY GAME SERVICES##
 func _on_user_authenticated(is_authenticated: bool) -> void:
 	print("Hi from Godot! User is authenticated? %s" % is_authenticated)
+	var newLoginTime = Time.get_datetime_dict_from_system()
+	lastLogin_global = newLoginTime
 	if is_authenticated: 
 		$Android_SavedGames.load_game("VillageData", false)
 		$Android_SavedGames.game_loaded.connect(
@@ -274,8 +278,6 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 			if !snapshot: 
 				print("saved game not found, creating new player data")
 				#create new player data
-				var newLoginTime = Time.get_datetime_dict_from_system()
-				lastLogin_global = newLoginTime
 				print("newLoginTime: " + str(newLoginTime))
 				var newPlayerData = {
 					"Penguins": [{"health": 100, "food": 75, "sick": false}],
@@ -360,7 +362,7 @@ func determinePenguins() -> void:
 	for penguinData in penguinsData: 
 		var penguin: Penguin = penguin_scene.instantiate()
 		var randomLocation = get_random_point_in_collision_polygon($IceBergArea/IceCollision)
-		penguin.setLocation(randomLocation.x, randomLocation.y)
+		penguin.setLocation(randomLocation.x, randomLocation.y - 150)
 		penguin.setSick(penguinData["sick"])
 		penguin.setHealth(penguinData["health"])
 		penguin.setFood(penguinData["food"])
@@ -389,7 +391,7 @@ func determinePenguinIntelligence() -> void:
 		if p.hasGoal():  
 			p.moveToGoal()
 		if p.getState() == "Idle": 
-			if is_point_inside_polygon($IceMountainCollision, p.position): 
+			if is_point_inside_polygon($IceMountainArea/IceMountainCollision, p.position): 
 				print("there is an idle penguin in the iceberg slide")
 				p.setState("Slide")
 				onGivePenguinGoal(p)
@@ -423,7 +425,10 @@ func determineFish() -> void:
 	
 func determineFishIntelligence() -> void: 
 	for f in fishes: 
-		if f.hasGoal(): 
+		if f.hasGoal():
+			if f.current_area == "Ice": 
+				pass
+				#onGiveFishGoal(f)
 			f.moveToGoal()
 			
 func getThreatPosition(fish: Fish) -> Penguin: 
@@ -469,7 +474,7 @@ func updatePenguinAndFoodSavedArray():
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print("penguin data has been updated and saved to the cloud")
-	print(PlayerData.getData())
+	#print(PlayerData.getData())
 
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish, penguin) -> void: 
@@ -477,8 +482,8 @@ func onFishCollected(fish, penguin) -> void:
 	$Camera/FishCaughtSound.play()
 	if fish in fishes: 
 		fishes.erase(fish)
-		#TODO dynamically add food to the closest food bowl after a fish is caught
-		foodBowls[0].addFood(10)
+		for bowl in foodBowls: 
+			bowl.addFood(10)
 	fish.queue_free()
 	penguin.addHealth(10)
 	var currData = PlayerData.getData()
@@ -492,6 +497,7 @@ func onFishCollected(fish, penguin) -> void:
 	if fish.getType() == "purple": 
 		currData["Gems"] = currData["Gems"] + 10
 		givePlayerExperience(10, fish.global_position)
+		addGemIndicator(10, Vector2(fish.global_position.x+50,fish.global_position.y))
 		#collect 2500 gems achievement increment
 		$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 10)
 		updateGemsLabel(currData["Gems"])
@@ -515,7 +521,8 @@ func onGemCollected(gem) -> void:
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 5
 	givePlayerExperience(5, gem.global_position)
-	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 3)
+	addGemIndicator(5, Vector2(gem.global_position.x+50,gem.global_position.y))
+	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 5)
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
@@ -602,6 +609,7 @@ func givePlayerExperience(amount, location) -> void:
 
 func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained) -> void: 
 	print("prize accepted in main")
+	$Camera/GemCollectedSound.play()
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + int(gemsGained)
 	currData["Inventory"][0] = currData["Inventory"][0] + penguinsGained
@@ -617,6 +625,13 @@ func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained
 
 func addIndicator(amount, positionOfShard): 
 	var newIndicator = experienceShard_scene.instantiate()
+	newIndicator.position = positionOfShard
+	newIndicator.setLabel(amount)
+	add_child(newIndicator)
+	newIndicator.startTimer()
+	
+func addGemIndicator(amount, positionOfShard): 
+	var newIndicator = gemShard_scene.instantiate()
 	newIndicator.position = positionOfShard
 	newIndicator.setLabel(amount)
 	add_child(newIndicator)
@@ -691,6 +706,16 @@ func _on_ice_berg_area_area_entered(area: Area2D) -> void:
 		area.stopTime()
 		if not area.hasGoal(): 
 			area.setState("Idle")
+	elif area is Fish: 
+		print("a fish has come too close to the iceberg, finding a new goal")
+		area.current_area = "Ice"
+		area.goal = area.goal * Vector2(-1,1)
+		#area.hasAGoal = false
+		#onGiveFishGoal(area)
+		
+func _on_ice_berg_area_area_exited(area: Area2D) -> void:
+	if area is Fish: 
+		area.current_area = "Water"
 	
 func _on_water_area_area_entered(area: Area2D) -> void:
 	print("something entered water area")
@@ -707,11 +732,27 @@ func _on_water_area_area_exited(area: Area2D) -> void:
 		area.setCollisionGons("Walk")
 		area.setCurrentArea("Ice")
 		
+func doesIceMountainHaveThisPenguin(penguin: Penguin) -> bool: 
+	if $IceMountainArea.get_overlapping_areas().has(penguin): 
+		return true
+	else:
+		return false
+
 func doesWaterAreaHaveThisPenguin(penguin: Penguin) -> void: 
 	if $WaterArea.get_overlapping_areas().has(penguin): 
-		print("penguing is in fact in the water area, setting to swim")
+		print("penguin is in fact in the water area, setting to swim")
 		penguin.setCurrentArea("Water")
 		penguin.setState("Swim")
+
+func doesIceAreaHaveThisPenguin(penguin: Penguin) -> void: 
+	if $IceBergArea.get_overlapping_areas().has(penguin): 
+		print("penguin is in fact in the ice area, setting to walk if it has a goal")
+		penguin.setCurrentArea("Ice")
+		penguin.stopTime()
+		if penguin.hasGoal(): 
+			penguin.setState("Walk")
+		else: 
+			penguin.setState("Idle")
 	
 ##GUI###
 func handleDrag(_pos: Vector2, delta: Vector2): 
@@ -845,8 +886,16 @@ func _on_input_event(_viewport, event, _shape_idx):
 				p.setSelected(false)
 				if p.current_area == "Water": 
 					p.setState("Swim")
-				else: 
-					p.setState("Walk")
+				else:
+					#a penguin walking on the ice mountain is given a new target below itself -> should slide down mountain
+					if p.current_state == "Walk" and globalPosition.y > p.position.y and doesIceMountainHaveThisPenguin(p): 
+						p.setState("Slide") 
+					#a penguin sliding down the mountain, is given a new target below itself -> should keep sliding
+					elif p.current_state == "StillSliding" and globalPosition.y > p.position.y: 
+						pass
+					#otherwise the penguin should be walking
+					else:
+						p.setState("Walk")
 	elif event is InputEventScreenDrag or event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		#print("InputEventScreenDrag or InputEventMouseMotion")
 		#print("event position " + str(event.position.x))
@@ -886,7 +935,7 @@ func _on_gem_spawn_timer_timeout() -> void:
 	print("gem spawn timeout")
 	$GemSpawnTimer.wait_time = randf_range(10,20)
 	var gem = gem_scene.instantiate()
-	var randomSpawn = get_random_point_in_collision_polygon($IceMountainCollision)
+	var randomSpawn = get_random_point_in_collision_polygon($IceMountainArea/IceMountainCollision)
 	gem.global_position = randomSpawn
 	gem.gem_collected.connect(onGemCollected)
 	add_child(gem)
