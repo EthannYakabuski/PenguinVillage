@@ -138,7 +138,6 @@ texture = ExtResource("5_7pg7q")
 polygon = PackedVector2Array(-1266, 1502, -1111, 1686, -880, 1448, -766, 1589, -654, 1765, -523, 1598, -425, 1594, -288, 1769, -83, 1443, 137, 1587, 316, 1762, 453, 1524, 681, 1663, 987, 1596, 1078, 1759, 1177, 1596, 1428, 1689, 1579, 1598, 1737, 1754, 1910, 1598, 2061, 1815, 2261, 1721, 2342, 1504, 2342, 2023, -1272, 2025)
 
 [node name="IceBergArea" type="Area2D" parent="."]
-visible = false
 position = Vector2(0, -100)
 
 [node name="IceBergSprite" type="Sprite2D" parent="IceBergArea"]
@@ -247,6 +246,7 @@ animation = &"Walk"
 [connection signal="area_entered" from="WaterArea" to="." method="_on_water_area_area_entered"]
 [connection signal="area_exited" from="WaterArea" to="." method="_on_water_area_area_exited"]
 [connection signal="area_entered" from="IceBergArea" to="." method="_on_ice_berg_area_area_entered"]
+[connection signal="area_exited" from="IceBergArea" to="." method="_on_ice_berg_area_area_exited"]
 [connection signal="user_authenticated" from="Android_SignIn" to="." method="_on_user_authenticated"]
 [connection signal="finished" from="Camera/MainMusic_Evening" to="." method="_on_main_music_evening_finished"]
 [connection signal="finished" from="Camera/MainMusic" to="." method="_on_main_music_finished"]

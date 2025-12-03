@@ -423,7 +423,10 @@ func determineFish() -> void:
 	
 func determineFishIntelligence() -> void: 
 	for f in fishes: 
-		if f.hasGoal(): 
+		if f.hasGoal():
+			if f.current_area == "Ice": 
+				pass
+				#onGiveFishGoal(f)
 			f.moveToGoal()
 			
 func getThreatPosition(fish: Fish) -> Penguin: 
@@ -691,6 +694,16 @@ func _on_ice_berg_area_area_entered(area: Area2D) -> void:
 		area.stopTime()
 		if not area.hasGoal(): 
 			area.setState("Idle")
+	elif area is Fish: 
+		print("a fish has come too close to the iceberg, finding a new goal")
+		area.current_area = "Ice"
+		area.goal = area.goal * Vector2(-1,1)
+		#area.hasAGoal = false
+		#onGiveFishGoal(area)
+		
+func _on_ice_berg_area_area_exited(area: Area2D) -> void:
+	if area is Fish: 
+		area.current_area = "Water"
 	
 func _on_water_area_area_entered(area: Area2D) -> void:
 	print("something entered water area")
