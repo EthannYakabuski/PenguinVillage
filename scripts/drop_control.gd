@@ -3,6 +3,7 @@ extends Control
 signal penguinDropped
 signal foodDropped
 signal medicineDropped
+signal newBowlDropped
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -28,3 +29,6 @@ func _drop_data(at_position: Vector2, data) -> void:
 	elif data.controlItemType == "Medicine": 
 		print("a medicine bag has been dropped")
 		medicineDropped.emit(at_position)
+	elif data.controlItemType == "FoodBowl":
+		print("a new food bowl is being dropped")
+		newBowlDropped.emit(at_position)

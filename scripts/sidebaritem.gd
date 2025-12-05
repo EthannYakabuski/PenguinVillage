@@ -26,11 +26,16 @@ func _get_drag_data(_Vector2):
 		texSize = $FoodBagPurchase.size
 		scaleX = $FoodBagPurchase.scale.x - 0.10
 		scaleY = $FoodBagPurchase.scale.y - 0.10
-	else: 
+	elif controlItemType == "Medicine": 
 		preview.texture = $MedicinePurchase.texture 
 		texSize = $MedicinePurchase.size
 		scaleX = $MedicinePurchase.scale.x - 0.10
 		scaleY = $MedicinePurchase.scale.y - 0.10
+	elif controlItemType == "FoodBowl": 
+		preview.texture = $FoodBowlPurchase.texture 
+		texSize = $FoodBowlPurchase.size
+		scaleX = $FoodBowlPurchase.scale.x - 0.10
+		scaleY = $FoodBowlPurchase.scale.y - 0.10
 	preview.size = texSize
 	preview.scale.x = scaleX
 	preview.scale.y = scaleY

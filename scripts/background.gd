@@ -64,6 +64,7 @@ func _ready() -> void:
 	$DropControl.penguinDropped.connect(penguinIsDropped)
 	$DropControl.foodDropped.connect(foodIsDropped)
 	$DropControl.medicineDropped.connect(medicineIsDropped)
+	$DropControl.newBowlDropped.connect(newBowlIsDropped)
 	#prepare the sidebar handle so that we can accept level up prizes and keep track of
 	#current penguin cost even before the player has explicitly toggled the sidebar
 	sidebarHandle = sidebar.instantiate()
@@ -88,15 +89,15 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 12, "day": 1, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 12, "day": 4, "weekday": 5, "hour": 17, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false}],
+			"Penguins": [{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 12, "day": 1, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 12, "day": 4, "weekday": 5, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -549,7 +550,6 @@ func spendGems(gemsSpent) -> void:
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
-	print(currData)
 	
 func givePlayerExperience(amount, location) -> void: 
 	print("giving player " + str(amount) + "experience")
@@ -810,6 +810,25 @@ func penguinIsDropped(_atPosition: Vector2):
 		calculateCurrentPenguinPrice()
 	isDragging = false
 	
+func newBowlIsDropped(_atPosition: Vector2): 
+	print("a new food bowl has been dropped and recevied")
+	var bowlPosition = $Camera.get_global_mouse_position()
+	if PlayerData.getData()["Gems"] >= 100:
+		spendGems(100)
+		var food: Food = food_scene.instantiate()
+		food.setLocation(bowlPosition.x, bowlPosition.y)
+		food.addFood(100)
+		foodBowls.push_back(food)
+		add_child(food)
+		var currData = PlayerData.getData()
+		var currFood = currData["Food"]
+		currFood.push_back({"amount": 100, "locationX": bowlPosition.x, "locationY": bowlPosition.y})
+		currData["Food"] = currFood
+		print(currData)
+		PlayerData.setData(currData)
+		PlayerData.saveData()
+	isDragging = false
+
 func medicineIsDropped(_atPosition: Vector2): 
 	print("medicine has been dropped and received")
 	#find the closest sick penguin
