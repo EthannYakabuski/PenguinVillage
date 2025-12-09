@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ueb0gkdh6ns7"]
+[gd_scene load_steps=12 format=3 uid="uid://ueb0gkdh6ns7"]
 
 [ext_resource type="Texture2D" uid="uid://b2v2xg6yxm54v" path="res://images/sidebarBackground.png" id="1_0rqpi"]
 [ext_resource type="Script" path="res://scripts/sidebar.gd" id="1_el82r"]
@@ -8,10 +8,19 @@
 [ext_resource type="Texture2D" uid="uid://b763me5ubg5yl" path="res://images/Medicine.png" id="5_p4h8o"]
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="7_7ff2g"]
 [ext_resource type="Texture2D" uid="uid://t5efekd3dbmr" path="res://images/FoodBowl_empty.png" id="7_eviax"]
+[ext_resource type="LabelSettings" uid="uid://b3ck03e0jsysg" path="res://fonts/inventoryFont.tres" id="9_3w23c"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6dqut"]
 font_size = 75
 font_color = Color(0.811765, 0.27451, 0.960784, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_71x1v"]
+font_size = 40
+font_color = Color(0.223529, 0.560784, 0.25098, 1)
+outline_size = 10
+outline_color = Color(0.177712, 0.67325, 0.35493, 1)
+shadow_size = 10
+shadow_color = Color(0.176471, 0.67451, 0.356863, 1)
 
 [node name="Background2" type="Control"]
 z_index = -2
@@ -24,7 +33,7 @@ script = ExtResource("1_el82r")
 z_index = -1
 layout_mode = 0
 offset_top = 205.0
-offset_right = 500.0
+offset_right = 701.0
 offset_bottom = 2105.0
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("1_0rqpi")
@@ -150,6 +159,47 @@ offset_right = 287.0
 offset_bottom = 1588.0
 text = "100"
 label_settings = SubResource("LabelSettings_6dqut")
+
+[node name="PenguinInventoryLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 284.0
+offset_right = 431.0
+offset_bottom = 421.0
+text = "0"
+label_settings = ExtResource("9_3w23c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FoodInventoryLabel" type="Label" parent="."]
+offset_left = 299.0
+offset_top = 586.0
+offset_right = 427.0
+offset_bottom = 723.0
+text = "1"
+label_settings = ExtResource("9_3w23c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MedicineInventoryLabel" type="Label" parent="."]
+offset_left = 299.0
+offset_top = 939.0
+offset_right = 427.0
+offset_bottom = 1076.0
+text = "1"
+label_settings = ExtResource("9_3w23c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InventoryInventoryLabel" type="Label" parent="."]
+offset_left = 246.0
+offset_top = 193.0
+offset_right = 491.0
+offset_bottom = 330.0
+text = "Inventory"
+label_settings = SubResource("LabelSettings_71x1v")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="isDragging" from="SideBarBackground/PenguinPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
 [connection signal="isDragging" from="SideBarBackground/FoodBagPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
