@@ -95,7 +95,7 @@ func androidAuthentication() -> void:
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
-			"Inventory": [0,0,0],
+			"Inventory": [1,1,1],
 			"AreasUnlocked": [false, false, false, false, false],
 			"LastLogin": { "year": 2025, "month": 12, "day": 8, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
@@ -1027,25 +1027,35 @@ func calculateCurrentPenguinPrice() -> void:
 	var roundedCost = int(round(calculatedExactCost / 5.0) * 5.0)
 	var currData = PlayerData.getData()
 	print(roundedCost)
+	var noPenguins = false
 	if currentPenguins == 0 or currData["Inventory"][0] > 0: 
 		currentPenguinPrice = 0
+		sidebarHandle.setCurrentPenguinInventory(currData["Inventory"][0])
+		if currData["Inventory"][0] == 0: 
+			sidebarHandle.setCurrentPenguinInventory(0)
+			noPenguins = true
 	else: 
 		currentPenguinPrice = roundedCost
-	sidebarHandle.setCurrentPenguinCost(currentPenguinPrice)
+		sidebarHandle.setCurrentPenguinInventory(0)
+	sidebarHandle.setCurrentPenguinCost(currentPenguinPrice, noPenguins)
 	#if the player has free food bags in their inventory
 	if currData["Inventory"][1] > 0: 
 		sidebarHandle.setCurrentFoodCost(0)
+		sidebarHandle.setCurrentFoodInventory(currData["Inventory"][1])
 		currentFoodPrice = 0
 	else: 
 		currentFoodPrice = 100
 		sidebarHandle.setCurrentFoodCost(100)
+		sidebarHandle.setCurrentFoodInventory(0)
 	#if the player has free medicine in their inventory
 	if currData["Inventory"][2] > 0: 
 		sidebarHandle.setCurrentMedicineCost(0)
+		sidebarHandle.setCurrentMedicineInventory(currData["Inventory"][2])
 		currentMedicinePrice = 0
 	else: 
 		currentMedicinePrice = 75
 		sidebarHandle.setCurrentMedicineCost(75)
+		sidebarHandle.setCurrentFoodInventory(0)
 
 func _on_side_bar_pressed() -> void:
 	print("side bar pressed")
