@@ -14,13 +14,13 @@
 font_size = 75
 font_color = Color(0.811765, 0.27451, 0.960784, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_71x1v"]
-font_size = 40
-font_color = Color(0.223529, 0.560784, 0.25098, 1)
+[sub_resource type="LabelSettings" id="LabelSettings_1fadc"]
+font_size = 47
+font_color = Color(0.227451, 0.560784, 0.847059, 1)
 outline_size = 10
-outline_color = Color(0.177712, 0.67325, 0.35493, 1)
-shadow_size = 10
-shadow_color = Color(0.176471, 0.67451, 0.356863, 1)
+outline_color = Color(0.227451, 0.45098, 1, 1)
+shadow_size = 19
+shadow_color = Color(0.227451, 0.372549, 0.905882, 1)
 
 [node name="Background2" type="Control"]
 z_index = -2
@@ -162,9 +162,9 @@ label_settings = SubResource("LabelSettings_6dqut")
 
 [node name="PenguinInventoryLabel" type="Label" parent="."]
 layout_mode = 0
-offset_left = 303.0
+offset_left = 260.0
 offset_top = 284.0
-offset_right = 431.0
+offset_right = 484.0
 offset_bottom = 421.0
 text = "0"
 label_settings = ExtResource("9_3w23c")
@@ -172,9 +172,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="FoodInventoryLabel" type="Label" parent="."]
-offset_left = 299.0
+offset_left = 254.0
 offset_top = 586.0
-offset_right = 427.0
+offset_right = 486.0
 offset_bottom = 723.0
 text = "1"
 label_settings = ExtResource("9_3w23c")
@@ -182,9 +182,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MedicineInventoryLabel" type="Label" parent="."]
-offset_left = 299.0
+offset_left = 254.0
 offset_top = 939.0
-offset_right = 427.0
+offset_right = 491.0
 offset_bottom = 1076.0
 text = "1"
 label_settings = ExtResource("9_3w23c")
@@ -197,7 +197,7 @@ offset_top = 193.0
 offset_right = 491.0
 offset_bottom = 330.0
 text = "Inventory"
-label_settings = SubResource("LabelSettings_71x1v")
+label_settings = SubResource("LabelSettings_1fadc")
 horizontal_alignment = 1
 vertical_alignment = 1
 
