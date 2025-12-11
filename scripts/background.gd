@@ -142,6 +142,7 @@ func dataLoaded():
 	determineFish()
 	determineFood()
 	determinePenguins()
+	updateLastLogin()
 	updateGemsLabel(PlayerData.getData()["Gems"])
 	updateExperienceBar(PlayerData.getData()["Experience"])
 	determineDailyReward()
@@ -308,7 +309,6 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 				print(dataToParse)
 				currentData = JSON.parse_string(dataToParse)
 				PlayerData.setData(currentData)
-				updateLastLogin()
 				emit_signal("dataHasLoaded")
 	)
 	
