@@ -615,6 +615,10 @@ func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained
 	currData["Inventory"][0] = currData["Inventory"][0] + penguinsGained
 	currData["Inventory"][1] = currData["Inventory"][1] + foodGained
 	currData["Inventory"][2] = currData["Inventory"][2] + medicineGained
+	if sidebarActive: 
+		sidebarHandle.setCurrentPenguinInventory(currData["Inventory"][0])
+		sidebarHandle.setCurrentFoodInventory(currData["Inventory"][1])
+		sidebarHandle.setCurrentMedicineInventory(currData["Inventory"][2])
 	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBA", currData["Gems"])
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", gemsGained)
 	updateGemsLabel(currData["Gems"])
@@ -1059,7 +1063,11 @@ func calculateCurrentPenguinPrice() -> void:
 
 func _on_side_bar_pressed() -> void:
 	print("side bar pressed")
-	if not sidebarActive: 
+	if not sidebarActive:
+		var currData = PlayerData.getData()
+		sidebarHandle.setCurrentPenguinInventory(currData["Inventory"][0])
+		sidebarHandle.setCurrentFoodInventory(currData["Inventory"][1])
+		sidebarHandle.setCurrentMedicineInventory(currData["Inventory"][2])
 		$CanvasMenu.add_child(sidebarHandle)
 		sidebarActive = true
 	else: 
