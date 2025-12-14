@@ -1,4 +1,4 @@
-extends Area2D
+extends Control
 
 class_name Food
 
@@ -9,6 +9,15 @@ const LONG_PRESS_TIME := 0.75 # seconds
 
 var pressing := false
 var pressStartTime := 0.0
+
+var controlItemType = "FoodBowlDrag"
+
+var completelyFull = preload("res://images/FoodBowl_full.png")
+var full = preload("res://images/FoodBowl_full.png")
+var almostFull = preload("res://images/FoodBowl_almostFull.png")
+var medium = preload("res://images/FoodBowl_medium.png")
+var almostEmpty = preload("res://images/FoodBowl_almostEmpty.png")
+var empty = preload("res://images/FoodBowl_empty.png")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -28,17 +37,23 @@ func setLocation(x, y) -> void:
 	
 func animateFood(): 
 	if(foodLevel >= 85): 
-		$FoodSprite.animation = "CompletelyFull"
+		$Food/FoodTexture.texture = completelyFull
+		$Food/FoodSprite.animation = "CompletelyFull"
 	elif (foodLevel < 85 and foodLevel > 65): 
-		$FoodSprite.animation = "Full"
+		$Food/FoodSprite.animation = "Full"
+		$Food/FoodTexture.texture = full
 	elif (foodLevel <= 65 and foodLevel > 40): 
-		$FoodSprite.animation = "AlmostFull"
+		$Food/FoodSprite.animation = "AlmostFull"
+		$Food/FoodTexture.texture = almostFull
 	elif (foodLevel <= 40 and foodLevel > 15): 
-		$FoodSprite.animation = "Medium"
+		$Food/FoodSprite.animation = "Medium"
+		$Food/FoodTexture.texture = medium
 	elif (foodLevel <= 15 and foodLevel > 5): 
-		$FoodSprite.animation = "AlmostEmpty"
+		$Food/FoodSprite.animation = "AlmostEmpty"
+		$Food/FoodTexture.texture = almostEmpty
 	else: 
-		$FoodSprite.animation = "Empty"
+		$Food/FoodSprite.animation = "Empty"
+		$Food/FoodTexture.texture = empty
 
 func useFood(amount) -> void: 
 	if foodLevel > 0: 
@@ -60,7 +75,7 @@ func _on_input_event(_viewport, event, _shape_idx):
 		print("Food clicked")
 		pressing = true
 		pressStartTime = Time.get_ticks_msec() / 1000.0
-		get_viewport().set_input_as_handled()
+		#get_viewport().set_input_as_handled()
 	else:
 		if not pressing: 
 			return
@@ -76,4 +91,16 @@ func _on_area_entered(area: Area2D) -> void:
 				#area.addHealth(10)
 				area.setState("Eat")
 				area.clearGoal()
+				
+func _get_drag_data(_Vector2):
+	print("get drag data on a food bowl is being called")
+	$Food/FoodTexture.visible = false
+	get_parent().dragToggle()
+	var preview = TextureRect.new()
+	preview.texture = $Food/FoodTexture.texture
+	preview.size = $Food/FoodTexture.size
+	preview.scale.x = $Food/FoodTexture.scale.x
+	preview.scale.y = $Food/FoodTexture.scale.y
+	set_drag_preview(preview)
+	return self
 		

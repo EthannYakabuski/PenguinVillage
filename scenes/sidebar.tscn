@@ -153,6 +153,7 @@ text = "75"
 label_settings = SubResource("LabelSettings_6dqut")
 
 [node name="FoowBowlLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 116.0
 offset_top = 1383.0
 offset_right = 287.0
@@ -171,6 +172,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="FoodInventoryLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 254.0
 offset_top = 586.0
 offset_right = 486.0
@@ -180,6 +182,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MedicineInventoryLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 254.0
 offset_top = 939.0
 offset_right = 491.0
@@ -189,6 +192,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="InventoryInventoryLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 246.0
 offset_top = 193.0
 offset_right = 491.0

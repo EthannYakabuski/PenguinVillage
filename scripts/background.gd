@@ -9,6 +9,7 @@ extends Node2D
 @export var modalDailyDialog: PackedScene
 @export var gemShard_scene: PackedScene
 @onready var fishTimer: Timer = $FishSpawnTimer
+const controlItemScript = preload("res://scripts/sidebaritem.gd")
 
 #UI interactions
 var sidebarActive = false
@@ -69,6 +70,7 @@ func _ready() -> void:
 	$DropControl.foodDropped.connect(foodIsDropped)
 	$DropControl.medicineDropped.connect(medicineIsDropped)
 	$DropControl.newBowlDropped.connect(newBowlIsDropped)
+	$DropControl.existingBowlDragged.connect(existingBowlDropped)
 	#prepare the sidebar handle so that we can accept level up prizes and keep track of
 	#current penguin cost even before the player has explicitly toggled the sidebar
 	sidebarHandle = sidebar.instantiate()
@@ -458,12 +460,20 @@ func determineFood() -> void:
 	#foodBowl.addFood(50)
 	#foodBowls.push_back(food)
 	var foodDatas = PlayerData.getData()["Food"]
-	for foodData in foodDatas: 
+	for foodData in foodDatas:
+		#var foodControl = Control.new()
+		#foodControl.set_script(controlItemScript)
+		#foodControl.setControlItemType("FoodBowlDrag")
+		#foodControl.position = Vector2(foodData["locationX"], foodData["locationY"])
+		#foodControl.controlItemType = "FoodBowlDrag"
 		var food: Food = food_scene.instantiate()
+		#foodControl.size = Vector2(400, 400)
 		food.setLocation(foodData["locationX"], foodData["locationY"])
 		food.addFood(foodData["amount"])
 		foodBowls.push_back(food)
 		add_child(food)
+		#foodControl.add_child(food)
+		#add_child(foodControl)
 
 func updatePenguinAndFoodSavedArray(): 
 	print("a penguin has finished eating, update saved data")
@@ -696,7 +706,7 @@ func onPenguinSelected(state) -> void:
 	
 func foodBowlHeld(theBowl) -> void: 
 	print("food bowl has been held ")
-	remove_child(theBowl)
+	isDragging = true
 	
 func onPenguinDied() -> void: 
 	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCQ")
@@ -822,6 +832,9 @@ func penguinIsDropped(_atPosition: Vector2):
 		calculateCurrentPenguinPrice()
 	isDragging = false
 	
+func existingBowlDropped(_atPosition: Vector2):
+	print("an existing bowl has been dropped and received")
+
 func newBowlIsDropped(_atPosition: Vector2): 
 	print("a new food bowl has been dropped and recevied")
 	var bowlPosition = $Camera.get_global_mouse_position()
