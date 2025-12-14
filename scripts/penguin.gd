@@ -50,18 +50,20 @@ func _process(_delta: float) -> void:
 
 ##SETTERS##
 func setGoal(x, y) -> void:
-	print("setting goal -> x: " + str(x) + " y: " + str(y)) 
+	#print("setting goal -> x: " + str(x) + " y: " + str(y)) 
 	goal = Vector2(x, y)
 	hasAGoal = true
 	useEnergy(3)
 	
 func setState(state: String) -> void: 
 	if state != current_state: 
-		print("setting penguin state to " + state)
-		print("current area : " + current_area)
+		#print("setting penguin state to " + state)
+		#print("current area : " + current_area)
 		last_state = current_state
 		current_state = state
 		$PenguinSprite.animation = state
+		if state == "Idle":
+			self.z_index = int(position.y)
 	
 func setSelected(state: bool) -> void: 
 	selected = state
@@ -212,6 +214,10 @@ func _on_penguin_sprite_animation_looped() -> void:
 	elif current_state == "Hurt": 
 		$Sneeze.stop()
 		setState(last_state)
+	elif current_state == "StillSliding": 
+		get_parent().doesIceAreaHaveThisPenguin(self)
+	elif current_state == "Swim": 
+		get_parent().doesIceAreaHaveThisPenguin(self)
 	elif current_state == "Die": 
 		setState("Dead")
 		$PenguinSprite.modulate = Color(1,0.3,0.3,0.8)
@@ -246,3 +252,11 @@ func _on_sick_timer_timeout() -> void:
 			$Sneeze.play(4.14)
 			$SickTimer.wait_time = randf_range(3,8)
 		useEnergy(1)
+
+
+func _on_area_entered(area: Area2D) -> void:
+	#print("a penguins area has been entered")
+	if area is Penguin: 
+		#print(" a penguin has entered another penguin, determine the appropriate z-index between them")
+		area.z_index = int(area.position.y)
+		self.z_index = int(self.position.y)

@@ -18,6 +18,7 @@ var current_state: String
 var goal: Vector2
 var hasAGoal: bool = false
 var speed = 1
+var current_area = "Water"
 
 #predator/prey mechanics
 var currentThreat = "safe"
