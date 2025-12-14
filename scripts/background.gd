@@ -18,6 +18,10 @@ var levelUpDialog
 var dailyDialog
 var loading = true
 
+var pressing = false
+var pressStartTime = 0.0
+var pressPos = Vector2.ZERO
+
 var penguins = []
 var fishes = []
 var foodBowls = []
@@ -89,7 +93,7 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 12, "day": 10, "weekday": 4, "hour": 17, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 12, "day": 13, "weekday": 7, "hour": 17, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
 			"Penguins": [{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
@@ -97,7 +101,7 @@ func androidAuthentication() -> void:
 			"Decorations": [], 
 			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 12, "day": 10, "weekday": 4, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 12, "day": 13, "weekday": 7, "hour": 17, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -690,6 +694,10 @@ func onPenguinSelected(state) -> void:
 	penguinIsSelected = state
 	print("penguin selected")
 	
+func foodBowlHeld(theBowl) -> void: 
+	print("food bowl has been held ")
+	remove_child(theBowl)
+	
 func onPenguinDied() -> void: 
 	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCQ")
 	for i in range(penguins.size() -1, -1, -1): 
@@ -894,6 +902,9 @@ func dragToggle():
 	print("there is an item being dragged from the sidebar")
 	isDragging = true
 
+#var pressing = false
+#var pressStartTime = 0.0
+#var pressPos = Vector2.ZERO
 func _on_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
 		print("location clicked")

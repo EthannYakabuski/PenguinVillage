@@ -3,6 +3,13 @@ extends Area2D
 class_name Food
 
 var foodLevel = 0
+var selected = false
+
+const LONG_PRESS_TIME := 0.75 # seconds
+
+var pressing := false
+var pressStartTime := 0.0
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -10,7 +17,10 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	pass
+	if pressing: 
+		var heldTime = Time.get_ticks_msec() / 1000.0 - pressStartTime
+		if heldTime > LONG_PRESS_TIME: 
+			get_parent().foodBowlHeld(self)
 	
 ##SETTERS##
 func setLocation(x, y) -> void: 
@@ -44,6 +54,17 @@ func addFood(amount) -> void:
 ##GETTERS##
 func getFoodLevel() -> int: 
 	return foodLevel
+	
+func _on_input_event(_viewport, event, _shape_idx): 
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
+		print("Food clicked")
+		pressing = true
+		pressStartTime = Time.get_ticks_msec() / 1000.0
+		get_viewport().set_input_as_handled()
+	else:
+		if not pressing: 
+			return
+		pressing = false
 
 ##penguin comes to eat food
 func _on_area_entered(area: Area2D) -> void:
