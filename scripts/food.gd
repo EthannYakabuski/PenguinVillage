@@ -112,6 +112,7 @@ func _notification(what: int) -> void:
 		print("mouse up in notification on food bowl")
 		dragging = false
 		get_parent().setDragToggle(false)
+		get_parent().updatePenguinAndFoodSavedArray()
 
 ##penguin comes to eat food
 func _on_area_entered(area: Area2D) -> void:
