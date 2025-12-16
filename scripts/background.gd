@@ -215,12 +215,15 @@ func on_user_earned_reward(rewarded_item : RewardedItem):
 	#once we are using an actual unit-id from admob, the rewarded_item.amount and rewarded_item.type values are set in the admob console
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 50
+	#Gem master incremental achievement increment
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 50)
+	#Highest Gem Count leaderboard score submit
+	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBA", currData["Gems"])
 	updateGemsLabel(currData["Gems"])
+	#Supporter achievement
 	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDA")
 	PlayerData.setData(currData)
 	PlayerData.saveData()
-	#TODO - reward player with reward
 	
 func determineDailyReward():
 	print("inside determineDailyReward") 
@@ -255,6 +258,7 @@ func _on_daily_reward_box_pressed() -> void:
 			keepLooping = false
 	if subsequentTruesBehindCurrentDay == 6: 
 		print("player has logged in for a week straight, resetting arrays")
+		#Daily grind achievement
 		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEg")
 		currData["DailyRewards"] = [false, false, false, false, false, false, false]
 		currData["DailyRewards"][currentDay] = true
@@ -413,6 +417,7 @@ func determinePenguinIntelligence() -> void:
 				p.stopStepSound()
 				if not $Camera/FoodEatSound.playing: 
 					$Camera/FoodEatSound.play()
+				#Master Chef achievement
 				$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBw", 1)
 				foodBowls[0].useFood(0.25)
 			#onGivePenguinGoal(p)
@@ -508,18 +513,21 @@ func onFishCollected(fish, penguin) -> void:
 	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAQ", currData["FishCaught"])
 	#catch a fish achivement
 	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQAg")
-	#catch 1000 fish achievement increment
+	#catch 1000 fish achievement increment (Fishing Master achievement)
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBg", 1)
 	if fish.getType() == "purple": 
 		currData["Gems"] = currData["Gems"] + 10
 		givePlayerExperience(10, fish.global_position)
 		addGemIndicator(10, Vector2(fish.global_position.x+50,fish.global_position.y))
-		#collect 2500 gems achievement increment
+		#collect 2500 gems achievement increment (Gem Master incremental achievement increment)
 		$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 10)
+		#Highest Gem Count leaderboard score submit
+		$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBA", currData["Gems"])
 		updateGemsLabel(currData["Gems"])
-		#catch a purple fish achievement
+		#Purple fish achievement
 		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCw")
 	if fish.getType() == "gold": 
+		#Golden fish achievement
 		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCg")
 		givePlayerExperience(50, fish.global_position)
 	if fish.getType() == "blue": 
@@ -538,7 +546,10 @@ func onGemCollected(gem) -> void:
 	currData["Gems"] = currData["Gems"] + 5
 	givePlayerExperience(5, gem.global_position)
 	addGemIndicator(5, Vector2(gem.global_position.x+50,gem.global_position.y))
+	#Gem master incremental achievement increment
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 5)
+	#Highest Gem Count leaderboard score submit
+	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBA", currData["Gems"])
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
 	PlayerData.saveData()
@@ -607,17 +618,24 @@ func givePlayerExperience(amount, location) -> void:
 	updateExperienceBarLocal(str(currentPlayerLevel), int(currentLevelExperience), int(afterLevelUpExperienceRequired))
 	currData["PlayerLevel"] = currentPlayerLevel
 	currData["Experience"] = currentTotalExperience
+	#Total Experience leaderboard score submit
+	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBQ", currentTotalExperience)
 	currData["LevelExperience"] = currentLevelExperience
 	match currentPlayerLevel:
 		5,6:
+			#level 5 achievement
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEw")
 		10,11:
+			#level 10 achievement
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFA")
-		20,21: 
+		20,21:
+			#level 20 achievement 
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFQ")
 		30:
+			#level 30 achievement
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFg")
 		50: 
+			#level 50 achievement
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFw")
 	PlayerData.setData(currData)
 	PlayerData.saveData()
@@ -634,7 +652,9 @@ func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained
 		sidebarHandle.setCurrentPenguinInventory(currData["Inventory"][0])
 		sidebarHandle.setCurrentFoodInventory(currData["Inventory"][1])
 		sidebarHandle.setCurrentMedicineInventory(currData["Inventory"][2])
+	#Highest Gem Count leaderboard score submit
 	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBA", currData["Gems"])
+	#Gem master incremental achievement increment
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", gemsGained)
 	updateGemsLabel(currData["Gems"])
 	PlayerData.setData(currData)
@@ -710,6 +730,7 @@ func foodBowlHeld(theBowl) -> void:
 	isDragging = true
 	
 func onPenguinDied() -> void: 
+	#Penguin Mortician achievement
 	$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCQ")
 	for i in range(penguins.size() -1, -1, -1): 
 		var penguin = penguins[i]
@@ -829,13 +850,18 @@ func penguinIsDropped(_atPosition: Vector2):
 		var currentPenguinAmount = penguins.size()
 		match currentPenguinAmount: 
 			2: 
+				#Penguin Hobbyist achievement
 				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDw")
 			5: 
+				#Penguin entrepreneur achievement
 				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEA")
 			10: 
+				#Penguin master achievement
 				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEQ")
 			20: 
+				#Penguin whisperer achievement
 				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDg")
+		#Biggest Penguin Population leaderboard score submit
 		$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAw", currentPenguinAmount)
 		updatePenguinAndFoodSavedArray()
 		calculateCurrentPenguinPrice()
@@ -890,6 +916,7 @@ func medicineIsDropped(_atPosition: Vector2):
 			closestPenguin.addFood(25)
 			$Camera/PurchaseSound.play()
 			givePlayerExperience(25, closestPenguin.global_position)
+			#Penguin Doctor achievement
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQCA")
 			spendGems(currentMedicinePrice)
 			#if the currentMedicinePrice is 0, the player is using a medicine from their inventory
