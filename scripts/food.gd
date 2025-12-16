@@ -4,6 +4,7 @@ class_name Food
 
 var foodLevel = 0
 var selected = false
+var dragging = false
 
 const LONG_PRESS_TIME := 0.75 # seconds
 
@@ -28,8 +29,23 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if pressing: 
 		var heldTime = Time.get_ticks_msec() / 1000.0 - pressStartTime
-		if heldTime > LONG_PRESS_TIME: 
+		if heldTime > LONG_PRESS_TIME:
+			print("setting dragging to true in process()") 
+			dragging = true
 			get_parent().foodBowlHeld(self)
+	else: 
+		pass
+		#pressing = false
+		#dragging = false
+	if dragging:
+		#print("food bowl is getting dragged") 
+		#global_position = get_viewport().get_mouse_position()
+		#global_position = get_viewport().get_mouse_position()
+		global_position = get_parent().getCamera().get_global_mouse_position()
+		#if (get_parent().currentDragDelta > 0): 
+			#global_position.x = global_position.x - get_parent().currentDragDelta
+		#else:
+			#global_position.x = global_position.x - get_parent().currentDragDelta
 	
 ##SETTERS##
 func setLocation(x, y) -> void: 
@@ -73,13 +89,29 @@ func getFoodLevel() -> int:
 func _on_input_event(_viewport, event, _shape_idx): 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT: 
 		print("Food clicked")
+		print("setting pressing to true")
 		pressing = true
 		pressStartTime = Time.get_ticks_msec() / 1000.0
 		#get_viewport().set_input_as_handled()
 	else:
-		if not pressing: 
+		if not pressing:
+			#print("not pressing, return") 
 			return
+		print("setting pressing to false")
 		pressing = false
+	
+	#essentially mouse up on drag
+	if dragging and event is InputEventMouseButton and not event.pressed:
+		print("mouse up in food bowl")
+		print("setting dragging to false")
+		dragging = false
+		get_parent().setDragToggle(false)
+		
+func _notification(what: int) -> void: 
+	if what == NOTIFICATION_DRAG_END: 
+		print("mouse up in notification on food bowl")
+		dragging = false
+		get_parent().setDragToggle(false)
 
 ##penguin comes to eat food
 func _on_area_entered(area: Area2D) -> void:
@@ -92,15 +124,26 @@ func _on_area_entered(area: Area2D) -> void:
 				area.setState("Eat")
 				area.clearGoal()
 				
-func _get_drag_data(_Vector2):
+func _get_drag_data(atPos: Vector2) -> Control:
 	print("get drag data on a food bowl is being called")
-	$Food/FoodTexture.visible = false
+	#$Food/FoodTexture.visible = false
+	print("setting dragging to true")
+	dragging = true
 	get_parent().dragToggle()
-	var preview = TextureRect.new()
-	preview.texture = $Food/FoodTexture.texture
-	preview.size = $Food/FoodTexture.size
-	preview.scale.x = $Food/FoodTexture.scale.x
-	preview.scale.y = $Food/FoodTexture.scale.y
-	set_drag_preview(preview)
+	var previewTex = TextureRect.new()
+	previewTex.texture = $Food/FoodTexture.texture
+	previewTex.size = $Food/FoodTexture.size
+	previewTex.scale.x = $Food/FoodTexture.scale.x
+	previewTex.scale.y = $Food/FoodTexture.scale.y
+	#previewTex.position = get_parent().getCamera().get_local_mouse_position()
+	#previewTex.position.x = get_parent().getCamera().get_global_mouse_position().x - get_parent().currentDragDelta
+	
+	var preview = Control.new()
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	#preview.position = get_parent().getCamera().get_global_mouse_position()
+	preview.add_child(previewTex)
+	#preview.visible = false
+	#set_drag_preview(preview)
+	#add_child(preview)
 	return self
 		

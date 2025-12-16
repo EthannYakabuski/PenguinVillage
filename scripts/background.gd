@@ -18,6 +18,7 @@ var isDragging = false
 var levelUpDialog
 var dailyDialog
 var loading = true
+var currentDragDelta = 0
 
 var pressing = false
 var pressStartTime = 0.0
@@ -489,7 +490,7 @@ func updatePenguinAndFoodSavedArray():
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	print("penguin data has been updated and saved to the cloud")
-	#print(PlayerData.getData())
+	print(PlayerData.getData())
 
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish, penguin) -> void: 
@@ -721,7 +722,7 @@ func onPenguinDied() -> void:
 			
 ##EVENT LISTENERS##
 func _on_ice_berg_area_area_entered(area: Area2D) -> void:
-	print("something entered ice berg area")
+	#print("something entered ice berg area")
 	if area is Penguin:
 		area.setCurrentArea("Ice")
 		area.setState("Jump") 
@@ -729,7 +730,7 @@ func _on_ice_berg_area_area_entered(area: Area2D) -> void:
 		if not area.hasGoal(): 
 			area.setState("Idle")
 	elif area is Fish: 
-		print("a fish has come too close to the iceberg, finding a new goal")
+		#print("a fish has come too close to the iceberg, finding a new goal")
 		area.current_area = "Ice"
 		area.goal = area.goal * Vector2(-1,1)
 		#area.hasAGoal = false
@@ -740,7 +741,7 @@ func _on_ice_berg_area_area_exited(area: Area2D) -> void:
 		area.current_area = "Water"
 	
 func _on_water_area_area_entered(area: Area2D) -> void:
-	print("something entered water area")
+	#print("something entered water area")
 	if area is Penguin:
 		print("a penguin entered the water area")
 		area.setState("Dive")
@@ -777,10 +778,18 @@ func doesIceAreaHaveThisPenguin(penguin: Penguin) -> void:
 			penguin.setState("Idle")
 	
 ##GUI###
-func handleDrag(_pos: Vector2, delta: Vector2): 
+func handleDrag(_pos: Vector2, delta: Vector2):
+	#var originalCameraX = $Camera.position.x 
 	var proposedPosition = $Camera.position.x - delta.x
 	var clamped = clamp(proposedPosition, $Camera.limit_left, $Camera.limit_right)
 	$Camera.position.x += (clamped - $Camera.position.x)
+	#var finalCameraX = $Camera.position.x
+	#var finalActualDelta = originalCameraX - finalCameraX
+	#currentDragDelta = currentDragDelta + finalActualDelta
+	#print("setting current camera drag delta to " + str(currentDragDelta))
+	
+func getCamera() -> Camera2D: 
+	return $Camera
 	
 func updateGemsLabel(amount): 
 	$CanvasMenu/GemIndicator/GemLabel.text = str(amount)
@@ -832,8 +841,13 @@ func penguinIsDropped(_atPosition: Vector2):
 		calculateCurrentPenguinPrice()
 	isDragging = false
 	
-func existingBowlDropped(_atPosition: Vector2):
+func existingBowlDropped(_atPosition: Vector2, data):
 	print("an existing bowl has been dropped and received")
+	var bowlPosition = $Camera.get_global_mouse_position()
+	data.setLocation(bowlPosition.x, bowlPosition.y)
+	data.get_child(0).get_child(1).visible = true
+	updatePenguinAndFoodSavedArray()
+	isDragging = false
 
 func newBowlIsDropped(_atPosition: Vector2): 
 	print("a new food bowl has been dropped and recevied")
@@ -914,6 +928,9 @@ func foodIsDropped(atPosition: Vector2):
 func dragToggle(): 
 	print("there is an item being dragged from the sidebar")
 	isDragging = true
+	
+func setDragToggle(isDrag): 
+	isDragging = isDrag
 
 #var pressing = false
 #var pressStartTime = 0.0

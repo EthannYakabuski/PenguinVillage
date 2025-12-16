@@ -35,5 +35,5 @@ func _drop_data(at_position: Vector2, data) -> void:
 		newBowlDropped.emit(at_position)
 	elif data.controlItemType == "FoodBowlDrag": 
 		print("an existing food bowl is getting dragged to a new location")
-		existingBowlDragged.emit(at_position)
+		existingBowlDragged.emit(at_position, data)
 		
