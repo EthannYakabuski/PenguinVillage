@@ -202,7 +202,15 @@ func destroy_ad_view():
 
 func showMermaidButton(): 
 	$MermaidButton.visible = true
+
+func loadAchievements(): 
+	if $AchievementsClient: 
+		$AchievementsClient.load_achievements(true)
 	
+func loadLeaderboards(): 
+	if $LeaderboardsClient:
+		$LeaderboardsClient.show_all_leaderboards()
+		
 #code to launch a rewarded ad, triggered manually by player
 func _on_ad_button_pressed() -> void:
 	_rewarded_ad.full_screen_content_callback = _full_screen_content_callback

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ueb0gkdh6ns7"]
+[gd_scene load_steps=14 format=3 uid="uid://ueb0gkdh6ns7"]
 
 [ext_resource type="Texture2D" uid="uid://b2v2xg6yxm54v" path="res://images/sidebarBackground.png" id="1_0rqpi"]
 [ext_resource type="Script" path="res://scripts/sidebar.gd" id="1_el82r"]
@@ -9,6 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="7_7ff2g"]
 [ext_resource type="Texture2D" uid="uid://t5efekd3dbmr" path="res://images/FoodBowl_empty.png" id="7_eviax"]
 [ext_resource type="LabelSettings" uid="uid://b3ck03e0jsysg" path="res://fonts/inventoryFont.tres" id="9_3w23c"]
+[ext_resource type="Texture2D" uid="uid://ye7w48hhfp1s" path="res://images/achievements.png" id="10_6k4w3"]
+[ext_resource type="Texture2D" uid="uid://bwrfybw10tilh" path="res://images/leaderboards.png" id="11_ijsxb"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6dqut"]
 font_size = 75
@@ -34,7 +36,7 @@ z_index = -1
 layout_mode = 0
 offset_top = 205.0
 offset_right = 701.0
-offset_bottom = 2105.0
+offset_bottom = 2345.0
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("1_0rqpi")
 
@@ -202,7 +204,27 @@ label_settings = SubResource("LabelSettings_1fadc")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="AchievementsButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 1516.0
+offset_right = 1080.0
+offset_bottom = 2540.0
+scale = Vector2(0.15, 0.15)
+texture_normal = ExtResource("10_6k4w3")
+
+[node name="LeaderboardsButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 272.0
+offset_top = 1508.0
+offset_right = 1296.0
+offset_bottom = 2532.0
+scale = Vector2(0.16, 0.16)
+texture_normal = ExtResource("11_ijsxb")
+
 [connection signal="isDragging" from="SideBarBackground/PenguinPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
 [connection signal="isDragging" from="SideBarBackground/FoodBagPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
 [connection signal="isDragging" from="SideBarBackground/MedicinePurchaseControl" to="." method="_on_purchase_control_is_dragging"]
 [connection signal="isDragging" from="SideBarBackground/FoodBowlPurchaseControl2" to="." method="_on_purchase_control_is_dragging"]
+[connection signal="pressed" from="AchievementsButton" to="." method="_on_achievements_button_pressed"]
+[connection signal="pressed" from="LeaderboardsButton" to="." method="_on_leaderboards_button_pressed"]

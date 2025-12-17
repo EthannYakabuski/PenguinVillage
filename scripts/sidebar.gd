@@ -61,3 +61,11 @@ func setCurrentPenguinInventory(amount):
 func _on_purchase_control_is_dragging(_item: Control) -> void:
 	print("a purchase is being dragged")
 	isDraggingSignal.emit()
+
+func _on_achievements_button_pressed() -> void:
+	print("loading achievements")
+	get_parent().get_parent().loadAchievements()
+
+func _on_leaderboards_button_pressed() -> void:
+	print("loading leaderboards")
+	get_parent().get_parent().loadLeaderboards()
