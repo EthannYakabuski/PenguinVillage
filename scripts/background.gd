@@ -146,10 +146,10 @@ func dataLoaded():
 	$LoadingBar.visible = false
 	#$WaterArea.visible = true
 	#$IceBergArea.visible = true
+	updateLastLogin()
 	determineFish()
 	determineFood()
 	determinePenguins()
-	updateLastLogin()
 	updateGemsLabel(PlayerData.getData()["Gems"])
 	updateExperienceBar(PlayerData.getData()["Experience"])
 	determineDailyReward()
@@ -647,6 +647,13 @@ func givePlayerExperience(amount, location) -> void:
 			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFw")
 	PlayerData.setData(currData)
 	PlayerData.saveData()
+	
+func toggleFoodBowlAction(enabled: bool) -> void: 
+	for bowl in foodBowls:
+		if enabled:  
+			bowl.mouse_filter = Control.MOUSE_FILTER_STOP 
+		else: 
+			bowl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func levelUpPrizeAccepted(gemsGained, penguinsGained, foodGained, medicineGained) -> void: 
 	print("prize accepted in main")
