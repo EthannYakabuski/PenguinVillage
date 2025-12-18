@@ -205,7 +205,7 @@ func showMermaidButton():
 
 func loadAchievements(): 
 	if $AchievementsClient: 
-		$AchievementsClient.load_achievements(true)
+		$AchievementsClient.show_achievements()
 	
 func loadLeaderboards(): 
 	if $LeaderboardsClient:
