@@ -60,7 +60,6 @@ mouse_filter = 1
 script = ExtResource("6_d244v")
 
 [node name="CanvasMenu" type="CanvasLayer" parent="."]
-layer = 0
 visible = false
 
 [node name="SideBar" type="TextureButton" parent="CanvasMenu"]
