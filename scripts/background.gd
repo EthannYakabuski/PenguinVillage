@@ -405,6 +405,18 @@ func addPenguinAtLocation(atPosition: Vector2) -> void:
 	penguin.setSick(false)
 	penguins.push_back(penguin)
 	
+func getClosestFoodBowlToThisPenguin(penguin: Penguin) -> Food:
+	#assume closest bowl is bowl0
+	var currentClosestBowl = foodBowls[0]
+	var currentMinimumDistance = 999999999
+	for bowl in foodBowls: 
+		var thisBowlDistance = bowl.getLocation().distance_squared_to(penguin.global_position)
+		print(thisBowlDistance)
+		if thisBowlDistance < currentMinimumDistance: 
+			currentClosestBowl = bowl
+			currentMinimumDistance = thisBowlDistance
+	return currentClosestBowl
+	
 func determinePenguinIntelligence() -> void: 
 	#print("determining penguin intelligence")
 	for p in penguins:
@@ -416,7 +428,8 @@ func determinePenguinIntelligence() -> void:
 				p.setState("Slide")
 				onGivePenguinGoal(p)
 		if p.getState() == "Eat":
-			if p.food == 100 or foodBowls[0].foodLevel == 0:
+			var foodBowlToInteractWith = getClosestFoodBowlToThisPenguin(p)
+			if p.food == 100 or foodBowlToInteractWith.foodLevel == 0:
 				p.setState("Idle")
 				updatePenguinAndFoodSavedArray() 
 				pass
@@ -427,7 +440,7 @@ func determinePenguinIntelligence() -> void:
 					$Camera/FoodEatSound.play()
 				#Master Chef achievement
 				$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQBw", 1)
-				foodBowls[0].useFood(0.25)
+				foodBowlToInteractWith.useFood(0.25)
 			#onGivePenguinGoal(p)
 			
 ##FISH##

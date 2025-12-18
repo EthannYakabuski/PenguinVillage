@@ -51,6 +51,9 @@ func _process(_delta: float) -> void:
 func setLocation(x, y) -> void: 
 	position = Vector2(x, y)
 	
+func getLocation() -> Vector2: 
+	return global_position
+	
 func animateFood(): 
 	if(foodLevel >= 85): 
 		$Food/FoodTexture.texture = completelyFull
