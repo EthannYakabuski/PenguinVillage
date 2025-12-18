@@ -10,8 +10,16 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	pass
+	
+func foodBowlHeld(bowl) -> void: 
+	get_parent().foodBowlHeld(bowl)
+	
+func setControlItemType(type) -> void:
+	print("setting controlItemType to " + type) 
+	self.controlItemType = type
 
 func _get_drag_data(_Vector2):
+	print("get drag data is being called")
 	var preview = TextureRect.new()
 	var scaleX
 	var scaleY
@@ -26,11 +34,16 @@ func _get_drag_data(_Vector2):
 		texSize = $FoodBagPurchase.size
 		scaleX = $FoodBagPurchase.scale.x - 0.10
 		scaleY = $FoodBagPurchase.scale.y - 0.10
-	else: 
+	elif controlItemType == "Medicine": 
 		preview.texture = $MedicinePurchase.texture 
 		texSize = $MedicinePurchase.size
 		scaleX = $MedicinePurchase.scale.x - 0.10
 		scaleY = $MedicinePurchase.scale.y - 0.10
+	elif controlItemType == "FoodBowl":
+		preview.texture = $FoodBowlPurchase.texture 
+		texSize = $FoodBowlPurchase.size
+		scaleX = $FoodBowlPurchase.scale.x - 0.10
+		scaleY = $FoodBowlPurchase.scale.y - 0.10
 	preview.size = texSize
 	preview.scale.x = scaleX
 	preview.scale.y = scaleY

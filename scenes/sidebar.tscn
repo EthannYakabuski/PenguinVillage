@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ueb0gkdh6ns7"]
+[gd_scene load_steps=14 format=3 uid="uid://ueb0gkdh6ns7"]
 
 [ext_resource type="Texture2D" uid="uid://b2v2xg6yxm54v" path="res://images/sidebarBackground.png" id="1_0rqpi"]
 [ext_resource type="Script" path="res://scripts/sidebar.gd" id="1_el82r"]
@@ -7,10 +7,22 @@
 [ext_resource type="Texture2D" uid="uid://cqxpncoxu8bx6" path="res://images/FoodBag.png" id="4_wn62s"]
 [ext_resource type="Texture2D" uid="uid://b763me5ubg5yl" path="res://images/Medicine.png" id="5_p4h8o"]
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="7_7ff2g"]
+[ext_resource type="Texture2D" uid="uid://t5efekd3dbmr" path="res://images/FoodBowl_empty.png" id="7_eviax"]
+[ext_resource type="LabelSettings" uid="uid://b3ck03e0jsysg" path="res://fonts/inventoryFont.tres" id="9_3w23c"]
+[ext_resource type="Texture2D" uid="uid://ye7w48hhfp1s" path="res://images/achievements.png" id="10_6k4w3"]
+[ext_resource type="Texture2D" uid="uid://bwrfybw10tilh" path="res://images/leaderboards.png" id="11_ijsxb"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6dqut"]
 font_size = 75
 font_color = Color(0.811765, 0.27451, 0.960784, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_1fadc"]
+font_size = 47
+font_color = Color(0.227451, 0.560784, 0.847059, 1)
+outline_size = 10
+outline_color = Color(0.227451, 0.45098, 1, 1)
+shadow_size = 19
+shadow_color = Color(0.227451, 0.372549, 0.905882, 1)
 
 [node name="Background2" type="Control"]
 z_index = -2
@@ -23,8 +35,8 @@ script = ExtResource("1_el82r")
 z_index = -1
 layout_mode = 0
 offset_top = 205.0
-offset_right = 500.0
-offset_bottom = 1705.0
+offset_right = 701.0
+offset_bottom = 2345.0
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("1_0rqpi")
 
@@ -78,6 +90,23 @@ offset_bottom = 2460.29
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("5_p4h8o")
 
+[node name="FoodBowlPurchaseControl2" type="Control" parent="SideBarBackground"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 3.0
+offset_bottom = 1.0
+script = ExtResource("3_knuv3")
+controlItemType = "FoodBowl"
+
+[node name="FoodBowlPurchase" type="TextureRect" parent="SideBarBackground/FoodBowlPurchaseControl2"]
+layout_mode = 0
+offset_left = 84.2857
+offset_top = 1368.57
+offset_right = 1108.28
+offset_bottom = 2392.58
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("7_eviax")
+
 [node name="PenguinGemIndicator" type="Sprite2D" parent="."]
 position = Vector2(79, 479)
 scale = Vector2(0.045, 0.045)
@@ -90,6 +119,11 @@ texture = ExtResource("7_7ff2g")
 
 [node name="MedicineIndicator" type="Sprite2D" parent="."]
 position = Vector2(83, 1133)
+scale = Vector2(0.045, 0.045)
+texture = ExtResource("7_7ff2g")
+
+[node name="FoodBowlGemIndicator" type="Sprite2D" parent="."]
+position = Vector2(83, 1436)
 scale = Vector2(0.045, 0.045)
 texture = ExtResource("7_7ff2g")
 
@@ -120,6 +154,77 @@ offset_bottom = 1286.0
 text = "75"
 label_settings = SubResource("LabelSettings_6dqut")
 
+[node name="FoowBowlLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 116.0
+offset_top = 1383.0
+offset_right = 287.0
+offset_bottom = 1588.0
+text = "100"
+label_settings = SubResource("LabelSettings_6dqut")
+
+[node name="PenguinInventoryLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 284.0
+offset_right = 484.0
+offset_bottom = 421.0
+label_settings = ExtResource("9_3w23c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FoodInventoryLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 586.0
+offset_right = 486.0
+offset_bottom = 723.0
+label_settings = ExtResource("9_3w23c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MedicineInventoryLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 939.0
+offset_right = 491.0
+offset_bottom = 1076.0
+label_settings = ExtResource("9_3w23c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InventoryInventoryLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 246.0
+offset_top = 193.0
+offset_right = 491.0
+offset_bottom = 330.0
+text = "Inventory"
+label_settings = SubResource("LabelSettings_1fadc")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AchievementsButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 1516.0
+offset_right = 1080.0
+offset_bottom = 2540.0
+scale = Vector2(0.15, 0.15)
+texture_normal = ExtResource("10_6k4w3")
+
+[node name="LeaderboardsButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 272.0
+offset_top = 1508.0
+offset_right = 1296.0
+offset_bottom = 2532.0
+scale = Vector2(0.16, 0.16)
+texture_normal = ExtResource("11_ijsxb")
+
 [connection signal="isDragging" from="SideBarBackground/PenguinPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
 [connection signal="isDragging" from="SideBarBackground/FoodBagPurchaseControl" to="." method="_on_purchase_control_is_dragging"]
 [connection signal="isDragging" from="SideBarBackground/MedicinePurchaseControl" to="." method="_on_purchase_control_is_dragging"]
+[connection signal="isDragging" from="SideBarBackground/FoodBowlPurchaseControl2" to="." method="_on_purchase_control_is_dragging"]
+[connection signal="pressed" from="AchievementsButton" to="." method="_on_achievements_button_pressed"]
+[connection signal="pressed" from="LeaderboardsButton" to="." method="_on_leaderboards_button_pressed"]
