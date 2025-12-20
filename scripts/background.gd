@@ -129,9 +129,14 @@ func admobConfiguration() -> void:
 	var onInitializationCompleteListener = OnInitializationCompleteListener.new()
 	onInitializationCompleteListener.on_initialization_complete = onAdInitializationComplete
 	var request_configuration = RequestConfiguration.new()
-	MobileAds.initialize(onInitializationCompleteListener)
+	#Comply with Google Play families policy and COPPA
+	request_configuration.tag_for_child_directed_treatment = RequestConfiguration.TagForChildDirectedTreatment.TRUE
+	#Keeps ad content rating safe for kids
+	request_configuration.max_ad_content_rating = RequestConfiguration.MAX_AD_CONTENT_RATING_G
+	
 	if MobileAds: 
 		MobileAds.set_request_configuration(request_configuration)
+		MobileAds.initialize(onInitializationCompleteListener)
 		
 #called after admob init is complete, loads a banner ad
 func onAdInitializationComplete(_status : InitializationStatus): 
@@ -170,8 +175,11 @@ func dataLoaded():
 		_rewarded_ad = rewarded_ad
 		on_user_earned_reward_listener.on_user_earned_reward = on_user_earned_reward
 		showMermaidButton()
-		
-	RewardedAdLoader.new().load(unit_id, AdRequest.new(), rewarded_ad_load_callback)
+	
+	var ad_request = AdRequest.new()
+	#makes sure that served ads are not personalized to the user
+	ad_request.extras["npa"] = "1"
+	RewardedAdLoader.new().load(unit_id, ad_request, rewarded_ad_load_callback)
 	
 func makeEverythingVisible() -> void: 
 	$CanvasMenu.visible = true
