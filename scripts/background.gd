@@ -96,15 +96,15 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 12, "day": 15, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 12, "day": 21, "weekday": 0, "hour": 7, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": true}],
+			"Penguins": [{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 75, "sick": true}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 12, "day": 15, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 12, "day": 21, "weekday": 0, "hour": 7, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -117,7 +117,7 @@ func androidAuthentication() -> void:
 		var jsonStringDummyData = JSON.stringify(dummyData)
 		var jsonParsedDummyData = JSON.parse_string(jsonStringDummyData)
 		PlayerData.setData(jsonParsedDummyData)
-		updateLastLogin()
+		#updateLastLogin()
 		#simulates connection time to load players saved data in a real device
 		await get_tree().create_timer(2.0).timeout
 		emit_signal("dataHasLoaded")
@@ -129,9 +129,14 @@ func admobConfiguration() -> void:
 	var onInitializationCompleteListener = OnInitializationCompleteListener.new()
 	onInitializationCompleteListener.on_initialization_complete = onAdInitializationComplete
 	var request_configuration = RequestConfiguration.new()
-	MobileAds.initialize(onInitializationCompleteListener)
+	#Comply with Google Play families policy and COPPA
+	request_configuration.tag_for_child_directed_treatment = RequestConfiguration.TagForChildDirectedTreatment.TRUE
+	#Keeps ad content rating safe for kids
+	request_configuration.max_ad_content_rating = RequestConfiguration.MAX_AD_CONTENT_RATING_G
+	
 	if MobileAds: 
 		MobileAds.set_request_configuration(request_configuration)
+		MobileAds.initialize(onInitializationCompleteListener)
 		
 #called after admob init is complete, loads a banner ad
 func onAdInitializationComplete(_status : InitializationStatus): 
@@ -170,8 +175,11 @@ func dataLoaded():
 		_rewarded_ad = rewarded_ad
 		on_user_earned_reward_listener.on_user_earned_reward = on_user_earned_reward
 		showMermaidButton()
-		
-	RewardedAdLoader.new().load(unit_id, AdRequest.new(), rewarded_ad_load_callback)
+	
+	var ad_request = AdRequest.new()
+	#makes sure that served ads are not personalized to the user
+	ad_request.extras["npa"] = "1"
+	RewardedAdLoader.new().load(unit_id, ad_request, rewarded_ad_load_callback)
 	
 func makeEverythingVisible() -> void: 
 	$CanvasMenu.visible = true
@@ -844,9 +852,8 @@ func updateGemsLabel(amount):
 	$CanvasMenu/GemIndicator/GemLabel.text = str(amount)
 	
 func updateExperienceBar(_experience): 
-	$CanvasMenu/LevelLabel.text = str(PlayerData.getData()["PlayerLevel"])
-	var currentExperience = int(PlayerData.getData()["LevelExperience"])
-	$CanvasMenu/LevelBar.value = currentExperience
+	var totalExperienceRequiredForLevelUp = calculateExperienceRequiredForLevelUp(PlayerData.getData()["PlayerLevel"])
+	updateExperienceBarLocal(str(PlayerData.getData()["PlayerLevel"]), PlayerData.getData()["LevelExperience"], totalExperienceRequiredForLevelUp)
 	
 func updateExperienceBarLocal(level, currentExperience, totalExperienceRequired):
 	print("level " + level)
