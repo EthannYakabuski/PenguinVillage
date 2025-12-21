@@ -96,15 +96,15 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 12, "day": 15, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 12, "day": 21, "weekday": 0, "hour": 7, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": false},{"health": 50, "food": 75, "sick": true}],
+			"Penguins": [{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 75, "sick": true}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 12, "day": 15, "weekday": 2, "hour": 17, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 12, "day": 21, "weekday": 0, "hour": 7, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -117,7 +117,7 @@ func androidAuthentication() -> void:
 		var jsonStringDummyData = JSON.stringify(dummyData)
 		var jsonParsedDummyData = JSON.parse_string(jsonStringDummyData)
 		PlayerData.setData(jsonParsedDummyData)
-		updateLastLogin()
+		#updateLastLogin()
 		#simulates connection time to load players saved data in a real device
 		await get_tree().create_timer(2.0).timeout
 		emit_signal("dataHasLoaded")
@@ -852,9 +852,8 @@ func updateGemsLabel(amount):
 	$CanvasMenu/GemIndicator/GemLabel.text = str(amount)
 	
 func updateExperienceBar(_experience): 
-	$CanvasMenu/LevelLabel.text = str(PlayerData.getData()["PlayerLevel"])
-	var currentExperience = int(PlayerData.getData()["LevelExperience"])
-	$CanvasMenu/LevelBar.value = currentExperience
+	var totalExperienceRequiredForLevelUp = calculateExperienceRequiredForLevelUp(PlayerData.getData()["PlayerLevel"])
+	updateExperienceBarLocal(str(PlayerData.getData()["PlayerLevel"]), PlayerData.getData()["LevelExperience"], totalExperienceRequiredForLevelUp)
 	
 func updateExperienceBarLocal(level, currentExperience, totalExperienceRequired):
 	print("level " + level)
