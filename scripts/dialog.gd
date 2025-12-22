@@ -16,7 +16,7 @@ func _process(_delta: float) -> void:
 	pass
 	
 func setDisplayedLevel(level, doubleLevel) -> void: 
-	$LevelIndicator/LevelLabel.text = str(level)
+	$LevelIndicator/LevelLabel.text = str(int(level))
 	setDisplayedPrize(level, doubleLevel)
 
 func _on_accept_prize_pressed() -> void:
@@ -29,7 +29,7 @@ func setDisplayedPrize(level, doubleLevel) -> void:
 	gemsGained = level*10
 	if doubleLevel: 
 		gemsGained = gemsGained + 10*(level-1)
-	$Gems/GemAmountLabel.text = str(gemsGained)
+	$Gems/GemAmountLabel.text = str(int(gemsGained))
 	$Gems.visible = true
 	var randomPrize = randi_range(1,100)
 	if not doubleLevel:

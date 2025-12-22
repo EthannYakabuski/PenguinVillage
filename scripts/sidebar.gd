@@ -17,7 +17,7 @@ func _process(_delta: float) -> void:
 
 func setCurrentPenguinCost(amount, noPenguins): 
 	currentPenguinCost = amount
-	$PenguinGemLabel.text = str(amount)
+	$PenguinGemLabel.text = str(int(amount))
 	if amount == 0: 
 		$PenguinGemIndicator.visible = false
 		$PenguinGemLabel.visible = false
@@ -31,7 +31,7 @@ func setCurrentPenguinCost(amount, noPenguins):
 	
 func setCurrentMedicineCost(amount): 
 	currentMedicineCost = amount
-	$MedicineGemLabel.text = str(amount)
+	$MedicineGemLabel.text = str(int(amount))
 	if amount == 0: 
 		$MedicineIndicator.visible = false
 		$MedicineGemLabel.visible = false
@@ -41,7 +41,7 @@ func setCurrentMedicineCost(amount):
 
 func setCurrentFoodCost(amount): 
 	currentFoodCost = amount
-	$FoodGemLabel.text = str(amount)
+	$FoodGemLabel.text = str(int(amount))
 	if amount == 0: 
 		$FoodGemIndicator.visible = false
 		$FoodGemLabel.visible = false
@@ -50,13 +50,13 @@ func setCurrentFoodCost(amount):
 		$FoodGemLabel.visible = true
 	
 func setCurrentFoodInventory(amount): 
-	$FoodInventoryLabel.text = str(amount)
+	$FoodInventoryLabel.text = str(int(amount))
 	
 func setCurrentMedicineInventory(amount): 
-	$MedicineInventoryLabel.text = str(amount)
+	$MedicineInventoryLabel.text = str(int(amount))
 	
 func setCurrentPenguinInventory(amount): 
-	$PenguinInventoryLabel.text = str(amount)
+	$PenguinInventoryLabel.text = str(int(amount))
 
 func _on_purchase_control_is_dragging(_item: Control) -> void:
 	print("a purchase is being dragged")

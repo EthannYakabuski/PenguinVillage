@@ -849,7 +849,7 @@ func getCamera() -> Camera2D:
 	return $Camera
 	
 func updateGemsLabel(amount): 
-	$CanvasMenu/GemIndicator/GemLabel.text = str(amount)
+	$CanvasMenu/GemIndicator/GemLabel.text = str(int(amount))
 	
 func updateExperienceBar(_experience): 
 	var totalExperienceRequiredForLevelUp = calculateExperienceRequiredForLevelUp(PlayerData.getData()["PlayerLevel"])
@@ -859,7 +859,7 @@ func updateExperienceBarLocal(level, currentExperience, totalExperienceRequired)
 	print("level " + level)
 	print("currentExperience " + str(currentExperience))
 	print("totalExperienceRequired " + str(totalExperienceRequired))
-	$CanvasMenu/LevelLabel.text = level
+	$CanvasMenu/LevelLabel.text = str(int(level))
 	var currentPercentage = (float(currentExperience) / float(totalExperienceRequired)) * 100
 	$CanvasMenu/LevelBar.value = currentPercentage
 	print("setting experience bar to " + str(currentPercentage))
