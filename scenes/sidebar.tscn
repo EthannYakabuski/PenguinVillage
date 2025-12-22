@@ -1,9 +1,9 @@
 [gd_scene load_steps=14 format=3 uid="uid://ueb0gkdh6ns7"]
 
 [ext_resource type="Texture2D" uid="uid://b2v2xg6yxm54v" path="res://images/sidebarBackground.png" id="1_0rqpi"]
-[ext_resource type="Script" path="res://scripts/sidebar.gd" id="1_el82r"]
+[ext_resource type="Script" uid="uid://dd7vmek37laor" path="res://scripts/sidebar.gd" id="1_el82r"]
 [ext_resource type="Texture2D" uid="uid://1yeca3tyhlgs" path="res://images/penguin_walk01@2x.png" id="3_bm44j"]
-[ext_resource type="Script" path="res://scripts/sidebaritem.gd" id="3_knuv3"]
+[ext_resource type="Script" uid="uid://csysxiqjbknco" path="res://scripts/sidebaritem.gd" id="3_knuv3"]
 [ext_resource type="Texture2D" uid="uid://cqxpncoxu8bx6" path="res://images/FoodBag.png" id="4_wn62s"]
 [ext_resource type="Texture2D" uid="uid://b763me5ubg5yl" path="res://images/Medicine.png" id="5_p4h8o"]
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="7_7ff2g"]
@@ -91,7 +91,6 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("5_p4h8o")
 
 [node name="FoodBowlPurchaseControl2" type="Control" parent="SideBarBackground"]
-layout_mode = 3
 anchors_preset = 0
 offset_right = 3.0
 offset_bottom = 1.0

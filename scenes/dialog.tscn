@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://buc0p1qkdasqx" path="res://images/modalDialog.png" id="1_eqik4"]
 [ext_resource type="Texture2D" uid="uid://i2g1ovlp7slw" path="res://images/levelIcon.png" id="2_2o1u8"]
-[ext_resource type="Script" path="res://scripts/dialog.gd" id="2_xtxmx"]
+[ext_resource type="Script" uid="uid://c5ovcdrjt50hd" path="res://scripts/dialog.gd" id="2_xtxmx"]
 [ext_resource type="Texture2D" uid="uid://mryjgy2oakmu" path="res://images/modalButton.png" id="3_85uyg"]
 [ext_resource type="LabelSettings" uid="uid://db1v37x52a55k" path="res://fonts/modalDialog_font.tres" id="5_31t1s"]
 [ext_resource type="Texture2D" uid="uid://cqxpncoxu8bx6" path="res://images/FoodBag.png" id="6_1al6y"]
