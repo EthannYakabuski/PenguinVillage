@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3 uid="uid://bgyh7acvnlkn4"]
+
+[ext_resource type="Texture2D" uid="uid://buc0p1qkdasqx" path="res://images/modalDialog.png" id="1_htubt"]
+[ext_resource type="Texture2D" uid="uid://bcri4gjkd73hg" path="res://images/tutorialAvatar.png" id="2_3w77r"]
+[ext_resource type="Script" uid="uid://dlcvfn1qeynkv" path="res://scenes/tutorial_dialog.gd" id="2_o6neg"]
+[ext_resource type="Texture2D" uid="uid://mryjgy2oakmu" path="res://images/modalButton.png" id="3_3w77r"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_htubt"]
+font_size = 60
+font_color = Color(0.227451, 0.560784, 0.847059, 1)
+outline_size = 10
+outline_color = Color(0.227451, 0.45098, 1, 1)
+shadow_size = 19
+shadow_color = Color(0.227451, 0.372549, 0.905882, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_o6neg"]
+font_size = 270
+font_color = Color(0, 0.352941, 0.643137, 1)
+shadow_size = 17
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="TutorialDialog" type="Sprite2D"]
+position = Vector2(824, 386)
+scale = Vector2(0.515, 0.515)
+texture = ExtResource("1_htubt")
+script = ExtResource("2_o6neg")
+
+[node name="NPC" type="Sprite2D" parent="."]
+position = Vector2(333.98062, -231.06798)
+scale = Vector2(4.425, 4.425)
+texture = ExtResource("2_3w77r")
+
+[node name="DialogText" type="Label" parent="."]
+offset_left = -419.41748
+offset_top = -161.16505
+offset_right = 419.4176
+offset_bottom = 116.50487
+text = "Hey, nice to meet you!"
+label_settings = SubResource("LabelSettings_htubt")
+
+[node name="AcceptButton" type="TextureButton" parent="."]
+offset_left = -104.85436
+offset_top = 73.78643
+offset_right = 919.1456
+offset_bottom = 1097.7864
+scale = Vector2(0.215, 0.215)
+texture_normal = ExtResource("3_3w77r")
+
+[node name="AcceptButtonLabel" type="Label" parent="AcceptButton"]
+layout_mode = 0
+offset_left = 316.09857
+offset_top = 325.12985
+offset_right = 701.0986
+offset_bottom = 694.1299
+text = "OK"
+label_settings = SubResource("LabelSettings_o6neg")
