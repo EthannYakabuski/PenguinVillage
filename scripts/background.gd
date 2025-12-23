@@ -159,6 +159,7 @@ func dataLoaded():
 	updateExperienceBar(PlayerData.getData()["Experience"])
 	determineDailyReward()
 	calculateCurrentPenguinPrice()
+	spawnInitialGemsAndFish()
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
 		_rewarded_ad = null
@@ -379,6 +380,12 @@ func updatePenguinsFoodLevelsSinceLastLogin(days: int, hours: int, minutes: int)
 	var foodRequired = int((days * 30) + (hours * 1.25) + (minutes * 0.17))
 	print("foodRequired: " + str(foodRequired))
 	currentPenguinFoodReqSinceLastLogin = foodRequired
+
+func spawnInitialGemsAndFish() -> void: 
+	for i in range(5): 
+		_on_fish_spawn_timer_timeout()
+	for i in range(5): 
+		_on_gem_spawn_timer_timeout()
 
 func determinePenguins() -> void: 
 	print("loading penguins")
