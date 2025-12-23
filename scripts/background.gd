@@ -650,22 +650,22 @@ func givePlayerExperience(amount, location) -> void:
 	#Total Experience leaderboard score submit
 	$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQBQ", currentTotalExperience)
 	currData["LevelExperience"] = currentLevelExperience
-	match currentPlayerLevel:
-		5,6:
-			#level 5 achievement
-			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEw")
-		10,11:
-			#level 10 achievement
-			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFA")
-		20,21:
-			#level 20 achievement 
-			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFQ")
-		30:
-			#level 30 achievement
-			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFg")
-		50: 
-			#level 50 achievement
-			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFw")
+	if currentPlayerLevel >= 50: 
+		#level 50 achievement
+		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFw")
+	if currentPlayerLevel >= 30: 
+		#level 30 achievement
+		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFg")
+	if currentPlayerLevel >= 20: 
+		#level 20 achievement 
+		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFQ")
+	if currentPlayerLevel >= 10: 
+		#level 10 achievement
+		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQFA")
+	if currentPlayerLevel >= 5: 
+		#level 5 achievement
+		$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEw")
+	
 	PlayerData.setData(currData)
 	PlayerData.saveData()
 	
