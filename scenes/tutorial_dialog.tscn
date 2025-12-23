@@ -14,31 +14,33 @@ shadow_size = 19
 shadow_color = Color(0.227451, 0.372549, 0.905882, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_o6neg"]
-font_size = 270
+font_size = 250
 font_color = Color(0, 0.352941, 0.643137, 1)
 shadow_size = 17
 shadow_color = Color(0, 0, 0, 1)
 
 [node name="TutorialDialog" type="Sprite2D"]
-position = Vector2(824, 386)
-scale = Vector2(0.515, 0.515)
+position = Vector2(686, 449.99997)
+scale = Vector2(0.85, 0.85)
 texture = ExtResource("1_htubt")
 script = ExtResource("2_o6neg")
 
 [node name="NPC" type="Sprite2D" parent="."]
-position = Vector2(333.98062, -231.06798)
+position = Vector2(351.76468, 160.00008)
 scale = Vector2(4.425, 4.425)
 texture = ExtResource("2_3w77r")
 
 [node name="DialogText" type="Label" parent="."]
 offset_left = -419.41748
-offset_top = -161.16505
+offset_top = -297.64703
 offset_right = 419.4176
-offset_bottom = 116.50487
+offset_bottom = 245.88239
 text = "Hey, nice to meet you!"
 label_settings = SubResource("LabelSettings_htubt")
+autowrap_mode = 2
 
 [node name="AcceptButton" type="TextureButton" parent="."]
+visible = false
 offset_left = -104.85436
 offset_top = 73.78643
 offset_right = 919.1456
@@ -48,9 +50,11 @@ texture_normal = ExtResource("3_3w77r")
 
 [node name="AcceptButtonLabel" type="Label" parent="AcceptButton"]
 layout_mode = 0
-offset_left = 316.09857
-offset_top = 325.12985
-offset_right = 701.0986
-offset_bottom = 694.1299
-text = "OK"
+offset_left = 207.72195
+offset_top = 334.16125
+offset_right = 829.7219
+offset_bottom = 703.16125
+text = "Next"
 label_settings = SubResource("LabelSettings_o6neg")
+
+[connection signal="pressed" from="AcceptButton" to="." method="_on_accept_button_pressed"]

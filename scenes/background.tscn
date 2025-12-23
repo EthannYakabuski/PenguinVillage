@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://dytu4e5k0syu1"]
+[gd_scene load_steps=38 format=3 uid="uid://dytu4e5k0syu1"]
 
 [ext_resource type="Script" uid="uid://chywn5cq1rorc" path="res://scripts/background.gd" id="1_31116"]
 [ext_resource type="PackedScene" uid="uid://duea6pilwy37k" path="res://scenes/penguin.tscn" id="2_cvr2x"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://cjxsjd0aa5bcx" path="res://addons/GodotPlayGameServices/scripts/snapshots/snapshots_client.gd" id="8_nxtdk"]
 [ext_resource type="PackedScene" uid="uid://daqo8ec4i8q21" path="res://scenes/daily_reward_dialog.tscn" id="9_83l73"]
 [ext_resource type="Texture2D" uid="uid://cq3olmajdse2h" path="res://images/hamburger.png" id="9_jbf0t"]
+[ext_resource type="PackedScene" uid="uid://bgyh7acvnlkn4" path="res://scenes/tutorial_dialog.tscn" id="10_3t0vo"]
 [ext_resource type="PackedScene" uid="uid://c75bsuwtfqfj8" path="res://scenes/gem_shard.tscn" id="10_tfkbv"]
 [ext_resource type="LabelSettings" uid="uid://x3tsvw6k2ueq" path="res://fonts/gemLabelFont.tres" id="12_h8weg"]
 [ext_resource type="Texture2D" uid="uid://yjwrgf8rgrk1" path="res://images/Gem.png" id="13_nhuns"]
@@ -34,6 +35,7 @@
 [ext_resource type="AudioStream" uid="uid://bujw703a2wsf3" path="res://sounds/442943__qubodup__level-up.wav" id="26_pwmgm"]
 [ext_resource type="Texture2D" uid="uid://b66oc2ftw7uso" path="res://images/bg-icebergs-1.png" id="31_6p3yc"]
 [ext_resource type="SpriteFrames" uid="uid://cot0itv4g4eta" path="res://animations/penguin_frames.tres" id="31_yskkx"]
+[ext_resource type="Texture2D" uid="uid://b0npuhp48toey" path="res://images/tutorialPointer.png" id="35_7uc8l"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_665uo"]
 font_size = 60
@@ -48,6 +50,7 @@ experienceShard_scene = ExtResource("6_jha60")
 sidebar = ExtResource("5_457nt")
 modalDialog = ExtResource("8_3ywcs")
 modalDailyDialog = ExtResource("9_83l73")
+tutorialDialog = ExtResource("10_3t0vo")
 gemShard_scene = ExtResource("10_tfkbv")
 
 [node name="DropControl" type="Control" parent="."]
@@ -238,6 +241,11 @@ position = Vector2(322, -395)
 scale = Vector2(4.61, 4.61)
 sprite_frames = ExtResource("31_yskkx")
 animation = &"Walk"
+
+[node name="TutorialFinger" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(0.605, 0.605)
+texture = ExtResource("35_7uc8l")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="pressed" from="CanvasMenu/SideBar" to="." method="_on_side_bar_pressed"]
