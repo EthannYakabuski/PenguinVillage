@@ -401,6 +401,10 @@ func checkTutorialProgress() -> void:
 		6: 
 			print("tutorial completed")
 			tutDialog.makeButtonVisible()
+			var currData = PlayerData.getData()
+			currData["TutorialCompleted"] = true
+			PlayerData.setData(currData)
+			PlayerData.saveData()
 			tutDialog.setDialogText("Nicely done, you have completed the tutorial!")
 		
 ##PENGUINS##
