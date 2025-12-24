@@ -20,6 +20,15 @@ func setData(data):
 func getData(): 
 	return currentData
 	
-func saveData(): 
-	var dataToSave = JSON.stringify(currentData)
-	snapshotsClient.save_game("VillageData", "player data for Penguin Village", dataToSave.to_utf8_buffer())
+func saveData(context = null):
+	if context == null:  
+		var dataToSave = JSON.stringify(currentData)
+		snapshotsClient.save_game("VillageData", "player data for Penguin Village", dataToSave.to_utf8_buffer())
+	else: 
+		var dataToSave = JSON.stringify(currentData)
+		snapshotsClient.save_game("VillageData", "player data for Penguin Village", dataToSave.to_utf8_buffer())
+		snapshotsClient.game_saved.connect(
+			func(_is_saved: bool, _save_data_name: String, _save_data_description: String): 
+				print("saved data callback completed")
+				context.emit_signal("dataHasLoaded")
+		)

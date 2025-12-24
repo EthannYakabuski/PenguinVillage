@@ -316,7 +316,7 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 	var newLoginTime = Time.get_datetime_dict_from_system()
 	lastLogin_global = newLoginTime
 	if is_authenticated: 
-		$Android_SavedGames.load_game("VillageData", false)
+		$Android_SavedGames.load_game("VillageData", true)
 		$Android_SavedGames.game_loaded.connect(
 		func(snapshot: PlayGamesSnapshot): 
 			if !snapshot: 
@@ -343,17 +343,46 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 					"TutorialProgress": 0,
 				}
 				PlayerData.setData(newPlayerData)
-				emit_signal("dataHasLoaded")
+				PlayerData.saveData(self)
+				#emit_signal("dataHasLoaded")
 				var jsonNewPlayerData = JSON.stringify(newPlayerData)
 				print(jsonNewPlayerData)
-				PlayerData.saveData()
 			else: 
 				print("saved game data found, loading into memory")
 				var dataToParse = snapshot.content.get_string_from_utf8()
-				print(dataToParse)
-				currentData = JSON.parse_string(dataToParse)
-				PlayerData.setData(currentData)
-				emit_signal("dataHasLoaded")
+				if dataToParse == "" or dataToParse == null: 
+					print("saved game not found, creating new player data")
+					#create new player data
+					print("newLoginTime: " + str(newLoginTime))
+					var newPlayerData = {
+						"Penguins": [{"health": 100, "food": 75, "sick": false}],
+						"Food": [{"amount": 25, "locationX": 300, "locationY": 1150}],
+						"Fish": [],
+						"Decorations": [], 
+						"Inventory": [1,1,1],
+						"AreasUnlocked": [false, false, false, false, false],
+						"LastLogin": newLoginTime,
+						"DailyRewards": [false, false, false, false, false, false, false],
+						"DailyRewardsClaimed" : [false, false, false, false, false, false, false],
+						"Gems": 150,
+						"Coins": 50,
+						"Experience": 0, 
+						"LevelExperience": 0,
+						"PlayerLevel": 1, 
+						"FishCaught": 0,
+						"TutorialCompleted": false,
+						"TutorialProgress": 0,
+					}
+					PlayerData.setData(newPlayerData)
+					PlayerData.saveData(self)
+					#emit_signal("dataHasLoaded")
+					var jsonNewPlayerData = JSON.stringify(newPlayerData)
+					print(jsonNewPlayerData)
+				else: 
+					print(dataToParse)
+					currentData = JSON.parse_string(dataToParse)
+					PlayerData.setData(currentData)
+					emit_signal("dataHasLoaded")
 	)
 	
 ##updates players last login time
