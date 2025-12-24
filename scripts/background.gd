@@ -387,7 +387,7 @@ func checkTutorialProgress() -> void:
 			tutDialog.setDialogText("That's it! You can also catch fish. Hop in the water and see if you can catch a fish! Catching fish will fill up your food bowl.")
 		2: 
 			print("tutorial eat food")
-			tutDialog.setDialogText("Making your penguin move around will use its energy. Move the penguin beside the food bowl to make it eat and restore its energy!")
+			tutDialog.setDialogText("Good catch! Making your penguin move around will use its energy. Move the penguin beside the food bowl to make it eat and restore its energy!")
 		3: 
 			print("tutorial collect a gem")
 			tutDialog.moveYAxisDown()
