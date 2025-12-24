@@ -245,6 +245,7 @@ func on_user_earned_reward(rewarded_item : RewardedItem):
 	#once we are using an actual unit-id from admob, the rewarded_item.amount and rewarded_item.type values are set in the admob console
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 50
+	addGemIndicator(50, $MermaidButton.position)
 	#Gem master incremental achievement increment
 	$AchievementsClient.increment_achievement("CgkI8tzE1rMcEAIQDQ", 50)
 	#Highest Gem Count leaderboard score submit
