@@ -961,19 +961,21 @@ func penguinIsDropped(_atPosition: Vector2):
 		$Camera/PurchaseSound.play()
 		givePlayerExperience(100, globalPosition)
 		var currentPenguinAmount = penguins.size()
-		match currentPenguinAmount: 
-			2: 
-				#Penguin Hobbyist achievement
-				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDw")
-			5: 
-				#Penguin entrepreneur achievement
-				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEA")
-			10: 
-				#Penguin master achievement
-				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEQ")
-			20: 
-				#Penguin whisperer achievement
-				$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDg")
+		#if there is significant load on the system at the time of purchase, the achievement unlock might not go through
+		#by using if's instead of match, we can guarantee that the player will unlock the previous achievement at least during
+		#their next penguin purchase to avoid the situation where an achievement is unobtainable without restarting progress or killing penguins
+		if currentPenguinAmount >= 2: 
+			#Penguin Hobbyist achievement
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDw")
+		if currentPenguinAmount >= 5: 
+			#Penguin entrepreneur achievement
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEA")
+		if currentPenguinAmount >= 10: 
+			#Penguin master achievement
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQEQ")
+		if currentPenguinAmount >= 20: 
+			#Penguin whisperer achievement
+			$AchievementsClient.unlock_achievement("CgkI8tzE1rMcEAIQDg")
 		#Biggest Penguin Population leaderboard score submit
 		$LeaderboardsClient.submit_score("CgkI8tzE1rMcEAIQAw", currentPenguinAmount)
 		updatePenguinAndFoodSavedArray()
