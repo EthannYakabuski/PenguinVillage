@@ -29,7 +29,8 @@ func _on_accept_button_pressed() -> void:
 		$DialogText.text = "The object of the game is to see how many penguins you can collect!"
 	elif pressedAmount == 1: 
 		$DialogText.text = "If you let a penguin be sick for too long, it may pass away"
+	elif pressedAmount == 2: 
+		$DialogText.text = "Don't forget to come back everyday to feed them, and collect your daily rewards. See ya later!"
 	else: 
-		$DialogText.text = "Don't forget to come back everyday to feed them, and collect your daily rewards! See ya later"
 		self.visible = false
 	pressedAmount = pressedAmount + 1

@@ -396,7 +396,8 @@ func checkTutorialProgress() -> void:
 			tutDialog.setDialogText("Good job! Let's use some of those gems to purchase a new penguin. Click the menu button in the top left corner to activate the sidebar")
 		5: 
 			print("tutorial heal sick penguin")
-			tutDialog.setDialogText("Good work! It looks like one of our penguins is sick (painted green). Can you drag and drop the medicine icon to heal the penguin?")
+			penguins[0].setSick(true)
+			tutDialog.setDialogText("Good work! Now it looks like one of your penguins is sick (painted green). Can you drag and drop the medicine icon to heal the penguin?")
 			tutDialog.moveYAxisUp()
 		6: 
 			print("tutorial completed")
