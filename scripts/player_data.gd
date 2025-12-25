@@ -21,10 +21,13 @@ func getData():
 	return currentData
 	
 func saveData(context = null):
-	if context == null:  
+	print("saving data")
+	if context == null: 
+		print("saving data without context set") 
 		var dataToSave = JSON.stringify(currentData)
 		snapshotsClient.save_game("VillageData", "player data for Penguin Village", dataToSave.to_utf8_buffer())
 	else: 
+		print("saving data with context")
 		var dataToSave = JSON.stringify(currentData)
 		snapshotsClient.save_game("VillageData", "player data for Penguin Village", dataToSave.to_utf8_buffer())
 		snapshotsClient.game_saved.connect(
