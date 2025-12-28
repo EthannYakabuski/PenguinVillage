@@ -125,7 +125,7 @@ func setSick(s, isTutorialPenguin = false) -> void:
 	if s: 
 		$PenguinSprite.modulate = Color(0.5,1.0,0.5,1.0) 
 		$HealthIndicator.tint_progress = Color(0.5,1.0,0.5,1.0)
-		if addedToScene: 
+		if addedToScene and not isTutorialPenguin: 
 			$SickTimer.start()
 	else: 
 		$PenguinSprite.modulate = Color(1.0,1.0,1.0,1.0) 
