@@ -442,6 +442,9 @@ func checkTutorialProgress() -> void:
 			print("tutorial buy new food bowl")
 			tutDialog.setDialogText("Your penguin thanks you. You can also buy new food bowls for the enclosure. Open the side bar again, and drag and drop a new food bowl now!")
 		8: 
+			print("tutorial move food bowls")
+			tutDialog.setDialogText("Once you have placed a food bowl, you can move it wherever you would like. Click and hold a food bowl, then drag and drop it somewhere else.")
+		9: 
 			print("tutorial completed")
 			tutDialog.makeButtonVisible()
 			var currData = PlayerData.getData()
@@ -1028,6 +1031,9 @@ func penguinIsDropped(_atPosition: Vector2):
 	
 func existingBowlDropped(_atPosition: Vector2, data):
 	print("an existing bowl has been dropped and received")
+	if not isTutorialCompleted and int(tutorialProgress) == 8: 
+		updateTutorialProgress(9)
+		checkTutorialProgress()
 	var bowlPosition = $Camera.get_global_mouse_position()
 	data.setLocation(bowlPosition.x, bowlPosition.y)
 	data.get_child(0).get_child(1).visible = true
