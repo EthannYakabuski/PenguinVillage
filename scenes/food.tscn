@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://cfat6v41erd3c"]
 
-[ext_resource type="Script" path="res://scripts/food.gd" id="1_1lr0t"]
+[ext_resource type="Script" uid="uid://bqnihuk2jo8c" path="res://scripts/food.gd" id="1_1lr0t"]
 [ext_resource type="Texture2D" uid="uid://rudg8m0ft730" path="res://images/FoodBowl_almostFull.png" id="2_8pb8h"]
 [ext_resource type="Texture2D" uid="uid://brq6a8sqx8sie" path="res://images/FoodBowl_almostEmpty.png" id="2_awags"]
 [ext_resource type="Texture2D" uid="uid://t5efekd3dbmr" path="res://images/FoodBowl_empty.png" id="2_jlmmg"]

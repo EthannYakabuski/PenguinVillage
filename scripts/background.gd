@@ -166,12 +166,12 @@ func dataLoaded():
 	determinePenguins()
 	updateGemsLabel(PlayerData.getData()["Gems"])
 	updateExperienceBar(PlayerData.getData()["Experience"])
-	determineDailyReward()
 	calculateCurrentPenguinPrice()
 	print("calling spawn initial gems and fish")
 	spawnInitialGemsAndFish()
 	print("calling checkTutorial progress")
 	checkTutorialProgress()
+	determineDailyReward()
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
 		_rewarded_ad = null
@@ -267,12 +267,16 @@ func determineDailyReward():
 	print("determining daily reward it is weekday: " + str(weekday))
 	if not PlayerData.getData()["DailyRewardsClaimed"][weekday]: 
 		print("todays daily reward has not yet been claimed")
-		$DailyRewardBox.visible = true
+		if isTutorialCompleted: 
+			$DailyRewardBox.visible = true
 	else: 
 		print("todays daily reward has already been claimed")
 	
 func _on_daily_reward_box_pressed() -> void:
 	print("collecting daily reward from clicking on the present")
+	if not isTutorialCompleted and tutorialProgress == 8: 
+		updateTutorialProgress(9)
+		checkTutorialProgress()
 	$Camera/GemCollectedSound.play()
 	dailyDialog = modalDailyDialog.instantiate()
 	dailyDialog.rewardAccepted.connect(levelUpPrizeAccepted)
@@ -411,47 +415,52 @@ func checkTutorialProgress() -> void:
 		print("starting tutorial")
 		if not tutDialog: 
 			tutDialog = tutorialDialog.instantiate()
-	match int(tutorialProgress):
-		0: 
-			print("tutorial move penguin")
-			penguins[0].setLocation(400,1000)
-			tutDialog.setDialogText("Hey, my name is Jerome, nice to meet you. I will teach you the basic controls for just a few minutes. Try clicking on a penguin to activate it")
 			$CanvasMenu.add_child(tutDialog)
-		1: 
-			print("tutorial move camera")
-			tutDialog.setDialogText("You can move the camera left and right. Drag on the screen in either direction to move the camera around. Try it now!")
-		2: 
-			print("tutorial catch fish")
-			tutDialog.setDialogText("That's it! You can also catch fish. Hop in the water and see if you can catch a fish! Catching fish will fill up your food bowl.")
-		3: 
-			print("tutorial eat food")
-			tutDialog.setDialogText("Good catch! Making your penguin move around will use its energy. Move the penguin beside the food bowl to make it eat and restore its energy!")
-		4: 
-			print("tutorial collect a gem")
-			tutDialog.moveYAxisDown()
-			tutDialog.setDialogText("Well done! You can also use your penguins to collect purple gems, which are used to purchase helpful items. Can you collect a gem?")
-		5: 
-			print("tutorial buy new penguin")
-			tutDialog.setDialogText("Good job! Let's use some of those gems to purchase a new penguin. Click the menu button in the top left corner to activate the sidebar")
-		6: 
-			print("tutorial heal sick penguin")
-			penguins[0].setSick(true, true)
-			tutDialog.setDialogText("Good work! Now it looks like one of your penguins is sick (painted green). Can you drag and drop the medicine icon to heal the penguin?")
-			tutDialog.moveYAxisUp()
-		7: 
-			print("tutorial buy new food bowl")
-			tutDialog.setDialogText("Your penguin thanks you. You can also buy new food bowls for the enclosure. Open the side bar again, and drag and drop a new food bowl now!")
-		8: 
-			print("tutorial move food bowls")
-			tutDialog.setDialogText("Once you have placed a food bowl, you can move it wherever you would like. Click and hold a food bowl, then drag and drop it somewhere else.")
-		9: 
-			print("tutorial completed")
-			tutDialog.makeButtonVisible()
-			var currData = PlayerData.getData()
-			currData["TutorialCompleted"] = true
-			PlayerData.setData(currData)
-			PlayerData.saveData()
-			tutDialog.setDialogText("Nicely done, you have completed the tutorial!")
+		match int(tutorialProgress):
+			0: 
+				print("tutorial move penguin")
+				penguins[0].setLocation(400,1000)
+				tutDialog.setDialogText("Hey, my name is Jerome, nice to meet you. I will teach you the basic controls for just a few minutes. Try clicking on a penguin to activate it.")
+			1: 
+				print("tutorial move camera")
+				tutDialog.setDialogText("You can move the camera left and right. Drag on the screen in either direction to move the camera around. Try it now!")
+			2: 
+				print("tutorial catch fish")
+				tutDialog.setDialogText("That's it! You can also catch fish. Hop in the water and see if you can catch a fish! Catching fish will fill up your food bowl.")
+			3: 
+				print("tutorial eat food")
+				tutDialog.setDialogText("Good catch! Making your penguin move around will use its energy. Move the penguin beside the food bowl to make it eat and restore its energy!")
+			4: 
+				print("tutorial collect a gem")
+				tutDialog.moveYAxisDown()
+				tutDialog.setDialogText("Well done! You can also use your penguins to collect purple gems, which are used to purchase helpful items. Can you collect a gem?")
+			5: 
+				print("tutorial buy new penguin")
+				tutDialog.setDialogText("Good job! Let's use some of those gems to purchase a new penguin. Click the menu button in the top left corner to activate the sidebar.")
+			6: 
+				print("tutorial heal sick penguin")
+				penguins[0].setSick(true, true)
+				tutDialog.setDialogText("Good work! Now it looks like one of your penguins is sick (painted green). Can you drag and drop the medicine icon to heal the penguin?")
+				tutDialog.moveYAxisUp()
+			7: 
+				print("tutorial buy new food bowl")
+				tutDialog.setDialogText("Your penguin thanks you. You can also buy new food bowls for the enclosure. Open the side bar again, and drag and drop a new food bowl now!")
+			8: 
+				print("tutorial for daily reward box")
+				tutDialog.setDialogText("Each day, you will see a present available. Keep your 'daily' streak going for additional bonuses! Find it and click to collect your daily prize now!")
+				if not $DailyRewardBox.visible: 
+					$DailyRewardBox.visible = true
+			9: 
+				print("tutorial move food bowls")
+				tutDialog.setDialogText("Once you have placed a food bowl, you can move it wherever you would like. Click and hold a food bowl, then drag and drop it somewhere else.")
+			10: 
+				print("tutorial completed")
+				tutDialog.makeButtonVisible()
+				var currData = PlayerData.getData()
+				currData["TutorialCompleted"] = true
+				PlayerData.setData(currData)
+				PlayerData.saveData()
+				tutDialog.setDialogText("Nicely done, you have completed the tutorial!")
 		
 ##PENGUINS##
 func calculatePenguinDamageFromLastLogin(lastLogin, currentLogin): 
@@ -987,8 +996,9 @@ func updateExperienceBarLocal(level, currentExperience, totalExperienceRequired)
 	print("setting experience bar to " + str(currentPercentage))
 	
 func penguinIsDropped(_atPosition: Vector2): 
+	_on_side_bar_pressed()
 	print("penguin has been dropped and received")
-	if not isTutorialCompleted and int(tutorialProgress) == 5: 
+	if not isTutorialCompleted and int(tutorialProgress) == int(5): 
 		updateTutorialProgress(6)
 		checkTutorialProgress()
 	#spawn the penguin into the scene + animation
@@ -1031,9 +1041,6 @@ func penguinIsDropped(_atPosition: Vector2):
 	
 func existingBowlDropped(_atPosition: Vector2, data):
 	print("an existing bowl has been dropped and received")
-	if not isTutorialCompleted and int(tutorialProgress) == 8: 
-		updateTutorialProgress(9)
-		checkTutorialProgress()
 	var bowlPosition = $Camera.get_global_mouse_position()
 	data.setLocation(bowlPosition.x, bowlPosition.y)
 	data.get_child(0).get_child(1).visible = true
@@ -1042,9 +1049,7 @@ func existingBowlDropped(_atPosition: Vector2, data):
 
 func newBowlIsDropped(_atPosition: Vector2): 
 	print("a new food bowl has been dropped and recevied")
-	if not isTutorialCompleted and int(tutorialProgress) == 7: 
-		updateTutorialProgress(8)
-		checkTutorialProgress()
+	_on_side_bar_pressed()
 	var bowlPosition = $Camera.get_global_mouse_position()
 	if PlayerData.getData()["Gems"] >= 100:
 		spendGems(100)
@@ -1060,10 +1065,14 @@ func newBowlIsDropped(_atPosition: Vector2):
 		print(currData)
 		PlayerData.setData(currData)
 		PlayerData.saveData()
+	if not isTutorialCompleted and int(tutorialProgress) == int(7): 
+		updateTutorialProgress(8)
+		checkTutorialProgress()
 	isDragging = false
 
 func medicineIsDropped(_atPosition: Vector2): 
 	print("medicine has been dropped and received")
+	_on_side_bar_pressed()
 	#find the closest sick penguin
 	#heal the penguin + play animation
 	#update the players cloud data
@@ -1104,6 +1113,7 @@ func medicineIsDropped(_atPosition: Vector2):
 	
 func foodIsDropped(atPosition: Vector2): 
 	print("food has been dropped and received")
+	_on_side_bar_pressed()
 	#feed all penguins + play animation
 	if PlayerData.getData()["Gems"] >= currentFoodPrice:
 		#if the current food price is 0, the player is using a free food bag from their inventory

@@ -41,7 +41,6 @@ disabled = true
 
 [node name="SickTimer" type="Timer" parent="."]
 wait_time = 3.0
-autostart = true
 
 [node name="FootStepSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_viuhh")
