@@ -117,7 +117,7 @@ func addFood(f) -> void:
 		food = 100
 	$HealthIndicator.value = food
 	
-func setSick(s) -> void:
+func setSick(s, isTutorialPenguin = false) -> void:
 	print("setting penguin sick to " + str(s))
 	#if the penguin is currently sick, and is being cured, restore its speed value 
 	if sick && !s: 

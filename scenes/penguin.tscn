@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://duea6pilwy37k"]
 
-[ext_resource type="Script" path="res://scripts/penguin.gd" id="1_3yk4v"]
+[ext_resource type="Script" uid="uid://csh5u7sp7yekt" path="res://scripts/penguin.gd" id="1_3yk4v"]
 [ext_resource type="SpriteFrames" uid="uid://cot0itv4g4eta" path="res://animations/penguin_frames.tres" id="2_28ggd"]
 [ext_resource type="Texture2D" uid="uid://4r8eqqvlhwge" path="res://images/Heart_Outline.png" id="2_lxwiq"]
 [ext_resource type="Texture2D" uid="uid://24neilo8phk3" path="res://images/Heart_Progress_Texture.png" id="3_162y3"]

@@ -88,7 +88,8 @@ func _process(_delta: float) -> void:
 	if(loading): 
 		$LoadingBar.value = $LoadingBar.value + 1
 	
-func playCorrectMusic() -> void: 
+func playCorrectMusic() -> void:
+	print("inside play correct music") 
 	if lastLogin_global["hour"] >= 17:
 		$Camera/MainMusic_Evening.play()
 	else:
@@ -100,15 +101,15 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 12, "day": 21, "weekday": 0, "hour": 7, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 12, "day": 27, "weekday": 7, "hour": 20, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 75, "sick": true}],
+			"Penguins": [{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 12, "day": 21, "weekday": 0, "hour": 7, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 12, "day": 27, "weekday": 7, "hour": 20, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -129,7 +130,7 @@ func androidAuthentication() -> void:
 		emit_signal("dataHasLoaded")
 	else: 
 		print("Plugin found")
-	googleSignInClient.is_authenticated()
+		googleSignInClient.is_authenticated()
 	
 func admobConfiguration() -> void: 
 	var onInitializationCompleteListener = OnInitializationCompleteListener.new()
@@ -153,6 +154,7 @@ func onAdInitializationComplete(_status : InitializationStatus):
 func dataLoaded(): 
 	print("loading screen")
 	loading = false
+	print("calling make everything visible")
 	makeEverythingVisible()
 	$LoadingBar.visible = false
 	#$WaterArea.visible = true
@@ -160,12 +162,15 @@ func dataLoaded():
 	updateLastLogin()
 	determineFish()
 	determineFood()
+	print("calling determine penguins")
 	determinePenguins()
 	updateGemsLabel(PlayerData.getData()["Gems"])
 	updateExperienceBar(PlayerData.getData()["Experience"])
 	determineDailyReward()
 	calculateCurrentPenguinPrice()
+	print("calling spawn initial gems and fish")
 	spawnInitialGemsAndFish()
+	print("calling checkTutorial progress")
 	checkTutorialProgress()
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
@@ -316,9 +321,10 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 	var newLoginTime = Time.get_datetime_dict_from_system()
 	lastLogin_global = newLoginTime
 	if is_authenticated: 
-		$Android_SavedGames.load_game("VillageData", false)
-		$Android_SavedGames.game_loaded.connect(
-		func(snapshot: PlayGamesSnapshot): 
+		googleSnapshotClient.load_game("PenguinVillageData", false)
+		googleSnapshotClient.game_loaded.connect(
+		func(snapshot: PlayGamesSnapshot):
+			print("inside game_loaded callback") 
 			if !snapshot: 
 				print("saved game not found, creating new player data")
 				#create new player data
@@ -343,15 +349,15 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 					"TutorialProgress": 0,
 				}
 				PlayerData.setData(newPlayerData)
-				PlayerData.saveData(self)
-				#emit_signal("dataHasLoaded")
+				PlayerData.saveData()
+				emit_signal("dataHasLoaded")
 				var jsonNewPlayerData = JSON.stringify(newPlayerData)
 				print(jsonNewPlayerData)
 			else: 
 				print("saved game data found, loading into memory")
 				var dataToParse = snapshot.content.get_string_from_utf8()
-				if dataToParse == "" or dataToParse == null: 
-					print("saved game not found, creating new player data")
+				if dataToParse == "" or dataToParse == null or snapshot.content.size() == 0 or snapshot.content.is_empty(): 
+					print("saved game not found, creating new player data (empty snapshot)")
 					#create new player data
 					print("newLoginTime: " + str(newLoginTime))
 					var newPlayerData = {
@@ -374,8 +380,8 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 						"TutorialProgress": 0,
 					}
 					PlayerData.setData(newPlayerData)
-					PlayerData.saveData(self)
-					#emit_signal("dataHasLoaded")
+					PlayerData.saveData()
+					emit_signal("dataHasLoaded")
 					var jsonNewPlayerData = JSON.stringify(newPlayerData)
 					print(jsonNewPlayerData)
 				else: 
@@ -400,7 +406,7 @@ func updateLastLogin() -> void:
 
 func checkTutorialProgress() -> void: 
 	isTutorialCompleted = PlayerData.getData()["TutorialCompleted"]
-	if not isTutorialCompleted: 
+	if isTutorialCompleted == false: 
 		tutorialProgress = PlayerData.getData()["TutorialProgress"]
 		print("starting tutorial")
 		if not tutDialog: 
@@ -426,7 +432,7 @@ func checkTutorialProgress() -> void:
 			tutDialog.setDialogText("Good job! Let's use some of those gems to purchase a new penguin. Click the menu button in the top left corner to activate the sidebar")
 		5: 
 			print("tutorial heal sick penguin")
-			penguins[0].setSick(true)
+			penguins[0].setSick(true, true)
 			tutDialog.setDialogText("Good work! Now it looks like one of your penguins is sick (painted green). Can you drag and drop the medicine icon to heal the penguin?")
 			tutDialog.moveYAxisUp()
 		6: 

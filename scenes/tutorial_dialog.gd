@@ -23,7 +23,6 @@ func makeButtonVisible() -> void:
 func _process(delta: float) -> void:
 	pass
 
-
 func _on_accept_button_pressed() -> void:
 	if pressedAmount == 0: 
 		$DialogText.text = "The object of the game is to see how many penguins you can collect!"
