@@ -88,7 +88,8 @@ func _process(_delta: float) -> void:
 	if(loading): 
 		$LoadingBar.value = $LoadingBar.value + 1
 	
-func playCorrectMusic() -> void: 
+func playCorrectMusic() -> void:
+	print("inside play correct music") 
 	if lastLogin_global["hour"] >= 17:
 		$Camera/MainMusic_Evening.play()
 	else:
@@ -100,15 +101,15 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 12, "day": 21, "weekday": 0, "hour": 7, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2025, "month": 12, "day": 27, "weekday": 7, "hour": 20, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
-			"Penguins": [{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 75, "sick": true}],
+			"Penguins": [{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
 			"Fish": [],
 			"Decorations": [], 
 			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 12, "day": 21, "weekday": 0, "hour": 7, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2025, "month": 12, "day": 27, "weekday": 7, "hour": 20, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -129,7 +130,7 @@ func androidAuthentication() -> void:
 		emit_signal("dataHasLoaded")
 	else: 
 		print("Plugin found")
-	googleSignInClient.is_authenticated()
+		googleSignInClient.is_authenticated()
 	
 func admobConfiguration() -> void: 
 	var onInitializationCompleteListener = OnInitializationCompleteListener.new()
@@ -153,6 +154,7 @@ func onAdInitializationComplete(_status : InitializationStatus):
 func dataLoaded(): 
 	print("loading screen")
 	loading = false
+	print("calling make everything visible")
 	makeEverythingVisible()
 	$LoadingBar.visible = false
 	#$WaterArea.visible = true
@@ -160,13 +162,16 @@ func dataLoaded():
 	updateLastLogin()
 	determineFish()
 	determineFood()
+	print("calling determine penguins")
 	determinePenguins()
 	updateGemsLabel(PlayerData.getData()["Gems"])
 	updateExperienceBar(PlayerData.getData()["Experience"])
-	determineDailyReward()
 	calculateCurrentPenguinPrice()
+	print("calling spawn initial gems and fish")
 	spawnInitialGemsAndFish()
+	print("calling checkTutorial progress")
 	checkTutorialProgress()
+	determineDailyReward()
 	if _rewarded_ad: 
 		_rewarded_ad.destroy()
 		_rewarded_ad = null
@@ -262,12 +267,16 @@ func determineDailyReward():
 	print("determining daily reward it is weekday: " + str(weekday))
 	if not PlayerData.getData()["DailyRewardsClaimed"][weekday]: 
 		print("todays daily reward has not yet been claimed")
-		$DailyRewardBox.visible = true
+		if isTutorialCompleted: 
+			$DailyRewardBox.visible = true
 	else: 
 		print("todays daily reward has already been claimed")
 	
 func _on_daily_reward_box_pressed() -> void:
 	print("collecting daily reward from clicking on the present")
+	if not isTutorialCompleted and tutorialProgress == 8: 
+		updateTutorialProgress(9)
+		checkTutorialProgress()
 	$Camera/GemCollectedSound.play()
 	dailyDialog = modalDailyDialog.instantiate()
 	dailyDialog.rewardAccepted.connect(levelUpPrizeAccepted)
@@ -316,9 +325,10 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 	var newLoginTime = Time.get_datetime_dict_from_system()
 	lastLogin_global = newLoginTime
 	if is_authenticated: 
-		$Android_SavedGames.load_game("VillageData", false)
-		$Android_SavedGames.game_loaded.connect(
-		func(snapshot: PlayGamesSnapshot): 
+		googleSnapshotClient.load_game("PenguinVillageData", false)
+		googleSnapshotClient.game_loaded.connect(
+		func(snapshot: PlayGamesSnapshot):
+			print("inside game_loaded callback") 
 			if !snapshot: 
 				print("saved game not found, creating new player data")
 				#create new player data
@@ -343,17 +353,46 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 					"TutorialProgress": 0,
 				}
 				PlayerData.setData(newPlayerData)
+				PlayerData.saveData()
 				emit_signal("dataHasLoaded")
 				var jsonNewPlayerData = JSON.stringify(newPlayerData)
 				print(jsonNewPlayerData)
-				PlayerData.saveData()
 			else: 
 				print("saved game data found, loading into memory")
 				var dataToParse = snapshot.content.get_string_from_utf8()
-				print(dataToParse)
-				currentData = JSON.parse_string(dataToParse)
-				PlayerData.setData(currentData)
-				emit_signal("dataHasLoaded")
+				if dataToParse == "" or dataToParse == null or snapshot.content.size() == 0 or snapshot.content.is_empty(): 
+					print("saved game not found, creating new player data (empty snapshot)")
+					#create new player data
+					print("newLoginTime: " + str(newLoginTime))
+					var newPlayerData = {
+						"Penguins": [{"health": 100, "food": 75, "sick": false}],
+						"Food": [{"amount": 25, "locationX": 300, "locationY": 1150}],
+						"Fish": [],
+						"Decorations": [], 
+						"Inventory": [1,1,1],
+						"AreasUnlocked": [false, false, false, false, false],
+						"LastLogin": newLoginTime,
+						"DailyRewards": [false, false, false, false, false, false, false],
+						"DailyRewardsClaimed" : [false, false, false, false, false, false, false],
+						"Gems": 150,
+						"Coins": 50,
+						"Experience": 0, 
+						"LevelExperience": 0,
+						"PlayerLevel": 1, 
+						"FishCaught": 0,
+						"TutorialCompleted": false,
+						"TutorialProgress": 0,
+					}
+					PlayerData.setData(newPlayerData)
+					PlayerData.saveData()
+					emit_signal("dataHasLoaded")
+					var jsonNewPlayerData = JSON.stringify(newPlayerData)
+					print(jsonNewPlayerData)
+				else: 
+					print(dataToParse)
+					currentData = JSON.parse_string(dataToParse)
+					PlayerData.setData(currentData)
+					emit_signal("dataHasLoaded")
 	)
 	
 ##updates players last login time
@@ -371,43 +410,57 @@ func updateLastLogin() -> void:
 
 func checkTutorialProgress() -> void: 
 	isTutorialCompleted = PlayerData.getData()["TutorialCompleted"]
-	if not isTutorialCompleted: 
+	if isTutorialCompleted == false: 
 		tutorialProgress = PlayerData.getData()["TutorialProgress"]
 		print("starting tutorial")
 		if not tutDialog: 
 			tutDialog = tutorialDialog.instantiate()
-	match int(tutorialProgress):
-		0: 
-			print("tutorial move penguin")
-			penguins[0].setLocation(400,1000)
-			tutDialog.setDialogText("Hey, my name is Jerome, nice to meet you. I will teach you the basic controls for just a few minutes. Try clicking on a penguin to activate it")
 			$CanvasMenu.add_child(tutDialog)
-		1: 
-			print("tutorial catch fish")
-			tutDialog.setDialogText("That's it! You can also catch fish. Hop in the water and see if you can catch a fish! Catching fish will fill up your food bowl.")
-		2: 
-			print("tutorial eat food")
-			tutDialog.setDialogText("Good catch! Making your penguin move around will use its energy. Move the penguin beside the food bowl to make it eat and restore its energy!")
-		3: 
-			print("tutorial collect a gem")
-			tutDialog.moveYAxisDown()
-			tutDialog.setDialogText("Well done! You can also use your penguins to collect purple gems, which are used to purchase helpful items. Can you collect a gem?")
-		4: 
-			print("tutorial buy new penguin")
-			tutDialog.setDialogText("Good job! Let's use some of those gems to purchase a new penguin. Click the menu button in the top left corner to activate the sidebar")
-		5: 
-			print("tutorial heal sick penguin")
-			penguins[0].setSick(true)
-			tutDialog.setDialogText("Good work! Now it looks like one of your penguins is sick (painted green). Can you drag and drop the medicine icon to heal the penguin?")
-			tutDialog.moveYAxisUp()
-		6: 
-			print("tutorial completed")
-			tutDialog.makeButtonVisible()
-			var currData = PlayerData.getData()
-			currData["TutorialCompleted"] = true
-			PlayerData.setData(currData)
-			PlayerData.saveData()
-			tutDialog.setDialogText("Nicely done, you have completed the tutorial!")
+		match int(tutorialProgress):
+			0: 
+				print("tutorial move penguin")
+				penguins[0].setLocation(400,1000)
+				tutDialog.setDialogText("Hey, my name is Jerome, nice to meet you. I will teach you the basic controls for just a few minutes. Try clicking on a penguin to activate it.")
+			1: 
+				print("tutorial move camera")
+				tutDialog.setDialogText("You can move the camera left and right. Drag on the screen in either direction to move the camera around. Try it now!")
+			2: 
+				print("tutorial catch fish")
+				tutDialog.setDialogText("That's it! You can also catch fish. Hop in the water and see if you can catch a fish! Catching fish will fill up your food bowl.")
+			3: 
+				print("tutorial eat food")
+				tutDialog.setDialogText("Good catch! Making your penguin move around will use its energy. Move the penguin beside the food bowl to make it eat and restore its energy!")
+			4: 
+				print("tutorial collect a gem")
+				tutDialog.moveYAxisDown()
+				tutDialog.setDialogText("Well done! You can also use your penguins to collect purple gems, which are used to purchase helpful items. Can you collect a gem?")
+			5: 
+				print("tutorial buy new penguin")
+				tutDialog.setDialogText("Good job! Let's use some of those gems to purchase a new penguin. Click the menu button in the top left corner to activate the sidebar.")
+			6: 
+				print("tutorial heal sick penguin")
+				penguins[0].setSick(true, true)
+				tutDialog.setDialogText("Good work! Now it looks like one of your penguins is sick (painted green). Can you drag and drop the medicine icon to heal the penguin?")
+				tutDialog.moveYAxisUp()
+			7: 
+				print("tutorial buy new food bowl")
+				tutDialog.setDialogText("Your penguin thanks you. You can also buy new food bowls for the enclosure. Open the side bar again, and drag and drop a new food bowl now!")
+			8: 
+				print("tutorial for daily reward box")
+				tutDialog.setDialogText("Each day, you will see a present available. Keep your 'daily' streak going for additional bonuses! Find it and click to collect your daily prize now!")
+				if not $DailyRewardBox.visible: 
+					$DailyRewardBox.visible = true
+			9: 
+				print("tutorial move food bowls")
+				tutDialog.setDialogText("Once you have placed a food bowl, you can move it wherever you would like. Click and hold a food bowl, then drag and drop it somewhere else.")
+			10: 
+				print("tutorial completed")
+				tutDialog.makeButtonVisible()
+				var currData = PlayerData.getData()
+				currData["TutorialCompleted"] = true
+				PlayerData.setData(currData)
+				PlayerData.saveData()
+				tutDialog.setDialogText("Nicely done, you have completed the tutorial!")
 		
 ##PENGUINS##
 func calculatePenguinDamageFromLastLogin(lastLogin, currentLogin): 
@@ -506,8 +559,8 @@ func determinePenguinIntelligence() -> void:
 				pass
 			else:
 				p.addFood(1)
-				if not isTutorialCompleted and int(tutorialProgress) == 2:
-					updateTutorialProgress(3)
+				if not isTutorialCompleted and int(tutorialProgress) == 3:
+					updateTutorialProgress(4)
 					checkTutorialProgress()
 				p.stopStepSound()
 				if not $Camera/FoodEatSound.playing: 
@@ -595,8 +648,8 @@ func updatePenguinAndFoodSavedArray():
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish, penguin) -> void: 
 	print("fish collected")
-	if not isTutorialCompleted and int(tutorialProgress) == 1: 
-		updateTutorialProgress(2)
+	if not isTutorialCompleted and int(tutorialProgress) == 2: 
+		updateTutorialProgress(3)
 		checkTutorialProgress()
 	$Camera/FishCaughtSound.play()
 	if fish in fishes: 
@@ -637,8 +690,8 @@ func onFishCollected(fish, penguin) -> void:
 	
 func onGemCollected(gem) -> void: 
 	print("gem collected")
-	if not isTutorialCompleted and int(tutorialProgress) == 3: 
-		updateTutorialProgress(4)
+	if not isTutorialCompleted and int(tutorialProgress) == 4: 
+		updateTutorialProgress(5)
 		checkTutorialProgress()
 	if gem in gems: 
 		gems.erase(gem)
@@ -912,6 +965,9 @@ func doesIceAreaHaveThisPenguin(penguin: Penguin) -> void:
 ##GUI###
 func handleDrag(_pos: Vector2, delta: Vector2):
 	#var originalCameraX = $Camera.position.x 
+	if not isTutorialCompleted and tutorialProgress == int(1): 
+		updateTutorialProgress(2)
+		checkTutorialProgress()
 	var proposedPosition = $Camera.position.x - delta.x
 	var clamped = clamp(proposedPosition, $Camera.limit_left, $Camera.limit_right)
 	$Camera.position.x += (clamped - $Camera.position.x)
@@ -940,9 +996,10 @@ func updateExperienceBarLocal(level, currentExperience, totalExperienceRequired)
 	print("setting experience bar to " + str(currentPercentage))
 	
 func penguinIsDropped(_atPosition: Vector2): 
+	_on_side_bar_pressed()
 	print("penguin has been dropped and received")
-	if not isTutorialCompleted and int(tutorialProgress) == 4: 
-		updateTutorialProgress(5)
+	if not isTutorialCompleted and int(tutorialProgress) == int(5): 
+		updateTutorialProgress(6)
 		checkTutorialProgress()
 	#spawn the penguin into the scene + animation
 	#update the players cloud data
@@ -992,6 +1049,7 @@ func existingBowlDropped(_atPosition: Vector2, data):
 
 func newBowlIsDropped(_atPosition: Vector2): 
 	print("a new food bowl has been dropped and recevied")
+	_on_side_bar_pressed()
 	var bowlPosition = $Camera.get_global_mouse_position()
 	if PlayerData.getData()["Gems"] >= 100:
 		spendGems(100)
@@ -1007,10 +1065,14 @@ func newBowlIsDropped(_atPosition: Vector2):
 		print(currData)
 		PlayerData.setData(currData)
 		PlayerData.saveData()
+	if not isTutorialCompleted and int(tutorialProgress) == int(7): 
+		updateTutorialProgress(8)
+		checkTutorialProgress()
 	isDragging = false
 
 func medicineIsDropped(_atPosition: Vector2): 
 	print("medicine has been dropped and received")
+	_on_side_bar_pressed()
 	#find the closest sick penguin
 	#heal the penguin + play animation
 	#update the players cloud data
@@ -1027,8 +1089,8 @@ func medicineIsDropped(_atPosition: Vector2):
 		print("we found the closest sick penguin, checking gem amount available")
 		if PlayerData.getData()["Gems"] >= currentMedicinePrice: 
 			print("we found the closest sick penguin, clearing status")
-			if not isTutorialCompleted and int(tutorialProgress) == 5:
-				updateTutorialProgress(6)
+			if not isTutorialCompleted and int(tutorialProgress) == 6:
+				updateTutorialProgress(7)
 				checkTutorialProgress()
 			closestPenguin.setSick(false)
 			closestPenguin.addFood(25)
@@ -1051,6 +1113,7 @@ func medicineIsDropped(_atPosition: Vector2):
 	
 func foodIsDropped(atPosition: Vector2): 
 	print("food has been dropped and received")
+	_on_side_bar_pressed()
 	#feed all penguins + play animation
 	if PlayerData.getData()["Gems"] >= currentFoodPrice:
 		#if the current food price is 0, the player is using a free food bag from their inventory
@@ -1252,7 +1315,7 @@ func calculateCurrentPenguinPrice() -> void:
 
 func _on_side_bar_pressed() -> void:
 	print("side bar pressed")
-	if not isTutorialCompleted and int(tutorialProgress) == 4: 
+	if not isTutorialCompleted and int(tutorialProgress) == 5: 
 		tutDialog.setDialogText("Good! Now drag and drop the penguin icon somewhere on the iceberg!")
 	if not sidebarActive:
 		var currData = PlayerData.getData()

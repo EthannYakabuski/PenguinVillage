@@ -117,7 +117,7 @@ func addFood(f) -> void:
 		food = 100
 	$HealthIndicator.value = food
 	
-func setSick(s) -> void:
+func setSick(s, isTutorialPenguin = false) -> void:
 	print("setting penguin sick to " + str(s))
 	#if the penguin is currently sick, and is being cured, restore its speed value 
 	if sick && !s: 
@@ -125,7 +125,7 @@ func setSick(s) -> void:
 	if s: 
 		$PenguinSprite.modulate = Color(0.5,1.0,0.5,1.0) 
 		$HealthIndicator.tint_progress = Color(0.5,1.0,0.5,1.0)
-		if addedToScene: 
+		if addedToScene and not isTutorialPenguin: 
 			$SickTimer.start()
 	else: 
 		$PenguinSprite.modulate = Color(1.0,1.0,1.0,1.0) 

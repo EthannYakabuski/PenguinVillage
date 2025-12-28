@@ -113,6 +113,9 @@ func _on_input_event(_viewport, event, _shape_idx):
 func _notification(what: int) -> void: 
 	if what == NOTIFICATION_DRAG_END: 
 		print("mouse up in notification on food bowl")
+		if not get_parent().isTutorialCompleted and int(get_parent().tutorialProgress) == int(9): 
+			get_parent().updateTutorialProgress(10)
+			get_parent().checkTutorialProgress()
 		dragging = false
 		get_parent().setDragToggle(false)
 		get_parent().updatePenguinAndFoodSavedArray()
