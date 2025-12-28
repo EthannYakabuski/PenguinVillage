@@ -439,6 +439,9 @@ func checkTutorialProgress() -> void:
 			tutDialog.setDialogText("Good work! Now it looks like one of your penguins is sick (painted green). Can you drag and drop the medicine icon to heal the penguin?")
 			tutDialog.moveYAxisUp()
 		7: 
+			print("tutorial buy new food bowl")
+			tutDialog.setDialogText("Your penguin thanks you. You can also buy new food bowls for the enclosure. Open the side bar again, and drag and drop a new food bowl now!")
+		8: 
 			print("tutorial completed")
 			tutDialog.makeButtonVisible()
 			var currData = PlayerData.getData()
@@ -544,8 +547,8 @@ func determinePenguinIntelligence() -> void:
 				pass
 			else:
 				p.addFood(1)
-				if not isTutorialCompleted and int(tutorialProgress) == 2:
-					updateTutorialProgress(3)
+				if not isTutorialCompleted and int(tutorialProgress) == 3:
+					updateTutorialProgress(4)
 					checkTutorialProgress()
 				p.stopStepSound()
 				if not $Camera/FoodEatSound.playing: 
@@ -633,8 +636,8 @@ func updatePenguinAndFoodSavedArray():
 ##CUSTOM SIGNAL LISTENERS##
 func onFishCollected(fish, penguin) -> void: 
 	print("fish collected")
-	if not isTutorialCompleted and int(tutorialProgress) == 1: 
-		updateTutorialProgress(4)
+	if not isTutorialCompleted and int(tutorialProgress) == 2: 
+		updateTutorialProgress(3)
 		checkTutorialProgress()
 	$Camera/FishCaughtSound.play()
 	if fish in fishes: 
@@ -675,7 +678,7 @@ func onFishCollected(fish, penguin) -> void:
 	
 func onGemCollected(gem) -> void: 
 	print("gem collected")
-	if not isTutorialCompleted and int(tutorialProgress) == 3: 
+	if not isTutorialCompleted and int(tutorialProgress) == 4: 
 		updateTutorialProgress(5)
 		checkTutorialProgress()
 	if gem in gems: 
@@ -982,7 +985,7 @@ func updateExperienceBarLocal(level, currentExperience, totalExperienceRequired)
 	
 func penguinIsDropped(_atPosition: Vector2): 
 	print("penguin has been dropped and received")
-	if not isTutorialCompleted and int(tutorialProgress) == 4: 
+	if not isTutorialCompleted and int(tutorialProgress) == 5: 
 		updateTutorialProgress(6)
 		checkTutorialProgress()
 	#spawn the penguin into the scene + animation
@@ -1033,6 +1036,9 @@ func existingBowlDropped(_atPosition: Vector2, data):
 
 func newBowlIsDropped(_atPosition: Vector2): 
 	print("a new food bowl has been dropped and recevied")
+	if not isTutorialCompleted and int(tutorialProgress) == 7: 
+		updateTutorialProgress(8)
+		checkTutorialProgress()
 	var bowlPosition = $Camera.get_global_mouse_position()
 	if PlayerData.getData()["Gems"] >= 100:
 		spendGems(100)
@@ -1068,7 +1074,7 @@ func medicineIsDropped(_atPosition: Vector2):
 		print("we found the closest sick penguin, checking gem amount available")
 		if PlayerData.getData()["Gems"] >= currentMedicinePrice: 
 			print("we found the closest sick penguin, clearing status")
-			if not isTutorialCompleted and int(tutorialProgress) == 5:
+			if not isTutorialCompleted and int(tutorialProgress) == 6:
 				updateTutorialProgress(7)
 				checkTutorialProgress()
 			closestPenguin.setSick(false)
@@ -1293,7 +1299,7 @@ func calculateCurrentPenguinPrice() -> void:
 
 func _on_side_bar_pressed() -> void:
 	print("side bar pressed")
-	if not isTutorialCompleted and int(tutorialProgress) == 4: 
+	if not isTutorialCompleted and int(tutorialProgress) == 5: 
 		tutDialog.setDialogText("Good! Now drag and drop the penguin icon somewhere on the iceberg!")
 	if not sidebarActive:
 		var currData = PlayerData.getData()
