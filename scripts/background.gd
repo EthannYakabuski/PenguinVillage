@@ -325,7 +325,7 @@ func _on_user_authenticated(is_authenticated: bool) -> void:
 	var newLoginTime = Time.get_datetime_dict_from_system()
 	lastLogin_global = newLoginTime
 	if is_authenticated: 
-		googleSnapshotClient.load_game("PenguinVillageData", false)
+		googleSnapshotClient.load_game("PenguinVillageData", true)
 		googleSnapshotClient.game_loaded.connect(
 		func(snapshot: PlayGamesSnapshot):
 			print("inside game_loaded callback") 
