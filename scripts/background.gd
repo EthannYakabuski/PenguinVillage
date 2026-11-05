@@ -56,9 +56,12 @@ signal dataHasLoaded
 signal penguinNeedsGoal
 
 #admob integration
+const MERMAID_REWARD_AD_UNIT_ID := "ca-app-pub-7719473349082950/6947496737"
+const TEST_REWARDED_AD_UNIT_ID := "ca-app-pub-3940256099942544/5224354917"
 var _ad_view : AdView
 var _rewarded_ad : RewardedAd
-var _full_screen_content_callback : FullScreenContentCallback
+var _full_screen_content_callback := FullScreenContentCallback.new()
+var _admob_initialized := false
 var on_user_earned_reward_listener := OnUserEarnedRewardListener.new()
 
 func _enter_tree() -> void: 
@@ -101,7 +104,7 @@ func androidAuthentication() -> void:
 		printerr("Plugin not found")
 		print(Time.get_datetime_dict_from_system())
 		#create dummy data for testing
-		lastLogin_global = { "year": 2025, "month": 12, "day": 27, "weekday": 7, "hour": 20, "minute": 0, "second": 0, "dst": true }
+		lastLogin_global = { "year": 2026, "month": 02, "day": 14, "weekday": 7, "hour": 8, "minute": 0, "second": 0, "dst": true }
 		var dummyData = {
 			"Penguins": [{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 100, "sick": false},{"health": 50, "food": 75, "sick": false}],
 			"Food": [{"amount": 100, "locationX": 300, "locationY": 1150}],
@@ -109,7 +112,7 @@ func androidAuthentication() -> void:
 			"Decorations": [], 
 			"Inventory": [0,0,0],
 			"AreasUnlocked": [false, false, false, false, false],
-			"LastLogin": { "year": 2025, "month": 12, "day": 27, "weekday": 7, "hour": 20, "minute": 0, "second": 0, "dst": true },
+			"LastLogin": { "year": 2026, "month": 02, "day": 14, "weekday": 7, "hour": 20, "minute": 0, "second": 0, "dst": true },
 			"DailyRewards": [true, true, true, true, true, true, true],
 			"DailyRewardsClaimed": [false, false, false, false, false, false, false],
 			"Gems": 1050,
@@ -133,6 +136,10 @@ func androidAuthentication() -> void:
 		googleSignInClient.is_authenticated()
 	
 func admobConfiguration() -> void: 
+	_full_screen_content_callback.on_ad_dismissed_full_screen_content = _destroy_rewarded_ad
+	_full_screen_content_callback.on_ad_failed_to_show_full_screen_content = func(ad_error: AdError) -> void:
+		printerr("Mermaid reward ad failed to show: ", ad_error.message)
+		_destroy_rewarded_ad()
 	var onInitializationCompleteListener = OnInitializationCompleteListener.new()
 	onInitializationCompleteListener.on_initialization_complete = onAdInitializationComplete
 	var request_configuration = RequestConfiguration.new()
@@ -145,9 +152,11 @@ func admobConfiguration() -> void:
 		MobileAds.set_request_configuration(request_configuration)
 		MobileAds.initialize(onInitializationCompleteListener)
 		
-#called after admob init is complete, loads a banner ad
+#Load the reward only once both AdMob and player data are ready.
 func onAdInitializationComplete(_status : InitializationStatus): 
-	print("banner ad initialization complete")
+	print("AdMob initialization complete")
+	_admob_initialized = true
+	_load_mermaid_reward_ad()
 	_create_ad_view()
 	
 #code to call after data has been loaded from google store
@@ -172,11 +181,14 @@ func dataLoaded():
 	print("calling checkTutorial progress")
 	checkTutorialProgress()
 	determineDailyReward()
-	if _rewarded_ad: 
-		_rewarded_ad.destroy()
-		_rewarded_ad = null
-		
-	var unit_id = "ca-app-pub-3940256099942544/5224354917"
+	_load_mermaid_reward_ad()
+
+func _load_mermaid_reward_ad() -> void:
+	if not _admob_initialized or loading:
+		return
+	_destroy_rewarded_ad()
+	#Only debug exports use Google's demo unit; release exports use Mermaid Reward.
+	var unit_id = TEST_REWARDED_AD_UNIT_ID if OS.is_debug_build() else MERMAID_REWARD_AD_UNIT_ID
 	
 	var rewarded_ad_load_callback := RewardedAdLoadCallback.new()
 	
@@ -193,7 +205,13 @@ func dataLoaded():
 	#makes sure that served ads are not personalized to the user
 	ad_request.extras["npa"] = "1"
 	RewardedAdLoader.new().load(unit_id, ad_request, rewarded_ad_load_callback)
-	
+
+func _destroy_rewarded_ad() -> void:
+	$MermaidButton.visible = false
+	if _rewarded_ad:
+		_rewarded_ad.destroy()
+		_rewarded_ad = null
+
 func makeEverythingVisible() -> void: 
 	$CanvasMenu.visible = true
 	$WaterArea.visible = true
@@ -240,14 +258,16 @@ func loadLeaderboards():
 		
 #code to launch a rewarded ad, triggered manually by player
 func _on_ad_button_pressed() -> void:
+	if not _rewarded_ad or not $MermaidButton.visible:
+		return
 	_rewarded_ad.full_screen_content_callback = _full_screen_content_callback
-	_rewarded_ad.show(on_user_earned_reward_listener)
 	$MermaidButton.visible = false
+	_rewarded_ad.show(on_user_earned_reward_listener)
 		
 #called after user watches the manually launched rewarded ad
 func on_user_earned_reward(rewarded_item : RewardedItem):
 	print("on_user_earned_reward, rewarded_item: rewarded", rewarded_item.amount, rewarded_item.type)
-	#once we are using an actual unit-id from admob, the rewarded_item.amount and rewarded_item.type values are set in the admob console
+	#The Mermaid reward grants 50 gems; keep the AdMob console reward consistent.
 	var currData = PlayerData.getData()
 	currData["Gems"] = currData["Gems"] + 50
 	addGemIndicator(50, $MermaidButton.position)
